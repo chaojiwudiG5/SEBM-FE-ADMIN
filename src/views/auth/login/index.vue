@@ -142,7 +142,7 @@
   import { useSettingStore } from '@/store/modules/setting'
   import type { FormInstance, FormRules } from 'element-plus'
 
-  type AccountKey = 'super' | 'admin' | 'user'
+  type AccountKey = 'technician' | 'admin' | 'user'
 
   export interface Account {
     key: AccountKey
@@ -153,13 +153,6 @@
   }
 
   const accounts = computed<Account[]>(() => [
-    {
-      key: 'super',
-      label: t('login.roles.super'),
-      userName: 'Super',
-      password: '123456',
-      roles: ['R_SUPER']
-    },
     {
       key: 'admin',
       label: t('login.roles.admin'),
@@ -173,6 +166,13 @@
       userName: 'User',
       password: '123456',
       roles: ['R_USER']
+    },
+    {
+      key: 'technician',
+      label: t('login.roles.technician'),
+      userName: 'Technician',
+      password: '123456',
+      roles: ['R_TECHNICIAN']
     }
   ])
 
@@ -205,7 +205,8 @@
   const loading = ref(false)
 
   onMounted(() => {
-    setupAccount('super')
+    // 不设置默认账号，让用户主动选择
+    formData.account = ''
   })
 
   // 设置账号

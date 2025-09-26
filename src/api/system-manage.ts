@@ -19,6 +19,37 @@ export function fetchGetRoleList(params: Api.SystemManage.RoleSearchParams) {
   })
 }
 
+// 获取设备列表
+export function fetchGetDeviceList(params: Api.SystemManage.DeviceSearchParams) {
+  return request.get<Api.SystemManage.DeviceList>({
+    url: '/api/device/list',
+    params
+  })
+}
+
+// 添加设备
+export function fetchAddDevice(data: Api.SystemManage.DeviceAddParams) {
+  return request.post({
+    url: '/api/device/add',
+    data
+  })
+}
+
+// 更新设备
+export function fetchUpdateDevice(data: Api.SystemManage.DeviceUpdateParams) {
+  return request.put({
+    url: '/api/device/update',
+    data
+  })
+}
+
+// 删除设备
+export function fetchDeleteDevice(id: number) {
+  return request.del({
+    url: `/api/device/${id}`
+  })
+}
+
 interface MenuResponse {
   menuList: AppRouteRecord[]
 }

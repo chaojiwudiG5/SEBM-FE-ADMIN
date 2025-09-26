@@ -15,15 +15,11 @@
       <el-col :sm="24" :md="24" :lg="12">
         <NewUser />
       </el-col>
-      <el-col :sm="24" :md="12" :lg="6">
-        <Dynamic />
-      </el-col>
+      <el-col :sm="24" :md="12" :lg="6"> </el-col>
       <el-col :sm="24" :md="12" :lg="6">
         <TodoList />
       </el-col>
     </el-row>
-
-    <AboutProject />
   </div>
 </template>
 
@@ -32,9 +28,7 @@
   import ActiveUser from './widget/ActiveUser.vue'
   import SalesOverview from './widget/SalesOverview.vue'
   import NewUser from './widget/NewUser.vue'
-  import Dynamic from './widget/Dynamic.vue'
   import TodoList from './widget/TodoList.vue'
-  import AboutProject from './widget/AboutProject.vue'
   import { useCommon } from '@/composables/useCommon'
 
   defineOptions({ name: 'Console' })

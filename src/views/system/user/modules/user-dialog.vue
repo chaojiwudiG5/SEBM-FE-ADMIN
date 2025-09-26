@@ -28,6 +28,12 @@
           />
         </ElSelect>
       </ElFormItem>
+      <ElFormItem label="用户状态" prop="status">
+        <ElSelect v-model="formData.status">
+          <ElOption label="正常" value="1" />
+          <ElOption label="封锁" value="2" />
+        </ElSelect>
+      </ElFormItem>
     </ElForm>
     <template #footer>
       <div class="dialog-footer">
@@ -90,7 +96,8 @@
       { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号格式', trigger: 'blur' }
     ],
     gender: [{ required: true, message: '请选择性别', trigger: 'blur' }],
-    role: [{ required: true, message: '请选择角色', trigger: 'blur' }]
+    role: [{ required: true, message: '请选择角色', trigger: 'blur' }],
+    status: [{ required: true, message: '请选择用户状态', trigger: 'blur' }]
   }
 
   // 初始化表单数据
@@ -102,7 +109,8 @@
       username: isEdit ? row.userName || '' : '',
       phone: isEdit ? row.userPhone || '' : '',
       gender: isEdit ? row.userGender || '男' : '男',
-      role: isEdit ? (Array.isArray(row.userRoles) ? row.userRoles : []) : []
+      role: isEdit ? (Array.isArray(row.userRoles) ? row.userRoles : []) : [],
+      status: isEdit ? row.status || '1' : '1'
     })
   }
 

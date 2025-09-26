@@ -86,6 +86,37 @@ declare namespace Api {
         Api.Common.CommonSearchParams
     >
 
+    /** 设备状态类型 */
+    type DeviceStatus = 'disabled' | 'normal' | 'maintenance' | 'scrapped' // disabled:停用 normal:正常 maintenance:维修 scrapped:报废
+
+    /** 设备列表 */
+    type DeviceList = Api.Common.PaginatedResponse<DeviceListItem>
+
+    /** 设备列表项 */
+    interface DeviceListItem {
+      id: number
+      deviceName: string
+      deviceType: string
+      status: DeviceStatus
+      location: string
+      description: string
+      image: string
+      createTime: string
+      updateTime: string
+    }
+
+    /** 设备搜索参数 */
+    type DeviceSearchParams = Partial<
+      Pick<DeviceListItem, 'deviceName' | 'deviceType' | 'status' | 'location'> &
+        Api.Common.CommonSearchParams
+    >
+
+    /** 设备添加参数 */
+    type DeviceAddParams = Omit<DeviceListItem, 'id' | 'createTime' | 'updateTime'>
+
+    /** 设备更新参数 */
+    type DeviceUpdateParams = Partial<DeviceAddParams> & { id: number }
+
     /** 角色列表 */
     type RoleList = Api.Common.PaginatedResponse<RoleListItem>
 
