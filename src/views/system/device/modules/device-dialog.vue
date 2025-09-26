@@ -14,18 +14,7 @@
         </ElCol>
         <ElCol :span="12">
           <ElFormItem label="设备类型" prop="deviceType">
-            <ElSelect
-              v-model="formData.deviceType"
-              placeholder="请选择设备类型"
-              style="width: 100%"
-            >
-              <ElOption
-                v-for="type in deviceTypeOptions"
-                :key="type.value"
-                :label="type.label"
-                :value="type.value"
-              />
-            </ElSelect>
+            <ElInput v-model="formData.deviceType" placeholder="请输入设备类型" />
           </ElFormItem>
         </ElCol>
       </ElRow>
@@ -87,7 +76,6 @@
 </template>
 
 <script setup lang="ts">
-  import { DEVICE_TYPE_OPTIONS } from '@/mock/temp/formData'
   import type { FormInstance, FormRules, UploadFile } from 'element-plus'
   import { ElMessage } from 'element-plus'
 
@@ -104,9 +92,6 @@
 
   const props = defineProps<Props>()
   const emit = defineEmits<Emits>()
-
-  // 设备类型选项
-  const deviceTypeOptions = ref(DEVICE_TYPE_OPTIONS)
 
   // 对话框显示控制
   const dialogVisible = computed({

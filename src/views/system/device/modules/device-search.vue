@@ -12,19 +12,12 @@
         </ElFormItem>
 
         <ElFormItem label="设备类型">
-          <ElSelect
+          <ElInput
             v-model="formData.deviceType"
-            placeholder="请选择设备类型"
+            placeholder="请输入设备类型"
             clearable
             style="width: 150px"
-          >
-            <ElOption
-              v-for="type in deviceTypeOptions"
-              :key="type.value"
-              :label="type.label"
-              :value="type.value"
-            />
-          </ElSelect>
+          />
         </ElFormItem>
 
         <ElFormItem label="设备状态">
@@ -66,8 +59,6 @@
 </template>
 
 <script setup lang="ts">
-  import { DEVICE_TYPE_OPTIONS } from '@/mock/temp/formData'
-
   interface Props {
     modelValue: Record<string, any>
   }
@@ -80,9 +71,6 @@
 
   const props = defineProps<Props>()
   const emit = defineEmits<Emits>()
-
-  // 设备类型选项
-  const deviceTypeOptions = ref(DEVICE_TYPE_OPTIONS)
 
   // 表单实例
   const formRef = ref()
