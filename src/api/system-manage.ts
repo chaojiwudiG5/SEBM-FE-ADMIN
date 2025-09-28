@@ -6,7 +6,7 @@ import { menuDataToRouter } from '@/router/utils/menuToRouter'
 // 获取用户列表
 export function fetchGetUserList(params: Api.SystemManage.UserSearchParams) {
   return request.get<Api.SystemManage.UserList>({
-    url: '/api/user/list',
+    url: '/user/list',
     params
   })
 }
@@ -14,7 +14,7 @@ export function fetchGetUserList(params: Api.SystemManage.UserSearchParams) {
 // 获取角色列表
 export function fetchGetRoleList(params: Api.SystemManage.RoleSearchParams) {
   return request.get<Api.SystemManage.RoleList>({
-    url: '/api/role/list',
+    url: '/role/list',
     params
   })
 }
@@ -22,7 +22,7 @@ export function fetchGetRoleList(params: Api.SystemManage.RoleSearchParams) {
 // 获取设备列表
 export function fetchGetDeviceList(params: Api.SystemManage.DeviceSearchParams) {
   return request.get<Api.SystemManage.DeviceList>({
-    url: '/api/device/list',
+    url: '/device/list',
     params
   })
 }
@@ -30,7 +30,7 @@ export function fetchGetDeviceList(params: Api.SystemManage.DeviceSearchParams) 
 // 添加设备
 export function fetchAddDevice(data: Api.SystemManage.DeviceAddParams) {
   return request.post({
-    url: '/api/device/add',
+    url: '/device/add',
     data
   })
 }
@@ -38,7 +38,7 @@ export function fetchAddDevice(data: Api.SystemManage.DeviceAddParams) {
 // 更新设备
 export function fetchUpdateDevice(data: Api.SystemManage.DeviceUpdateParams) {
   return request.put({
-    url: '/api/device/update',
+    url: '/device/update',
     data
   })
 }
@@ -46,7 +46,7 @@ export function fetchUpdateDevice(data: Api.SystemManage.DeviceUpdateParams) {
 // 删除设备
 export function fetchDeleteDevice(id: number) {
   return request.del({
-    url: `/api/device/${id}`
+    url: `/device/${id}`
   })
 }
 

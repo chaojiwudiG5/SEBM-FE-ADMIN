@@ -66,12 +66,48 @@ axiosInstance.interceptors.request.use(
 /** 响应拦截器 */
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse<Http.BaseResponse>) => {
-    const { code, msg } = response.data
+    console.log('📥 [HTTP拦截器] 收到响应:', {
+      status: response.status,
+      statusText: response.statusText,
+      url: response.config.url,
+      data: response.data,
+      headers: response.headers
+    })
+
+    // 兼容 msg 和 message 字段
+    const { code, msg, message } = response.data
+    const errorMessage = msg || message
+
+    console.log('🔍 [HTTP拦截器] 响应数据分析:', {
+      code: code,
+      msg: msg,
+      message: message,
+      errorMessage: errorMessage,
+      dataType: typeof response.data,
+      dataKeys: Object.keys(response.data || {}),
+      ApiStatus_success: ApiStatus.success
+    })
+
     if (code === ApiStatus.success) return response
-    if (code === ApiStatus.unauthorized) handleUnauthorizedError(msg)
-    throw createHttpError(msg || $t('httpMsg.requestFailed'), code)
+    if (code === ApiStatus.unauthorized) handleUnauthorizedError(errorMessage)
+
+    console.error('❌ [HTTP拦截器] 业务错误:', {
+      code,
+      errorMessage,
+      expectedSuccessCode: ApiStatus.success
+    })
+
+    throw createHttpError(errorMessage || $t('httpMsg.requestFailed'), code)
   },
   (error) => {
+    console.error('❌ [HTTP拦截器] 网络错误:', {
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      url: error.config?.url,
+      data: error.response?.data,
+      message: error.message
+    })
+
     if (error.response?.status === ApiStatus.unauthorized) handleUnauthorizedError()
     return Promise.reject(handleError(error))
   }

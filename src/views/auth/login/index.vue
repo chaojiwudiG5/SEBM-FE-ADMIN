@@ -47,18 +47,6 @@
             @keyup.enter="handleSubmit"
             style="margin-top: 25px"
           >
-            <ElFormItem prop="account">
-              <ElSelect v-model="formData.account" @change="setupAccount" class="account-select">
-                <ElOption
-                  v-for="account in accounts"
-                  :key="account.key"
-                  :label="account.label"
-                  :value="account.key"
-                >
-                  <span>{{ account.label }}</span>
-                </ElOption>
-              </ElSelect>
-            </ElFormItem>
             <ElFormItem prop="username">
               <ElInput :placeholder="$t('login.placeholder[0]')" v-model.trim="formData.username" />
             </ElFormItem>
@@ -142,40 +130,6 @@
   import { useSettingStore } from '@/store/modules/setting'
   import type { FormInstance, FormRules } from 'element-plus'
 
-  type AccountKey = 'technician' | 'admin' | 'user'
-
-  export interface Account {
-    key: AccountKey
-    label: string
-    userName: string
-    password: string
-    roles: string[]
-  }
-
-  const accounts = computed<Account[]>(() => [
-    {
-      key: 'admin',
-      label: t('login.roles.admin'),
-      userName: 'Admin',
-      password: '123456',
-      roles: ['R_ADMIN']
-    },
-    {
-      key: 'user',
-      label: t('login.roles.user'),
-      userName: 'User',
-      password: '123456',
-      roles: ['R_USER']
-    },
-    {
-      key: 'technician',
-      label: t('login.roles.technician'),
-      userName: 'Technician',
-      password: '123456',
-      roles: ['R_TECHNICIAN']
-    }
-  ])
-
   const settingStore = useSettingStore()
   const { isDark } = storeToRefs(settingStore)
   const { shouldShowThemeToggle, shouldShowLanguage } = useHeaderBar()
@@ -191,7 +145,6 @@
   const formRef = ref<FormInstance>()
 
   const formData = reactive({
-    account: '',
     username: '',
     password: '',
     rememberPassword: true
@@ -205,17 +158,10 @@
   const loading = ref(false)
 
   onMounted(() => {
-    // 不设置默认账号，让用户主动选择
-    formData.account = ''
+    // 清空表单数据
+    formData.username = ''
+    formData.password = ''
   })
-
-  // 设置账号
-  const setupAccount = (key: AccountKey) => {
-    const selectedAccount = accounts.value.find((account: Account) => account.key === key)
-    formData.account = key
-    formData.username = selectedAccount?.userName ?? ''
-    formData.password = selectedAccount?.password ?? ''
-  }
 
   // 登录
   const handleSubmit = async () => {
@@ -238,7 +184,7 @@
       const { username, password } = formData
 
       const { token, refreshToken } = await fetchLogin({
-        userName: username,
+        username, // 使用正确的字段名
         password
       })
 

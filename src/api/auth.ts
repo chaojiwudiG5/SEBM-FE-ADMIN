@@ -2,16 +2,38 @@ import request from '@/utils/http'
 
 /**
  * 登录
- * @param params 登录参数
+ * @param data 登录参数
  * @returns 登录响应
  */
-export function fetchLogin(params: Api.Auth.LoginParams) {
-  return request.post<Api.Auth.LoginResponse>({
-    url: '/api/auth/login',
-    params
-    // showSuccessMessage: true // 显示成功消息
-    // showErrorMessage: false // 不显示错误消息
+export function fetchLogin(data: Api.Auth.LoginParams) {
+  console.log('🔐 [Login API] 发送登录请求:', {
+    url: '/user/login',
+    data: {
+      username: data.username,
+      password: '***' // 不显示真实密码
+    },
+    timestamp: new Date().toISOString()
   })
+
+  return request
+    .post<Api.Auth.LoginResponse>({
+      url: '/user/login', // 去掉/api前缀，因为baseURL已包含
+      data,
+      showErrorMessage: true
+    })
+    .then((response) => {
+      console.log('✅ [Login API] 登录请求成功:', response)
+      return response
+    })
+    .catch((error) => {
+      console.error('❌ [Login API] 登录请求失败:', {
+        message: error.message,
+        code: error.code,
+        response: error.response,
+        stack: error.stack
+      })
+      throw error
+    })
 }
 
 /**
@@ -20,7 +42,7 @@ export function fetchLogin(params: Api.Auth.LoginParams) {
  */
 export function fetchGetUserInfo() {
   return request.get<Api.Auth.UserInfo>({
-    url: '/api/user/info'
+    url: '/user/info' // 去掉/api前缀
     // 自定义请求头
     // headers: {
     //   'X-Custom-Header': 'your-custom-value'

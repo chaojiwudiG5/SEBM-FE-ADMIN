@@ -37,7 +37,7 @@ declare namespace Api {
   namespace Auth {
     /** 登录参数 */
     interface LoginParams {
-      userName: string
+      username: string // 符合后端LoginDto要求
       password: string
     }
 
