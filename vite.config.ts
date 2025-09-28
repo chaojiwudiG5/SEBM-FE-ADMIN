@@ -28,6 +28,7 @@ export default ({ mode }: { mode: string }) => {
         '/api': {
           target: VITE_API_PROXY_URL,
           changeOrigin: true,
+          secure: false, // 禁用SSL验证
           rewrite: (path) => path.replace(/^\/api/, '')
         }
       },

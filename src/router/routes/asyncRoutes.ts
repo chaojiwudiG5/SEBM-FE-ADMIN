@@ -78,6 +78,16 @@ export const asyncRoutes: AppRouteRecord[] = [
         }
       },
       {
+        path: 'template',
+        name: 'Template',
+        component: RoutesAlias.Template,
+        meta: {
+          title: 'menus.system.template',
+          keepAlive: true,
+          roles: ['R_SUPER', 'R_ADMIN']
+        }
+      },
+      {
         path: 'user-center',
         name: 'UserCenter',
         component: RoutesAlias.UserCenter,

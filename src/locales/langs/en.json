@@ -234,6 +234,7 @@
       "user": "User Management",
       "role": "Role Management",
       "device": "Device Management",
+      "template": "Template Management",
       "userCenter": "User Center",
       "menu": "Menu Management"
     }

@@ -117,6 +117,36 @@ declare namespace Api {
     /** 设备更新参数 */
     type DeviceUpdateParams = Partial<DeviceAddParams> & { id: number }
 
+    /** 模版列表 */
+    type TemplateList = Api.Common.PaginatedResponse<TemplateListItem>
+
+    /** 模版列表项 */
+    interface TemplateListItem {
+      id: number
+      templateTitle: string
+      templateType: string
+      notificationNode: number
+      notificationMethod: number
+      relateTimeOffset?: number
+      content: string
+      notificationRole?: number
+      templateDesc?: string
+      createTime: string
+      updateTime: string
+    }
+
+    /** 模版搜索参数 */
+    type TemplateSearchParams = Partial<
+      Pick<TemplateListItem, 'templateTitle' | 'templateType' | 'notificationNode' | 'notificationMethod'> &
+        Api.Common.CommonSearchParams
+    >
+
+    /** 模版添加参数 */
+    type TemplateAddParams = Omit<TemplateListItem, 'id' | 'createTime' | 'updateTime'>
+
+    /** 模版更新参数 */
+    type TemplateUpdateParams = Partial<TemplateAddParams> & { id: number }
+
     /** 角色列表 */
     type RoleList = Api.Common.PaginatedResponse<RoleListItem>
 

@@ -21,13 +21,31 @@ const fastEnterConfig: FastEnterConfig = {
       order: 1
     },
     {
+      name: '设备管理',
+      description: '设备信息管理与监控',
+      icon: '&#xe7b9;',
+      iconColor: '#20a0ff',
+      path: RoutesAlias.Device,
+      enabled: true,
+      order: 2
+    },
+    {
+      name: '模版管理',
+      description: '模版配置与管理',
+      icon: '&#xe617;',
+      iconColor: '#67c23a',
+      path: RoutesAlias.Template,
+      enabled: true,
+      order: 3
+    },
+    {
       name: '官方文档',
       description: '使用指南与开发文档',
       icon: '&#xe788;',
       iconColor: '#ffb100',
       path: WEB_LINKS.DOCS,
       enabled: true,
-      order: 2
+      order: 4
     },
     {
       name: '技术支持',
@@ -36,7 +54,7 @@ const fastEnterConfig: FastEnterConfig = {
       iconColor: '#ff6b6b',
       path: WEB_LINKS.COMMUNITY,
       enabled: true,
-      order: 3
+      order: 5
     },
     {
       name: '哔哩哔哩',
@@ -45,7 +63,7 @@ const fastEnterConfig: FastEnterConfig = {
       iconColor: '#FB7299',
       path: WEB_LINKS.BILIBILI,
       enabled: true,
-      order: 4
+      order: 6
     }
   ],
   // 快速链接

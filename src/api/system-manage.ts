@@ -35,6 +35,38 @@ export function fetchAddDevice(data: Api.SystemManage.DeviceAddParams) {
   })
 }
 
+// 获取模版列表
+export function fetchGetTemplateList(params: Api.SystemManage.TemplateSearchParams) {
+  return request.get<Api.SystemManage.TemplateList>({
+    url: '/api/template/list',
+    params
+  })
+}
+
+// 添加模版
+export function fetchAddTemplate(data: Api.SystemManage.TemplateAddParams) {
+  return request.post({
+    url: '/api/template/add',
+    data
+  })
+}
+
+// 更新模版
+export function fetchUpdateTemplate(data: Api.SystemManage.TemplateUpdateParams) {
+  return request.put({
+    url: '/api/template/update',
+    data
+  })
+}
+
+// 删除模版
+export function fetchDeleteTemplate(ids: number[]) {
+  return request.del({
+    url: '/api/template/delete',
+    data: { ids }
+  })
+}
+
 // 更新设备
 export function fetchUpdateDevice(data: Api.SystemManage.DeviceUpdateParams) {
   return request.put({

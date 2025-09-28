@@ -4,5 +4,5 @@
  */
 declare namespace Form {
   // 弹窗类型
-  type DialogType = 'add' | 'edit'
+  type DialogType = 'add' | 'edit' | 'view'
 }

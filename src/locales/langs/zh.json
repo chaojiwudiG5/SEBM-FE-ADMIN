@@ -226,6 +226,7 @@
       "user": "用户管理",
       "role": "角色管理",
       "device": "设备管理",
+      "template": "模版管理",
       "userCenter": "个人中心",
       "menu": "菜单管理"
     }
