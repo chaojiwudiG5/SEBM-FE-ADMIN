@@ -155,27 +155,38 @@
       // 登录请求
       const { username, password } = formData
 
+      console.log('🔐 开始登录请求...')
       const response = await fetchLogin({
         username, // 使用正确的字段名
         password
       })
 
-      const { token, refreshToken } = response
+      console.log('📥 登录响应完整数据:', response)
 
+      // 根据后端实际响应结构提取token
+      // 后端登录时直接返回完整的用户信息，包含token
+      const token = response.token
+      
+      console.log('🔑 提取的token:', token ? '***' + token.slice(-10) : 'null')
+      
       // 验证token
       if (!token) {
-        throw new Error('登录失败')
+        throw new Error('登录失败 - 未收到token')
       }
 
-      // 存储token和用户信息
-      userStore.setToken(token, refreshToken)
-      const userInfo = await fetchGetUserInfo()
-      userStore.setUserInfo(userInfo)
+      // 存储token（使用同一个token作为refreshToken）
+      userStore.setToken(token, token)
+      console.log('💾 Token已存储')
+
+      // 设置用户信息（登录响应已包含完整用户信息）
+      userStore.setUserInfo(response)
       userStore.setLoginStatus(true)
+      console.log('👤 用户信息已设置:', userStore.getUserInfo)
 
       // 登录成功处理
       showLoginSuccessNotice()
-      router.push('/dashboard')
+      console.log('🚀 准备跳转到 /dashboard/console')
+      router.push('/dashboard/console')
     } catch (error) {
       // 处理 HttpError
       if (error instanceof HttpError) {

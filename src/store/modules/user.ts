@@ -42,11 +42,43 @@ export const useUserStore = defineStore(
     const getWorktabState = computed(() => useWorktabStore().$state)
 
     /**
+     * 映射用户角色ID到角色字符串
+     * @param userRole 用户角色ID (1=ADMIN)
+     * @returns 角色字符串数组
+     */
+    const mapUserRole = (userRole: number): string[] => {
+      switch (userRole) {
+        case 1:
+          return ['R_ADMIN']
+        default:
+          return ['R_ADMIN'] // 默认给予ADMIN权限
+      }
+    }
+
+    /**
      * 设置用户信息
      * @param newInfo 新的用户信息
      */
     const setUserInfo = (newInfo: Api.Auth.UserInfo) => {
-      info.value = newInfo
+      console.log('🔍 原始用户信息:', newInfo)
+      
+      // 处理后端数据结构，映射为前端期望的格式
+      const processedInfo: Api.Auth.UserInfo = {
+        ...newInfo,
+        // 映射后端字段到前端字段
+        userId: newInfo.id,
+        userName: newInfo.username,
+        avatar: newInfo.avatarUrl || undefined,
+        // 将数字角色ID映射为角色字符串数组
+        roles: mapUserRole(newInfo.userRole),
+        // 默认按钮权限（可以根据角色进一步细分）
+        buttons: ['add', 'edit', 'delete', 'view']
+      }
+      
+      console.log('✅ 处理后的用户信息:', processedInfo)
+      console.log('🔐 用户角色:', processedInfo.roles)
+      
+      info.value = processedInfo
     }
 
     /**
@@ -54,6 +86,7 @@ export const useUserStore = defineStore(
      * @param status 登录状态
      */
     const setLoginStatus = (status: boolean) => {
+      console.log('🔐 设置登录状态:', status)
       isLogin.value = status
     }
 

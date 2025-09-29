@@ -79,8 +79,15 @@ async function handleRouteGuard(
   next: NavigationGuardNext,
   router: Router
 ): Promise<void> {
+  console.log('🛡️ 路由守卫被触发:', from.path, '->', to.path)
+  
   const settingStore = useSettingStore()
   const userStore = useUserStore()
+
+  console.log('📊 路由状态检查:')
+  console.log('  - 用户已登录:', userStore.isLogin)
+  console.log('  - 路由已注册:', isRouteRegistered.value)
+  console.log('  - 目标路径:', to.path)
 
   // 处理进度条
   if (settingStore.showNprogress) {
@@ -92,11 +99,13 @@ async function handleRouteGuard(
 
   // 处理登录状态
   if (!(await handleLoginStatus(to, userStore, next))) {
+    console.log('❌ 登录状态检查失败')
     return
   }
 
   // 处理动态路由注册
   if (!isRouteRegistered.value && userStore.isLogin) {
+    console.log('🔧 需要注册动态路由')
     await handleDynamicRoutes(to, from, next, router)
     return
   }
@@ -150,6 +159,8 @@ async function handleDynamicRoutes(
   router: Router
 ): Promise<void> {
   try {
+    console.log('🔄 开始处理动态路由注册, 目标路径:', to.path)
+    
     // 显示 loading 并标记 pending
     pendingLoading.value = true
     loadingService.showLoading()
@@ -157,12 +168,24 @@ async function handleDynamicRoutes(
     // 获取用户信息
     const userStore = useUserStore()
     const isRefresh = from.path === '/'
+    console.log('📊 用户登录状态:', userStore.isLogin)
+    console.log('🔄 是否刷新页面:', isRefresh)
+    console.log('👤 当前用户信息存在:', !!userStore.info && Object.keys(userStore.info).length > 0)
+    
     if (isRefresh || !userStore.info || Object.keys(userStore.info).length === 0) {
-      try {
-        const data = await fetchGetUserInfo()
-        userStore.setUserInfo(data)
-      } catch (error) {
-        console.error('获取用户信息失败', error)
+      console.log('⚠️ 用户信息为空，但用户已登录 - 可能是页面刷新导致的状态丢失')
+      // 如果用户已登录但信息丢失，尝试重新获取
+      if (userStore.isLogin && userStore.accessToken) {
+        try {
+          console.log('🔄 尝试重新获取用户信息...')
+          const data = await fetchGetUserInfo()
+          userStore.setUserInfo(data)
+        } catch (error) {
+          console.error('❌ 重新获取用户信息失败，登出用户', error)
+          userStore.logOut()
+          next(RoutesAlias.Login)
+          return
+        }
       }
     }
 
@@ -205,20 +228,28 @@ async function getMenuData(router: Router): Promise<void> {
  * 处理前端控制模式的菜单逻辑
  */
 async function processFrontendMenu(router: Router): Promise<void> {
+  console.log('🏗️ 开始处理前端菜单...')
   const menuList = asyncRoutes.map((route) => menuDataToRouter(route))
+  console.log('📋 原始菜单列表长度:', menuList.length)
+  
   const userStore = useUserStore()
   const roles = userStore.info.roles
+  console.log('👤 用户角色:', roles)
 
   if (!roles) {
+    console.error('❌ 获取用户角色失败')
     throw new Error('获取用户角色失败')
   }
 
   const filteredMenuList = filterMenuByRoles(menuList, roles)
+  console.log('✅ 权限过滤后的菜单数量:', filteredMenuList.length)
+  console.log('📄 过滤后的菜单:', filteredMenuList)
 
   // 添加延时以提升用户体验
   await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY))
 
   await registerAndStoreMenu(router, filteredMenuList)
+  console.log('🎯 菜单注册完成')
 }
 
 /**

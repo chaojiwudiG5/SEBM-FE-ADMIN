@@ -48,7 +48,14 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (request: InternalAxiosRequestConfig) => {
     const { accessToken } = useUserStore()
-    if (accessToken) request.headers.set('Authorization', accessToken)
+    console.log('🔑 请求拦截器 - Token存在:', !!accessToken)
+    console.log('🔑 请求拦截器 - 请求URL:', request.url)
+    
+    if (accessToken) {
+      // JWT token通常需要 Bearer 前缀
+      request.headers.set('Authorization', `Bearer ${accessToken}`)
+      console.log('🔑 设置Authorization头:', `Bearer ${accessToken.substring(0, 20)}...`)
+    }
 
     if (request.data && !(request.data instanceof FormData) && !request.headers['Content-Type']) {
       request.headers.set('Content-Type', 'application/json')
@@ -70,9 +77,15 @@ axiosInstance.interceptors.response.use(
     const { code, msg, message } = response.data
     const errorMessage = msg || message
 
-    if (code === ApiStatus.success) return response
-    if (code === ApiStatus.unauthorized) handleUnauthorizedError(errorMessage)
+    // 后端返回 code: 0 表示成功，code: 200 也表示成功
+    if (code === 0 || code === ApiStatus.success) return response
+    if (code === ApiStatus.unauthorized) {
+      console.error('❌ 401未授权错误:', errorMessage)
+      console.error('❌ 请求URL:', response.config.url)
+      handleUnauthorizedError(errorMessage)
+    }
 
+    console.error('❌ HTTP错误:', { code, message: errorMessage, url: response.config.url })
     throw createHttpError(errorMessage || $t('httpMsg.requestFailed'), code)
   },
   (error) => {

@@ -42,18 +42,30 @@ declare namespace Api {
     }
 
     /** 登录响应 */
-    interface LoginResponse {
-      token: string
-      refreshToken: string
+    interface LoginResponse extends UserInfo {
+      // 登录响应包含完整的用户信息
     }
 
     /** 用户信息 */
     interface UserInfo {
+      id: number
+      username: string
+      email: string
+      phone: string
+      gender: number
+      avatarUrl: string | null
+      userRole: number // 后端返回的角色ID：1=ADMIN
+      userStatus: number
+      age: number
+      createTime: string
+      updateTime: string
+      token?: string
+      active: boolean
+      // 前端处理后的字段
       buttons: string[]
       roles: string[]
       userId: number
       userName: string
-      email: string
       avatar?: string
     }
   }
