@@ -60,23 +60,6 @@
                 show-password
               />
             </ElFormItem>
-            <div class="drag-verify">
-              <div class="drag-verify-content" :class="{ error: !isPassing && isClickPass }">
-                <ArtDragVerify
-                  ref="dragVerify"
-                  v-model:value="isPassing"
-                  :text="$t('login.sliderText')"
-                  textColor="var(--art-gray-800)"
-                  :successText="$t('login.sliderSuccessText')"
-                  :progressBarBg="getCssVar('--el-color-primary')"
-                  background="var(--art-gray-200)"
-                  handlerBg="var(--art-main-bg-color)"
-                />
-              </div>
-              <p class="error-text" :class="{ 'show-error-text': !isPassing && isClickPass }">{{
-                $t('login.placeholder[2]')
-              }}</p>
-            </div>
 
             <div class="forget-password">
               <ElCheckbox v-model="formData.rememberPassword">{{
@@ -115,7 +98,6 @@
   import { RoutesAlias } from '@/router/routesAlias'
   import { ElNotification, ElMessage } from 'element-plus'
   import { useUserStore } from '@/store/modules/user'
-  import { getCssVar } from '@/utils/ui'
   import { languageOptions } from '@/locales'
   import { LanguageEnum } from '@/enums/appEnum'
   import { useI18n } from 'vue-i18n'
@@ -134,12 +116,8 @@
   const { isDark } = storeToRefs(settingStore)
   const { shouldShowThemeToggle, shouldShowLanguage } = useHeaderBar()
 
-  const dragVerify = ref()
-
   const userStore = useUserStore()
   const router = useRouter()
-  const isPassing = ref(false)
-  const isClickPass = ref(false)
 
   const systemName = AppConfig.systemInfo.name
   const formRef = ref<FormInstance>()
@@ -172,25 +150,21 @@
       const valid = await formRef.value.validate()
       if (!valid) return
 
-      // 拖拽验证
-      if (!isPassing.value) {
-        isClickPass.value = true
-        return
-      }
-
       loading.value = true
 
       // 登录请求
       const { username, password } = formData
 
-      const { token, refreshToken } = await fetchLogin({
+      const response = await fetchLogin({
         username, // 使用正确的字段名
         password
       })
 
+      const { token, refreshToken } = response
+
       // 验证token
       if (!token) {
-        throw new Error('Login failed - no token received')
+        throw new Error('登录失败')
       }
 
       // 存储token和用户信息
@@ -201,7 +175,7 @@
 
       // 登录成功处理
       showLoginSuccessNotice()
-      router.push('/')
+      router.push('/dashboard')
     } catch (error) {
       // 处理 HttpError
       if (error instanceof HttpError) {
@@ -213,13 +187,7 @@
       }
     } finally {
       loading.value = false
-      resetDragVerify()
     }
-  }
-
-  // 重置拖拽验证
-  const resetDragVerify = () => {
-    dragVerify.value.reset()
   }
 
   // 登录成功提示
