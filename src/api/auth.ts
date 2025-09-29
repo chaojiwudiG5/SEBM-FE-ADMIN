@@ -6,34 +6,11 @@ import request from '@/utils/http'
  * @returns 登录响应
  */
 export function fetchLogin(data: Api.Auth.LoginParams) {
-  console.log('🔐 [Login API] 发送登录请求:', {
+  return request.post<Api.Auth.LoginResponse>({
     url: '/user/login',
-    data: {
-      username: data.username,
-      password: '***' // 不显示真实密码
-    },
-    timestamp: new Date().toISOString()
+    data,
+    showErrorMessage: true
   })
-
-  return request
-    .post<Api.Auth.LoginResponse>({
-      url: '/user/login', // 去掉/api前缀，因为baseURL已包含
-      data,
-      showErrorMessage: true
-    })
-    .then((response) => {
-      console.log('✅ [Login API] 登录请求成功:', response)
-      return response
-    })
-    .catch((error) => {
-      console.error('❌ [Login API] 登录请求失败:', {
-        message: error.message,
-        code: error.code,
-        response: error.response,
-        stack: error.stack
-      })
-      throw error
-    })
 }
 
 /**
