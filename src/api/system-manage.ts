@@ -5,9 +5,9 @@ import { menuDataToRouter } from '@/router/utils/menuToRouter'
 
 // 获取用户列表
 export function fetchGetUserList(params: Api.SystemManage.UserSearchParams) {
-  return request.get<Api.SystemManage.UserList>({
-    url: '/user/list',
-    params
+  return request.post<Api.SystemManage.UserList>({
+    url: '/user/admin/getUserList', // 使用后端实际接口
+    data: params // POST请求使用data而不是params
   })
 }
 

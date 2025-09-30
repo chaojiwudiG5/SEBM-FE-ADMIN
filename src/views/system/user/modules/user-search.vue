@@ -77,12 +77,28 @@
       props: { placeholder: '请输入邮箱' }
     },
     {
+      label: '角色',
+      key: 'userRole',
+      type: 'select',
+      props: {
+        placeholder: '请选择角色',
+        options: [
+          { label: '普通用户', value: '0' },
+          { label: '管理员', value: '1' },
+          { label: '技工', value: '2' }
+        ]
+      }
+    },
+    {
       label: '状态',
       key: 'status',
       type: 'select',
       props: {
         placeholder: '请选择状态',
-        options: statusOptions.value
+        options: [
+          { label: '正常', value: '1' },
+          { label: '封锁', value: '2' }
+        ]
       }
     },
     {
@@ -93,6 +109,27 @@
         options: [
           { label: '男', value: '1' },
           { label: '女', value: '2' }
+        ]
+      }
+    },
+    {
+      label: '年龄范围',
+      key: 'ageRange',
+      type: 'input',
+      props: { placeholder: '例: 18-30' }
+    },
+    {
+      label: '等级',
+      key: 'level',
+      type: 'select',
+      props: {
+        placeholder: '请选择等级',
+        options: [
+          { label: '1级', value: '1' },
+          { label: '2级', value: '2' },
+          { label: '3级', value: '3' },
+          { label: '4级', value: '4' },
+          { label: '5级', value: '5' }
         ]
       }
     }

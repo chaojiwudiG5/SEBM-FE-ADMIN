@@ -103,7 +103,7 @@
   import { useI18n } from 'vue-i18n'
   import { HttpError } from '@/utils/http/error'
   import { themeAnimation } from '@/utils/theme/animation'
-  import { fetchLogin, fetchGetUserInfo } from '@/api/auth'
+  import { fetchLogin} from '@/api/auth'
   import { useHeaderBar } from '@/composables/useHeaderBar'
 
   defineOptions({ name: 'Login' })

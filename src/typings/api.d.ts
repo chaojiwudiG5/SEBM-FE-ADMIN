@@ -2,8 +2,22 @@
  * namespace: Api
  *
  * 所有接口相关类型定义
- * 在.vue文件使用会报错，需要在 eslint.config.mjs 中配置 globals: { Api: 'readonly' }
- */
+ * 在.vue文件使用会报错，需要在 eslint.config.mjs 中配置 globals: { Api: 'readonly'    /** 用户搜索参数 */
+    type UserSearchParams = Partial<{
+      // 后端分页参数
+      pageNumber: number    // 页码
+      pageSize: number      // 每页条数
+      // 前端分页参数（会被转换）
+      current: number
+      size: number
+      // 搜索条件
+      id: number
+      userName: string
+      userGender: string
+      userPhone: string
+      userEmail: string
+      status: string
+    }>
 
 declare namespace Api {
   /** 通用类型 */
@@ -77,7 +91,28 @@ declare namespace Api {
 
     /** 用户列表项 */
     interface UserListItem {
+      // 后端原始字段
       id: number
+      username: string
+      password?: string        // 密码字段（通常不显示）
+      email: string
+      phone: string
+      gender: number // 0=未知，1=男，2=女
+      avatarUrl: string | null
+      userRole: number // 0=普通用户，1=管理员，2=技工
+      userStatus: number // 0=正常，1=禁用
+      age: number
+      level: number
+      overdueTimes: number
+      borrowedDeviceCount: number
+      maxBorrowedDeviceCount: number
+      maxOverdueTimes: number
+      createTime: string
+      updateTime: string
+      isDelete: number         // 是否删除：0=未删除，1=已删除
+      isActive: boolean
+      token?: string
+      // 前端显示用的映射字段
       avatar: string
       status: string
       userName: string
@@ -86,15 +121,15 @@ declare namespace Api {
       userPhone: string
       userEmail: string
       userRoles: string[]
+      role: string           // 角色名称
+      statusText: string     // 状态文本
       createBy: string
-      createTime: string
       updateBy: string
-      updateTime: string
     }
 
     /** 用户搜索参数 */
     type UserSearchParams = Partial<
-      Pick<UserListItem, 'id' | 'userName' | 'userGender' | 'userPhone' | 'userEmail' | 'status'> &
+      Pick<UserListItem, 'id' | 'username' | 'gender' | 'phone' | 'email' | 'userStatus'> &
         Api.Common.CommonSearchParams
     >
 
