@@ -37,33 +37,94 @@ export function fetchAddDevice(data: Api.SystemManage.DeviceAddParams) {
 
 // 获取模版列表
 export function fetchGetTemplateList(params: Api.SystemManage.TemplateSearchParams) {
-  return request.get<Api.SystemManage.TemplateList>({
-    url: '/api/template/list',
-    params
+  // 使用mock数据
+  return new Promise<Api.SystemManage.TemplateList>((resolve) => {
+    setTimeout(() => {
+      const mockData: Api.SystemManage.TemplateList = {
+        records: [
+          {
+            id: 1,
+            templateTitle: '设备故障通知',
+            templateType: 'email',
+            notificationNode: 1,
+            notificationMethod: 1,
+            notificationRole: 1,
+            relateTimeOffset: 0,
+            templateDesc: '设备发生故障时的邮件通知模板',
+            content: '尊敬的用户，您的设备 {deviceName} 发生故障，请及时处理。',
+            createTime: '2024-01-15 10:30:00',
+            updateTime: '2024-01-15 10:30:00'
+          },
+          {
+            id: 2,
+            templateTitle: '维护提醒',
+            templateType: 'sms',
+            notificationNode: 2,
+            notificationMethod: 2,
+            notificationRole: 2,
+            relateTimeOffset: 24,
+            templateDesc: '设备维护提醒短信模板',
+            content: '您的设备 {deviceName} 将于 {time} 进行维护，请提前做好准备。',
+            createTime: '2024-01-14 14:20:00',
+            updateTime: '2024-01-14 14:20:00'
+          }
+        ],
+        total: 2,
+        current: params.current || 1,
+        size: params.size || 10
+      }
+      resolve(mockData)
+    }, 300)
   })
 }
 
 // 添加模版
 export function fetchAddTemplate(data: Api.SystemManage.TemplateAddParams) {
-  return request.post({
-    url: '/api/template/add',
-    data
+  // 使用mock数据
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        code: 200,
+        msg: '创建模版成功',
+        data: {
+          id: Date.now(),
+          ...data,
+          createTime: new Date().toISOString().slice(0, 19).replace('T', ' '),
+          updateTime: new Date().toISOString().slice(0, 19).replace('T', ' ')
+        }
+      })
+    }, 500)
   })
 }
 
 // 更新模版
 export function fetchUpdateTemplate(data: Api.SystemManage.TemplateUpdateParams) {
-  return request.put({
-    url: '/api/template/update',
-    data
+  // 使用mock数据
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        code: 200,
+        msg: '更新模版成功',
+        data: {
+          ...data,
+          updateTime: new Date().toISOString().slice(0, 19).replace('T', ' ')
+        }
+      })
+    }, 500)
   })
 }
 
 // 删除模版
 export function fetchDeleteTemplate(ids: number[]) {
-  return request.del({
-    url: '/api/template/delete',
-    data: { ids }
+  // 使用mock数据
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        code: 200,
+        msg: `成功删除 ${ids.length} 个模版`,
+        data: { ids }
+      })
+    }, 500)
   })
 }
 
