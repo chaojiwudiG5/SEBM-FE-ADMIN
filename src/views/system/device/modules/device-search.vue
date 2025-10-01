@@ -108,12 +108,9 @@
     const searchParams = { ...formData }
     // 过滤空值
     Object.keys(searchParams).forEach((key) => {
-      if (
-        searchParams[key] === '' ||
-        searchParams[key] === null ||
-        searchParams[key] === undefined
-      ) {
-        delete searchParams[key]
+      const value = searchParams[key as keyof typeof searchParams]
+      if (value === '' || value === null || value === undefined) {
+        delete (searchParams as any)[key]
       }
     })
     emit('search', searchParams)
