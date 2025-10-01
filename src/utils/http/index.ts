@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import { ElNotification } from 'element-plus'
 import { useUserStore } from '@/store/modules/user'
 import { ApiStatus } from './status'
 import { HttpError, handleError, showError, showSuccess } from './error'
@@ -79,17 +80,62 @@ axiosInstance.interceptors.response.use(
 
     // 后端返回 code: 0 表示成功，code: 200 也表示成功
     if (code === 0 || code === ApiStatus.success) return response
+    
+    // 处理401未授权错误
     if (code === ApiStatus.unauthorized) {
       console.error('❌ 401未授权错误:', errorMessage)
       console.error('❌ 请求URL:', response.config.url)
       handleUnauthorizedError(errorMessage)
     }
 
+    // 处理403禁止访问错误
+    if (code === ApiStatus.forbidden) {
+      console.error('❌ 403禁止访问错误:', errorMessage)
+      console.error('❌ 请求URL:', response.config.url)
+      console.error('❌ 请求头:', response.config.headers)
+      handleForbiddenError(errorMessage)
+    }
+
     console.error('❌ HTTP错误:', { code, message: errorMessage, url: response.config.url })
     throw createHttpError(errorMessage || $t('httpMsg.requestFailed'), code)
   },
   (error) => {
-    if (error.response?.status === ApiStatus.unauthorized) handleUnauthorizedError()
+    const status = error.response?.status
+    const errorData = error.response?.data
+    
+    // 检测CORS错误
+    if (!error.response && error.message && 
+        (error.message.includes('CORS') || 
+         error.message.includes('Cross-Origin') ||
+         error.message.includes('Network Error') ||
+         error.code === 'ERR_NETWORK')) {
+      console.error('🚫 CORS错误检测到!')
+      console.error('🔍 错误类型:', error.message)
+      console.error('🔍 请求URL:', error.config?.url)
+      console.error('🔍 请求方法:', error.config?.method?.toUpperCase())
+      console.error('🔍 请求头:', error.config?.headers)
+      console.error('📋 CORS问题可能原因:')
+      console.error('   1. 后端服务器未配置CORS策略')
+      console.error('   2. 当前域名不在后端白名单中')
+      console.error('   3. 预检请求(OPTIONS)被拒绝')
+      console.error('   4. 后端服务器未运行或地址错误')
+      
+      handleCorsError(error.config?.url || 'unknown')
+    }
+    
+    console.error('❌ 网络错误:', {
+      status,
+      url: error.config?.url,
+      data: errorData,
+      headers: error.config?.headers
+    })
+
+    if (status === ApiStatus.unauthorized) {
+      handleUnauthorizedError()
+    } else if (status === ApiStatus.forbidden) {
+      handleForbiddenError(errorData?.message || '禁止访问资源')
+    }
+    
     return Promise.reject(handleError(error))
   }
 ) /** 统一创建HttpError */
@@ -111,6 +157,51 @@ function handleUnauthorizedError(message?: string): never {
     throw error
   }
 
+  throw error
+}
+
+/** 处理403错误（禁止访问） */
+function handleForbiddenError(message?: string): never {
+  console.error('🚫 403禁止访问 - 可能原因:')
+  console.error('   1. Token过期或无效')
+  console.error('   2. 权限不足')  
+  console.error('   3. 后端服务配置问题')
+  console.error('   4. 生产环境权限配置不同')
+  
+  const error = createHttpError(message || '您没有访问此资源的权限，请联系管理员', ApiStatus.forbidden)
+  
+  // 显示错误通知但不自动退出登录
+  ElNotification({
+    title: '访问被拒绝',
+    message: error.message,
+    type: 'error',
+    duration: 5000
+  })
+  
+  throw error
+}
+
+/** 处理CORS错误 */
+function handleCorsError(url: string): never {
+  console.error('🌐 CORS配置建议:')
+  console.error('   后端需要添加以下CORS头:')
+  console.error('   - Access-Control-Allow-Origin: http://192.168.56.1:5173')
+  console.error('   - Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS')
+  console.error('   - Access-Control-Allow-Headers: Content-Type, Authorization')
+  console.error('   - Access-Control-Allow-Credentials: true')
+  
+  const error = createHttpError(
+    '跨域请求被阻止，请检查后端CORS配置或网络连接', 
+    0 // CORS错误通常没有HTTP状态码
+  )
+  
+  ElNotification({
+    title: 'CORS跨域错误',
+    message: '无法访问后端服务，请检查后端CORS配置或联系管理员',
+    type: 'error',
+    duration: 8000
+  })
+  
   throw error
 }
 

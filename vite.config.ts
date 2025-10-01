@@ -12,10 +12,12 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 export default ({ mode }: { mode: string }) => {
   const root = process.cwd()
   const env = loadEnv(mode, root)
-  const { VITE_VERSION, VITE_PORT, VITE_BASE_URL, VITE_API_URL, VITE_API_PROXY_URL } = env
+  const { VITE_VERSION, VITE_PORT, VITE_BASE_URL, VITE_API_URL, VITE_API_PROXY_URL, VITE_DROP_CONSOLE } = env
 
   console.log(`🚀 API_URL = ${VITE_API_URL}`)
+  console.log(`🚀 API_PROXY_URL = ${VITE_API_PROXY_URL}`)
   console.log(`🚀 VERSION = ${VITE_VERSION}`)
+  console.log(`🚀 DROP_CONSOLE = ${VITE_DROP_CONSOLE}`)
 
   return defineConfig({
     define: {
@@ -28,10 +30,46 @@ export default ({ mode }: { mode: string }) => {
         '/api': {
           target: VITE_API_PROXY_URL,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, '')
+          rewrite: (path) => path.replace(/^\/api/, ''),
+          configure: (proxy, options) => {
+            proxy.on('proxyReq', (proxyReq, req, res) => {
+              console.log('🔄 代理请求:', req.method, req.url, '→', (options.target || '') + (req.url || ''))
+            })
+            proxy.on('proxyRes', (proxyRes, req, res) => {
+              console.log('✅ 代理响应:', proxyRes.statusCode, req.url || '')
+            })
+            proxy.on('error', (err, req, res) => {
+              console.error('❌ 代理错误:', err.message, 'URL:', req.url || '')
+            })
+          }
         }
       },
-      host: true
+      host: true,
+      cors: true
+    },
+    // 预览服务器配置（生产环境预览时使用）
+    preview: {
+      port: Number(VITE_PORT),
+      proxy: {
+        '/api': {
+          target: VITE_API_PROXY_URL,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+          configure: (proxy, options) => {
+            proxy.on('proxyReq', (proxyReq, req, res) => {
+              console.log('🔄 预览代理请求:', req.method, req.url, '→', (options.target || '') + (req.url || ''))
+            })
+            proxy.on('proxyRes', (proxyRes, req, res) => {
+              console.log('✅ 预览代理响应:', proxyRes.statusCode, req.url || '')
+            })
+            proxy.on('error', (err, req, res) => {
+              console.error('❌ 预览代理错误:', err.message, 'URL:', req.url || '')
+            })
+          }
+        }
+      },
+      host: true,
+      cors: true
     },
     // 路径别名
     resolve: {
@@ -53,10 +91,10 @@ export default ({ mode }: { mode: string }) => {
       minify: 'terser',
       terserOptions: {
         compress: {
-          // 生产环境去除 console
-          drop_console: true,
-          // 生产环境去除 debugger
-          drop_debugger: true
+          // 根据环境变量决定是否去除 console
+          drop_console: VITE_DROP_CONSOLE === 'true',
+          // 根据环境变量决定是否去除 debugger
+          drop_debugger: VITE_DROP_CONSOLE === 'true'
         }
       },
       dynamicImportVarsOptions: {
