@@ -52,7 +52,7 @@
   import { ACCOUNT_TABLE_DATA } from '@/mock/temp/formData'
   import { ElMessageBox, ElMessage, ElTag, ElImage } from 'element-plus'
   import { useTable } from '@/composables/useTable'
-  import { fetchGetUserList } from '@/api/system-manage'
+  import { fetchGetUserList, fetchDeleteUser } from '@/api/system-manage'
   import UserSearch from './modules/user-search.vue'
   import UserDialog from './modules/user-dialog.vue'
   import UserDetail from './modules/user-detail.vue'
@@ -82,8 +82,7 @@
   // 用户状态配置
   const USER_STATUS_CONFIG = {
     '0': { type: 'success' as const, text: '正常' },
-    '1': { type: 'warning' as const, text: '禁用' },
-    '2': { type: 'danger' as const, text: '封锁' }
+    '1': { type: 'danger' as const, text: '封禁' }
   } as const
 
   /**
@@ -119,8 +118,7 @@
     // 状态映射
     const statusMap = {
       0: '正常',
-      1: '禁用',
-      2: '封锁'
+      1: '封禁'
     }
 
     return {
@@ -422,13 +420,25 @@
    */
   const deleteUser = (row: UserListItem): void => {
     console.log('删除用户:', row)
-    ElMessageBox.confirm(`确定要注销该用户吗？`, '注销用户', {
+    ElMessageBox.confirm(`确定要删除用户「${row.username || row.userName}」吗？`, '删除用户', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'error'
-    }).then(() => {
-      ElMessage.success('注销成功')
     })
+      .then(async () => {
+        try {
+          await fetchDeleteUser(row.id)
+          ElMessage.success('删除成功')
+          // 重新获取数据
+          getData()
+        } catch (error) {
+          console.error('删除失败:', error)
+          ElMessage.error('删除失败')
+        }
+      })
+      .catch(() => {
+        ElMessage.info('已取消删除')
+      })
   }
 
   /**

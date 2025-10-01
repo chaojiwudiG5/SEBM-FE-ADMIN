@@ -45,8 +45,7 @@
           <ElFormItem label="用户状态" prop="userStatus">
             <ElSelect v-model="formData.userStatus" placeholder="请选择状态">
               <ElOption label="正常" :value="0" />
-              <ElOption label="禁用" :value="1" />
-              <ElOption label="封锁" :value="2" />
+              <ElOption label="封禁" :value="1" />
             </ElSelect>
           </ElFormItem>
         </ElCol>

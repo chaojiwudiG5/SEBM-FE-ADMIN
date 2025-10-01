@@ -11,6 +11,14 @@ export function fetchGetUserList(params: Api.SystemManage.UserSearchParams) {
   })
 }
 
+// 删除用户
+export function fetchDeleteUser(id: number) {
+  return request.post({
+    url: '/user/admin/deleteUser',
+    data: { id }
+  })
+}
+
 // 获取角色列表
 export function fetchGetRoleList(params: Api.SystemManage.RoleSearchParams) {
   return request.get<Api.SystemManage.RoleList>({

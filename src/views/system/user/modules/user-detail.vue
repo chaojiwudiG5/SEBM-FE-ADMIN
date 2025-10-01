@@ -206,8 +206,7 @@
   const getStatusText = (status: number) => {
     const statusMap = {
       0: '正常',
-      1: '禁用',
-      2: '封锁'
+      1: '封禁'
     }
     return statusMap[status as keyof typeof statusMap] || '未知'
   }
@@ -215,8 +214,7 @@
   const getStatusType = (status: number) => {
     const typeMap = {
       0: 'success' as const,
-      1: 'warning' as const,
-      2: 'danger' as const
+      1: 'danger' as const
     }
     return typeMap[status as keyof typeof typeMap] || 'info' as const
   }
