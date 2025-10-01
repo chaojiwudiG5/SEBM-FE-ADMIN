@@ -115,13 +115,31 @@ export default ({ mode }: { mode: string }) => {
       }),
       // 自动导入组件 Api
       AutoImport({
-        imports: ['vue', 'vue-router', '@vueuse/core', 'pinia'],
+        imports: [
+          'vue', 
+          'vue-router', 
+          '@vueuse/core', 
+          'pinia',
+          {
+            'vue': [
+              'defineComponent',
+              'h',
+              'Fragment',
+              'Teleport',
+              'Suspense',
+              'KeepAlive',
+              'BaseTransition',
+              'withDirectives',
+              'VNode'
+            ]
+          }
+        ],
         resolvers: [ElementPlusResolver()],
         dts: 'src/types/auto-imports.d.ts',
         // ESLint 配置
         eslintrc: {
           // 首次运行时设置为 true 生成配置文件，之后改为 false
-          enabled: true,
+          enabled: false,
           // ESLint 配置文件路径
           filepath: './.auto-import.json',
           // 允许全局使用自动导入的 API
