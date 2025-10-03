@@ -12,7 +12,6 @@ declare global {
   const KeepAlive: typeof import('vue')['KeepAlive']
   const Suspense: typeof import('vue')['Suspense']
   const Teleport: typeof import('vue')['Teleport']
-  const VNode: typeof import('vue')['VNode']
   const acceptHMRUpdate: typeof import('pinia')['acceptHMRUpdate']
   const asyncComputed: typeof import('@vueuse/core')['asyncComputed']
   const autoResetRef: typeof import('@vueuse/core')['autoResetRef']
