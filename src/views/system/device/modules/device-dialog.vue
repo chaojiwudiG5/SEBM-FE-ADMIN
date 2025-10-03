@@ -23,10 +23,10 @@
         <ElCol :span="12">
           <ElFormItem label="设备状态" prop="status">
             <ElSelect v-model="formData.status" placeholder="请选择状态" style="width: 100%">
-              <ElOption label="停用" value="disabled" />
-              <ElOption label="正常" value="normal" />
-              <ElOption label="维修" value="maintenance" />
-              <ElOption label="报废" value="scrapped" />
+              <ElOption label="可用" :value="0" />
+              <ElOption label="借出" :value="1" />
+              <ElOption label="维修" :value="2" />
+              <ElOption label="预留" :value="3" />
             </ElSelect>
           </ElFormItem>
         </ElCol>
@@ -78,6 +78,7 @@
 <script setup lang="ts">
   import type { FormInstance, FormRules, UploadFile } from 'element-plus'
   import { ElMessage } from 'element-plus'
+  import { fetchAddDevice, fetchUpdateDevice } from '@/api/system-manage'
 
   interface Props {
     visible: boolean
@@ -108,7 +109,7 @@
   const formData = reactive({
     deviceName: '',
     deviceType: '',
-    status: 'normal' as string,
+    status: 0 as Api.SystemManage.DeviceStatus,
     location: '',
     description: '',
     image: ''
@@ -137,7 +138,7 @@
     Object.assign(formData, {
       deviceName: isEdit ? row.deviceName || '' : '',
       deviceType: isEdit ? row.deviceType || '' : '',
-      status: isEdit ? (row.status ?? 'normal') : 'normal',
+      status: isEdit ? (row.status ?? 0) : 0,
       location: isEdit ? row.location || '' : '',
       description: isEdit ? row.description || '' : '',
       image: isEdit ? row.image || '' : ''
@@ -184,12 +185,31 @@
   const handleSubmit = async () => {
     if (!formRef.value) return
 
-    await formRef.value.validate((valid) => {
+    await formRef.value.validate(async (valid) => {
       if (valid) {
-        console.log('提交数据:', formData)
-        ElMessage.success(dialogType.value === 'add' ? '添加成功' : '更新成功')
-        dialogVisible.value = false
-        emit('submit')
+        try {
+          const submitData = { ...formData }
+          
+          if (dialogType.value === 'add') {
+            // 添加设备
+            await fetchAddDevice(submitData)
+            ElMessage.success('添加设备成功')
+          } else {
+            // 更新设备
+            const updateData = {
+              id: props.deviceData?.id,
+              ...submitData
+            }
+            await fetchUpdateDevice(updateData)
+            ElMessage.success('更新设备成功')
+          }
+          
+          dialogVisible.value = false
+          emit('submit')
+        } catch (error) {
+          console.error('设备操作失败:', error)
+          ElMessage.error(dialogType.value === 'add' ? '添加设备失败' : '更新设备失败')
+        }
       }
     })
   }

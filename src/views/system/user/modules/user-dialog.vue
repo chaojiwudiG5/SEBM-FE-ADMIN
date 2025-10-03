@@ -105,7 +105,6 @@
 </template>
 
 <script setup lang="ts">
-  import { ROLE_LIST_DATA } from '@/mock/temp/formData'
   import type { FormInstance, FormRules } from 'element-plus'
   import { ElMessage } from 'element-plus'
 
@@ -123,8 +122,11 @@
   const props = defineProps<Props>()
   const emit = defineEmits<Emits>()
 
-  // 角色列表数据
-  const roleList = ref(ROLE_LIST_DATA)
+  // 角色列表数据 - 应该从API获取
+  const roleList = ref([
+    { id: 1, roleName: '管理员', value: 'ADMIN' },
+    { id: 2, roleName: '普通用户', value: 'USER' }
+  ])
 
   // 对话框显示控制
   const dialogVisible = computed({

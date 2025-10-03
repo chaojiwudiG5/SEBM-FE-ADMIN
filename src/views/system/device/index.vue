@@ -1,6 +1,7 @@
 <!-- 设备管理 -->
 <template>
-  <div class="device-page art-full-height">
+  <div class="dev  import ArtButtonTable from '@/components/core/forms/art-button-table/index.vue'
+  import { ElMessageBox, ElMessage, ElTag, ElImage } from 'element-plus'-page art-full-height">
     <!-- 搜索栏 -->
     <DeviceSearch
       v-model="searchForm"
@@ -44,9 +45,9 @@
 <script setup lang="ts">
   import ArtButtonTable from '@/components/core/forms/art-button-table/index.vue'
   import { DEVICE_TABLE_DATA } from '@/mock/temp/formData'
-  import { ElMessageBox, ElMessage, ElTag, ElImage } from 'element-plus'
+  import { ElMessageBox, ElMessage, ElTag, ElImage, ElButton } from 'element-plus'
   import { useTable } from '@/composables/useTable'
-  import { fetchGetDeviceList } from '@/api/system-manage'
+  import { fetchGetDeviceList, fetchDeleteDevice, fetchUpdateDeviceStatus } from '@/api/system-manage'
   import DeviceSearch from './modules/device-search.vue'
   import DeviceDialog from './modules/device-dialog.vue'
 
@@ -72,18 +73,18 @@
 
   // 设备状态配置
   const DEVICE_STATUS_CONFIG = {
-    disabled: { type: 'info' as const, text: '停用' },
-    normal: { type: 'success' as const, text: '正常' },
-    maintenance: { type: 'warning' as const, text: '维修' },
-    scrapped: { type: 'danger' as const, text: '报废' }
+    0: { type: 'success' as const, text: '可用' },
+    1: { type: 'warning' as const, text: '借出' },
+    2: { type: 'danger' as const, text: '维修' },
+    3: { type: 'info' as const, text: '预留' }
   } as const
 
   /**
    * 获取设备状态配置
    */
-  const getDeviceStatusConfig = (status: string) => {
+  const getDeviceStatusConfig = (status: Api.SystemManage.DeviceStatus) => {
     return (
-      DEVICE_STATUS_CONFIG[status as keyof typeof DEVICE_STATUS_CONFIG] || {
+      DEVICE_STATUS_CONFIG[status] || {
         type: 'info' as const,
         text: '未知'
       }
@@ -107,8 +108,8 @@
     core: {
       apiFn: fetchGetDeviceList,
       apiParams: {
-        current: 1,
-        size: 20,
+        pageNumber: 1,     // 后端要求的页码参数
+        pageSize: 20,      // 后端要求的每页条数参数
         ...searchForm.value
       },
       // 排除 apiParams 中的属性
@@ -124,11 +125,12 @@
             return h('div', { class: 'device', style: 'display: flex; align-items: center' }, [
               h(ElImage, {
                 class: 'device-image',
-                src: row.image,
-                previewSrcList: [row.image],
+                src: row.image || '/src/assets/img/common/device-placeholder.png',
+                previewSrcList: row.image ? [row.image] : [],
                 // 图片预览是否插入至 body 元素上，用于解决表格内部图片预览样式异常
                 previewTeleported: true,
-                style: 'width: 40px; height: 40px; border-radius: 4px; margin-right: 10px;'
+                style: 'width: 40px; height: 40px; border-radius: 4px; margin-right: 10px;',
+                fit: 'cover'
               }),
               h('div', {}, [
                 h(
@@ -164,41 +166,79 @@
         {
           prop: 'operation',
           label: '操作',
-          width: 120,
+          width: 240,
           fixed: 'right', // 固定列
-          formatter: (row) =>
-            h('div', [
+          formatter: (row) => {
+            const buttons = [
               h(ArtButtonTable, {
                 type: 'edit',
                 onClick: () => showDialog('edit', row)
-              }),
-              h(ArtButtonTable, {
-                type: 'delete',
-                onClick: () => deleteDevice(row)
               })
-            ])
+            ]
+            
+            // 根据设备状态显示不同的操作按钮
+            if (row.status === 0) {
+              // 可用状态：可以借出
+              buttons.push(h(ElButton, {
+                type: 'primary',
+                size: 'small',
+                text: true,
+                onClick: () => updateDeviceStatus(row, 1),
+                style: { marginLeft: '8px' }
+              }, { default: () => '借出' }))
+            } else if (row.status === 1) {
+              // 借出状态：可以归还
+              buttons.push(h(ElButton, {
+                type: 'success',
+                size: 'small',
+                text: true,
+                onClick: () => updateDeviceStatus(row, 0),
+                style: { marginLeft: '8px' }
+              }, { default: () => '归还' }))
+            } else if (row.status === 2) {
+              // 维护状态：可以标记为可用
+              buttons.push(h(ElButton, {
+                type: 'warning',
+                size: 'small',
+                text: true,
+                onClick: () => updateDeviceStatus(row, 0),
+                style: { marginLeft: '8px' }
+              }, { default: () => '修复完成' }))
+            } else if (row.status === 3) {
+              // 预约状态：可以取消预约
+              buttons.push(h(ElButton, {
+                type: 'info',
+                size: 'small',
+                text: true,
+                onClick: () => updateDeviceStatus(row, 0),
+                style: { marginLeft: '8px' }
+              }, { default: () => '取消预约' }))
+            }
+            
+            // 所有状态都可以标记为维护
+            if (row.status !== 2) {
+              buttons.push(h(ElButton, {
+                type: 'warning',
+                size: 'small',
+                text: true,
+                onClick: () => updateDeviceStatus(row, 2),
+                style: { marginLeft: '8px' }
+              }, { default: () => '标记维护' }))
+            }
+            
+            // 管理员可以删除设备
+            buttons.push(h(ArtButtonTable, {
+              type: 'delete',
+              onClick: () => deleteDevice(row)
+            }))
+            
+            return h('div', { style: { display: 'flex', alignItems: 'center', gap: '4px' } }, buttons)
+          }
         }
       ]
     },
-    // 数据处理
-    transform: {
-      // 数据转换器 - 替换图片
-      dataTransformer: (records: any) => {
-        // 类型守卫检查
-        if (!Array.isArray(records)) {
-          console.warn('数据转换器: 期望数组类型，实际收到:', typeof records)
-          return []
-        }
-
-        // 使用本地图片替换接口返回的图片
-        return records.map((item: any, index: number) => {
-          return {
-            ...item,
-            image: DEVICE_TABLE_DATA[index % DEVICE_TABLE_DATA.length].image
-          }
-        })
-      }
-    }
+    // 数据处理 - 直接使用API返回的数据
+    transform: {}
   })
 
   /**
@@ -242,9 +282,31 @@
     ).catch(() => false)
 
     if (confirmResult) {
-      // 这里应该调用删除接口
-      ElMessage.success('删除成功')
+      try {
+        await fetchDeleteDevice(row.id)
+        ElMessage.success('删除设备成功')
+        refreshData()
+      } catch (error) {
+        console.error('删除设备失败:', error)
+        ElMessage.error('删除设备失败')
+      }
+    }
+  }
+
+  /**
+   * 更新设备状态
+   */
+  const updateDeviceStatus = async (row: DeviceListItem, newStatus: number) => {
+    try {
+      await fetchUpdateDeviceStatus({
+        id: row.id,
+        status: newStatus
+      })
+      ElMessage.success('状态更新成功')
       refreshData()
+    } catch (error) {
+      console.error('状态更新失败:', error)
+      ElMessage.error('状态更新失败')
     }
   }
 

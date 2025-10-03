@@ -27,34 +27,43 @@ export function fetchGetRoleList(params: Api.SystemManage.RoleSearchParams) {
   })
 }
 
-// 获取设备列表
+// 获取设备列表 - 分页查询
 export function fetchGetDeviceList(params: Api.SystemManage.DeviceSearchParams) {
-  return request.get<Api.SystemManage.DeviceList>({
-    url: '/device/list',
-    params
+  return request.post<Api.SystemManage.DeviceList>({
+    url: '/device/getDeviceList',
+    data: params // 使用POST请求和data参数
   })
 }
 
-// 添加设备
+// 添加设备 - 管理员专有
 export function fetchAddDevice(data: Api.SystemManage.DeviceAddParams) {
   return request.post({
-    url: '/device/add',
+    url: '/device/addDevice',
     data
   })
 }
 
-// 更新设备
+// 更新设备 - 管理员专有
 export function fetchUpdateDevice(data: Api.SystemManage.DeviceUpdateParams) {
-  return request.put({
-    url: '/device/update',
+  return request.post({
+    url: '/device/updateDevice',
     data
   })
 }
 
-// 删除设备
+// 删除设备 - 管理员专有
 export function fetchDeleteDevice(id: number) {
-  return request.del({
-    url: `/device/${id}`
+  return request.post({
+    url: '/device/deleteDevice',
+    data: { id }
+  })
+}
+
+// 更新设备状态 - 通用操作（借还设备等）
+export function fetchUpdateDeviceStatus(data: { id: number; status: number }) {
+  return request.post({
+    url: '/device/updateDeviceStatus',
+    data
   })
 }
 

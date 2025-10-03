@@ -134,7 +134,7 @@ declare namespace Api {
     >
 
     /** 设备状态类型 */
-    type DeviceStatus = 'disabled' | 'normal' | 'maintenance' | 'scrapped' // disabled:停用 normal:正常 maintenance:维修 scrapped:报废
+    type DeviceStatus = 0 | 1 | 2 | 3 // 0=可用，1=借出，2=维修，3=预留
 
     /** 设备列表 */
     type DeviceList = Api.Common.PaginatedResponse<DeviceListItem>
@@ -147,16 +147,20 @@ declare namespace Api {
       status: DeviceStatus
       location: string
       description: string
-      image: string
-      createTime: string
-      updateTime: string
+      image?: string
+      createTime?: string
+      updateTime?: string
     }
 
     /** 设备搜索参数 */
-    type DeviceSearchParams = Partial<
-      Pick<DeviceListItem, 'deviceName' | 'deviceType' | 'status' | 'location'> &
-        Api.Common.CommonSearchParams
-    >
+    type DeviceSearchParams = {
+      pageNumber: number    // 页码，必填，最小值为1
+      pageSize: number      // 每页条数，必填，最小值为1
+      deviceName?: string   // 设备名称，可选，最大50字符
+      deviceType?: string   // 设备类型，可选，最大20字符
+      status?: DeviceStatus // 设备状态，可选，范围0-3
+      location?: string     // 存放位置，可选，最大100字符
+    }
 
     /** 设备添加参数 */
     type DeviceAddParams = Omit<DeviceListItem, 'id' | 'createTime' | 'updateTime'>

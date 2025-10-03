@@ -27,10 +27,10 @@
             clearable
             style="width: 120px"
           >
-            <ElOption label="停用" value="disabled" />
-            <ElOption label="正常" value="normal" />
-            <ElOption label="维修" value="maintenance" />
-            <ElOption label="报废" value="scrapped" />
+            <ElOption label="可用" :value="0" />
+            <ElOption label="借出" :value="1" />
+            <ElOption label="维修" :value="2" />
+            <ElOption label="预留" :value="3" />
           </ElSelect>
         </ElFormItem>
 
@@ -79,7 +79,7 @@
   const formData = reactive({
     deviceName: '',
     deviceType: '',
-    status: undefined as string | undefined,
+    status: undefined as Api.SystemManage.DeviceStatus | undefined,
     location: ''
   })
 
