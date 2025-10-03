@@ -128,10 +128,36 @@ declare namespace Api {
     }
 
     /** 用户搜索参数 */
-    type UserSearchParams = Partial<
-      Pick<UserListItem, 'id' | 'username' | 'gender' | 'phone' | 'email' | 'userStatus'> &
-        Api.Common.CommonSearchParams
-    >
+    type UserSearchParams = {
+      // 分页参数（必填）
+      pageNumber: number    // 页码，必填，最小值为1
+      pageSize: number      // 每页条数，必填，最小值为1
+      // 搜索条件（可选）
+      id?: number
+      username?: string
+      email?: string
+      phone?: string
+      gender?: number       // 0=未知，1=男，2=女
+      userStatus?: number   // 0=正常，1=禁用
+    }
+
+    /** 用户添加参数 */
+    type UserAddParams = {
+      username: string
+      password?: string
+      email: string
+      phone: string
+      gender: number
+      userRole: number
+      userStatus: number
+      age?: number
+      level?: number
+      maxBorrowedDeviceCount?: number
+      maxOverdueTimes?: number
+    }
+
+    /** 用户更新参数 */
+    type UserUpdateParams = Partial<UserAddParams> & { id: number }
 
     /** 设备状态类型 */
     type DeviceStatus = 0 | 1 | 2 | 3 // 0=可用，1=借出，2=维修，3=预留

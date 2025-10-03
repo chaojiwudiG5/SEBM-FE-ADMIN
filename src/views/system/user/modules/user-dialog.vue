@@ -105,6 +105,7 @@
 </template>
 
 <script setup lang="ts">
+  import { fetchAddUser, fetchUpdateUser } from '@/api/system-manage'
   import type { FormInstance, FormRules } from 'element-plus'
   import { ElMessage } from 'element-plus'
 
@@ -215,11 +216,31 @@
   const handleSubmit = async () => {
     if (!formRef.value) return
 
-    await formRef.value.validate((valid) => {
+    await formRef.value.validate(async (valid) => {
       if (valid) {
-        ElMessage.success(dialogType.value === 'add' ? '添加成功' : '更新成功')
-        dialogVisible.value = false
-        emit('submit')
+        try {
+          const submitData = { ...formData }
+          
+          if (dialogType.value === 'add') {
+            // 添加用户
+            await fetchAddUser(submitData)
+            ElMessage.success('添加用户成功')
+          } else {
+            // 更新用户
+            const updateData = {
+              id: props.userData?.id,
+              ...submitData
+            }
+            await fetchUpdateUser(updateData)
+            ElMessage.success('更新用户成功')
+          }
+          
+          dialogVisible.value = false
+          emit('submit')
+        } catch (error) {
+          console.error('用户操作失败:', error)
+          ElMessage.error(dialogType.value === 'add' ? '添加用户失败' : '更新用户失败')
+        }
       }
     })
   }

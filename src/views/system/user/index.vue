@@ -51,7 +51,7 @@
   import ArtButtonTable from '@/components/core/forms/art-button-table/index.vue'
   import { ElMessageBox, ElMessage, ElTag, ElImage } from 'element-plus'
   import { useTable } from '@/composables/useTable'
-  import { fetchGetUserList, fetchDeleteUser } from '@/api/system-manage'
+  import { fetchGetUserList, fetchDeleteUser, fetchAddUser, fetchUpdateUser } from '@/api/system-manage'
   import UserSearch from './modules/user-search.vue'
   import UserDialog from './modules/user-dialog.vue'
   import UserDetail from './modules/user-detail.vue'
@@ -150,7 +150,7 @@
     const transformedParams = {
       ...params,
       pageNumber: params.current || 1,      // current -> pageNumber
-      pageSize: params.size || 20,          // size -> pageSize
+      pageSize: params.size || 999999,      // 取消条数限制，设置大数值获取所有数据
     }
     
     // 删除前端字段名，避免重复
@@ -202,7 +202,7 @@
       apiFn: wrappedFetchGetUserList,
       apiParams: {
         current: 1,
-        size: 20,
+        size: 999999,  // 取消条数限制
         ...searchForm.value
       },
       // 排除 apiParams 中的属性
@@ -442,6 +442,8 @@
     try {
       dialogVisible.value = false
       currentUserData.value = {}
+      // 重新获取数据
+      getData()
     } catch (error) {
       console.error('提交失败:', error)
     }

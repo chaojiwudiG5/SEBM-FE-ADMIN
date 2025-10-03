@@ -45,11 +45,11 @@
 
         <ElFormItem>
           <ElButton type="primary" @click="handleSearch" v-ripple>
-            <Icon name="search" />
+            <ElIcon><Search /></ElIcon>
             查询
           </ElButton>
           <ElButton @click="handleReset" v-ripple>
-            <Icon name="refresh" />
+            <ElIcon><Refresh /></ElIcon>
             重置
           </ElButton>
         </ElFormItem>
@@ -59,6 +59,8 @@
 </template>
 
 <script setup lang="ts">
+  import { Search, Refresh } from '@element-plus/icons-vue'
+  
   interface Props {
     modelValue: Record<string, any>
   }
