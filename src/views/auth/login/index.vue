@@ -182,11 +182,24 @@
       userStore.setUserInfo(response)
       userStore.setLoginStatus(true)
       console.log('👤 用户信息已设置:', userStore.getUserInfo)
+      console.log('🔐 用户登录状态:', userStore.isLogin)
 
       // 登录成功处理
       showLoginSuccessNotice()
       console.log('🚀 准备跳转到 /dashboard/console')
-      router.push('/dashboard/console')
+      
+      // 使用 nextTick 确保状态更新后再跳转
+      await nextTick()
+      
+      // 尝试跳转
+      try {
+        await router.push('/dashboard/console')
+        console.log('✅ 路由跳转成功')
+      } catch (routerError) {
+        console.error('❌ 路由跳转失败:', routerError)
+        // 如果跳转失败，尝试替换到根路径让路由守卫处理
+        await router.replace('/')
+      }
     } catch (error) {
       // 处理 HttpError
       if (error instanceof HttpError) {
