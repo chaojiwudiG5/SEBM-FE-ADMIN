@@ -151,8 +151,24 @@ declare namespace Api {
       maxOverdueTimes?: number
     }
 
-    /** 用户更新参数 */
-    type UserUpdateParams = Partial<UserAddParams> & { id: number }
+    /** 用户更新参数 - 管理员可修改的所有字段 */
+    type UserUpdateParams = {
+      id: number                          // 必填：用户ID
+      username?: string                   // 用户昵称
+      email?: string                      // 邮箱地址
+      phone?: string                      // 电话号码
+      gender?: number                     // 性别：0=未知，1=男，2=女
+      avatarUrl?: string                  // 头像URL
+      age?: number                        // 年龄
+      userRole?: number                   // 角色：0=普通用户，1=管理员，2=技工
+      userStatus?: number                 // 状态：0=正常
+      isActive?: boolean                  // 激活状态
+      level?: number                      // 用户等级
+      overdueTimes?: number               // 逾期次数
+      borrowedDeviceCount?: number        // 已借设备数量
+      maxBorrowedDeviceCount?: number     // 最大可借设备数量
+      maxOverdueTimes?: number            // 最大允许逾期次数
+    }
 
     /** 设备状态类型 */
     type DeviceStatus = 0 | 1 | 2 | 3 // 0=可用，1=借出，2=维修，3=预留
