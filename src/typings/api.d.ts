@@ -2,22 +2,9 @@
  * namespace: Api
  *
  * 所有接口相关类型定义
- * 在.vue文件使用会报错，需要在 eslint.config.mjs 中配置 globals: { Api: 'readonly'    /** 用户搜索参数 */
-    type UserSearchParams = Partial<{
-      // 后端分页参数
-      pageNumber: number    // 页码
-      pageSize: number      // 每页条数
-      // 前端分页参数（会被转换）
-      current: number
-      size: number
-      // 搜索条件
-      id: number
-      userName: string
-      userGender: string
-      userPhone: string
-      userEmail: string
-      status: string
-    }>
+ * 在.vue文件中可以直接使用 Api.xxx.xxx 访问类型
+ * 如果 TypeScript 报错"找不到命名空间 Api"，请在 eslint.config.mjs 中配置 globals: { Api: 'readonly' }
+ */
 
 declare namespace Api {
   /** 通用类型 */
@@ -51,8 +38,16 @@ declare namespace Api {
   namespace Auth {
     /** 登录参数 */
     interface LoginParams {
-      username: string // 符合后端LoginDto要求
+      username: string
       password: string
+    }
+
+    /** 注册参数 */
+    interface RegisterParams {
+      username: string      // 用户昵称
+      password: string      // 登录密码（最少6位）
+      checkPassword: string // 确认密码（必须与password一致）
+      phone: string         // 手机号码（唯一标识）
     }
 
     /** 登录响应 */

@@ -20,6 +20,25 @@ export function fetchLogin(data: Api.Auth.LoginParams) {
 }
 
 /**
+ * 用户注册
+ * @param data 注册参数
+ * @returns 新用户ID
+ */
+export function fetchRegister(data: Api.Auth.RegisterParams) {
+  console.log('📝 [Register API] 发送注册请求:', {
+    url: '/user/register',
+    data: { ...data, password: '***', checkPassword: '***' },
+    timestamp: new Date().toISOString()
+  })
+  
+  return request.post<number>({
+    url: '/user/register',
+    data,
+    showErrorMessage: true
+  })
+}
+
+/**
  * 获取用户信息
  * @returns 用户信息
  */

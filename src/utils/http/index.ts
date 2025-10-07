@@ -112,7 +112,8 @@ axiosInstance.interceptors.response.use(
     
     console.log('📊 [HTTP拦截器] 提取的状态:', { code, msg, expectSuccess: ApiStatus.success })
     
-    if (code === ApiStatus.success) return response
+    // ✅ 兼容后端成功码: 0 或 200
+    if (code === ApiStatus.success || code === 0) return response
     if (code === ApiStatus.unauthorized) handleUnauthorizedError(msg)
     throw createHttpError(msg || $t('httpMsg.requestFailed'), code)
   },
