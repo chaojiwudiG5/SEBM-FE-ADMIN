@@ -127,13 +127,8 @@
     },
     "title": "Welcome back",
     "subTitle": "Please enter your account and password to login",
-    "roles": {
-      "admin": "Admin",
-      "user": "User",
-      "technician": "Technician"
-    },
     "placeholder": [
-      "Please enter your account",
+      "Please enter your username",
       "Please enter your password",
       "Please slide to verify"
     ],

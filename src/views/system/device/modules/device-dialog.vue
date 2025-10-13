@@ -9,12 +9,22 @@
       <ElRow :gutter="20">
         <ElCol :span="12">
           <ElFormItem label="设备名称" prop="deviceName">
-            <ElInput v-model="formData.deviceName" placeholder="请输入设备名称" />
+            <ElInput 
+              v-model="formData.deviceName" 
+              placeholder="请输入设备名称"
+              maxlength="50"
+              show-word-limit
+            />
           </ElFormItem>
         </ElCol>
         <ElCol :span="12">
           <ElFormItem label="设备类型" prop="deviceType">
-            <ElInput v-model="formData.deviceType" placeholder="请输入设备类型" />
+            <ElInput 
+              v-model="formData.deviceType" 
+              placeholder="请输入设备类型"
+              maxlength="20"
+              show-word-limit
+            />
           </ElFormItem>
         </ElCol>
       </ElRow>
@@ -23,16 +33,21 @@
         <ElCol :span="12">
           <ElFormItem label="设备状态" prop="status">
             <ElSelect v-model="formData.status" placeholder="请选择状态" style="width: 100%">
-              <ElOption label="停用" value="disabled" />
-              <ElOption label="正常" value="normal" />
-              <ElOption label="维修" value="maintenance" />
-              <ElOption label="报废" value="scrapped" />
+              <ElOption label="可用" :value="0" />
+              <ElOption label="借出" :value="1" />
+              <ElOption label="维修" :value="2" />
+              <ElOption label="预留" :value="3" />
             </ElSelect>
           </ElFormItem>
         </ElCol>
         <ElCol :span="12">
           <ElFormItem label="设备位置" prop="location">
-            <ElInput v-model="formData.location" placeholder="请输入设备位置" />
+            <ElInput 
+              v-model="formData.location" 
+              placeholder="请输入设备位置"
+              maxlength="100"
+              show-word-limit
+            />
           </ElFormItem>
         </ElCol>
       </ElRow>
@@ -61,7 +76,9 @@
           v-model="formData.description"
           type="textarea"
           :rows="4"
-          placeholder="请输入设备描述信息"
+          placeholder="请输入设备描述信息（可选）"
+          maxlength="200"
+          show-word-limit
         />
       </ElFormItem>
     </ElForm>
@@ -69,7 +86,9 @@
     <template #footer>
       <div class="dialog-footer">
         <ElButton @click="dialogVisible = false">取消</ElButton>
-        <ElButton type="primary" @click="handleSubmit">提交</ElButton>
+        <ElButton type="primary" @click="handleSubmit" :loading="submitLoading">
+          {{ dialogType === 'add' ? '添加' : '更新' }}
+        </ElButton>
       </div>
     </template>
   </ElDialog>
@@ -78,6 +97,7 @@
 <script setup lang="ts">
   import type { FormInstance, FormRules, UploadFile } from 'element-plus'
   import { ElMessage } from 'element-plus'
+  import { fetchAddDevice, fetchUpdateDevice } from '@/api/system-manage'
 
   interface Props {
     visible: boolean
@@ -104,11 +124,14 @@
   // 表单实例
   const formRef = ref<FormInstance>()
 
+  // 提交状态
+  const submitLoading = ref(false)
+
   // 表单数据
   const formData = reactive({
     deviceName: '',
     deviceType: '',
-    status: 'normal' as string,
+    status: 0 as Api.SystemManage.DeviceStatus,
     location: '',
     description: '',
     image: ''
@@ -120,13 +143,17 @@
       { required: true, message: '请输入设备名称', trigger: 'blur' },
       { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
     ],
-    deviceType: [{ required: true, message: '请选择设备类型', trigger: 'blur' }],
+    deviceType: [
+      { required: true, message: '请输入设备类型', trigger: 'blur' },
+      { max: 20, message: '长度不能超过 20 个字符', trigger: 'blur' }
+    ],
     status: [{ required: true, message: '请选择设备状态', trigger: 'blur' }],
     location: [
       { required: true, message: '请输入设备位置', trigger: 'blur' },
       { min: 2, max: 100, message: '长度在 2 到 100 个字符', trigger: 'blur' }
     ],
-    description: [{ max: 500, message: '描述不能超过 500 个字符', trigger: 'blur' }]
+    description: [{ max: 200, message: '描述不能超过 200 个字符', trigger: 'blur' }],
+    image: [{ max: 200, message: '图片URL不能超过 200 个字符', trigger: 'blur' }]
   }
 
   // 初始化表单数据
@@ -137,7 +164,7 @@
     Object.assign(formData, {
       deviceName: isEdit ? row.deviceName || '' : '',
       deviceType: isEdit ? row.deviceType || '' : '',
-      status: isEdit ? (row.status ?? 'normal') : 'normal',
+      status: isEdit ? (row.status ?? 0) : 0,
       location: isEdit ? row.location || '' : '',
       description: isEdit ? row.description || '' : '',
       image: isEdit ? row.image || '' : ''
@@ -184,12 +211,36 @@
   const handleSubmit = async () => {
     if (!formRef.value) return
 
-    await formRef.value.validate((valid) => {
+    await formRef.value.validate(async (valid) => {
       if (valid) {
-        console.log('提交数据:', formData)
-        ElMessage.success(dialogType.value === 'add' ? '添加成功' : '更新成功')
-        dialogVisible.value = false
-        emit('submit')
+        submitLoading.value = true
+        try {
+          const submitData = { ...formData }
+          
+          if (dialogType.value === 'add') {
+            // 添加设备
+            console.log('🚀 添加设备数据:', submitData)
+            await fetchAddDevice(submitData)
+            ElMessage.success('添加设备成功')
+          } else {
+            // 更新设备
+            const updateData = {
+              id: props.deviceData?.id,
+              ...submitData
+            }
+            console.log('🚀 更新设备数据:', updateData)
+            await fetchUpdateDevice(updateData)
+            ElMessage.success('更新设备成功')
+          }
+          
+          dialogVisible.value = false
+          emit('submit')
+        } catch (error) {
+          console.error('设备操作失败:', error)
+          ElMessage.error(dialogType.value === 'add' ? '添加设备失败' : '更新设备失败')
+        } finally {
+          submitLoading.value = false
+        }
       }
     })
   }

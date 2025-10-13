@@ -3,143 +3,145 @@ import { AppRouteRecord } from '@/types/router'
 import { asyncRoutes } from '@/router/routes/asyncRoutes'
 import { menuDataToRouter } from '@/router/utils/menuToRouter'
 
-// 获取用户列表
+// 获取用户列表 - 管理员专有，使用POST方法
 export function fetchGetUserList(params: Api.SystemManage.UserSearchParams) {
-  return request.get<Api.SystemManage.UserList>({
-    url: '/api/user/list',
-    params
+  console.log('🚀 调用用户列表API，参数:', params)
+  return request.post<Api.SystemManage.UserList>({
+    url: '/user/admin/getUserList',
+    data: params  // POST请求使用data而不是params
+  })
+}
+
+// 添加用户 - 管理员专有
+export function fetchAddUser(data: Api.SystemManage.UserAddParams) {
+  console.log('🚀 调用添加用户API，数据:', data)
+  return request.post<number>({
+    url: '/user/admin/addUser',
+    data
+  })
+}
+
+// 更新用户 - 管理员专有
+export function fetchUpdateUser(data: Api.SystemManage.UserUpdateParams) {
+  console.log('🚀 调用更新用户API，数据:', data)
+  return request.post<Api.SystemManage.UserListItem>({
+    url: '/user/admin/updateUser',
+    data
+  })
+}
+
+// 删除用户 - 管理员专有，物理删除
+export function fetchDeleteUser(id: number) {
+  console.log('🗑️ 调用删除用户API，ID:', id)
+  return request.post<boolean>({
+    url: '/user/admin/deleteUser',
+    data: { id }
   })
 }
 
 // 获取角色列表
 export function fetchGetRoleList(params: Api.SystemManage.RoleSearchParams) {
   return request.get<Api.SystemManage.RoleList>({
-    url: '/api/role/list',
+    url: '/role/list',
     params
   })
 }
 
-// 获取设备列表
+// 获取设备列表 - 公开接口，分页查询
 export function fetchGetDeviceList(params: Api.SystemManage.DeviceSearchParams) {
-  return request.get<Api.SystemManage.DeviceList>({
-    url: '/api/device/list',
-    params
+  console.log('🚀 调用设备列表API，参数:', params)
+  return request.post<Api.SystemManage.DeviceList>({
+    url: '/device/getDeviceList',
+    data: params // 使用POST请求和data参数
   })
 }
 
-// 添加设备
+// 获取单个设备详情 - 公开接口
+export function fetchGetDevice(id: number) {
+  console.log('🚀 调用设备详情API，ID:', id)
+  return request.get<Api.SystemManage.DeviceListItem>({
+    url: `/device/getDevice/${id}`
+  })
+}
+
+// 添加设备 - 管理员专有
 export function fetchAddDevice(data: Api.SystemManage.DeviceAddParams) {
-  return request.post({
-    url: '/api/device/add',
+  console.log('🚀 调用添加设备API，数据:', data)
+  return request.post<number>({
+    url: '/device/addDevice',
     data
   })
 }
 
 // 获取模版列表
 export function fetchGetTemplateList(params: Api.SystemManage.TemplateSearchParams) {
-  // 使用mock数据
-  return new Promise<Api.SystemManage.TemplateList>((resolve) => {
-    setTimeout(() => {
-      const mockData: Api.SystemManage.TemplateList = {
-        records: [
-          {
-            id: 1,
-            templateTitle: '设备故障通知',
-            templateType: 'email',
-            notificationNode: 1,
-            notificationMethod: 1,
-            notificationRole: 1,
-            relateTimeOffset: 0,
-            templateDesc: '设备发生故障时的邮件通知模板',
-            content: '尊敬的用户，您的设备 {deviceName} 发生故障，请及时处理。',
-            createTime: '2024-01-15 10:30:00',
-            updateTime: '2024-01-15 10:30:00'
-          },
-          {
-            id: 2,
-            templateTitle: '维护提醒',
-            templateType: 'sms',
-            notificationNode: 2,
-            notificationMethod: 2,
-            notificationRole: 2,
-            relateTimeOffset: 24,
-            templateDesc: '设备维护提醒短信模板',
-            content: '您的设备 {deviceName} 将于 {time} 进行维护，请提前做好准备。',
-            createTime: '2024-01-14 14:20:00',
-            updateTime: '2024-01-14 14:20:00'
-          }
-        ],
-        total: 2,
-        current: params.current || 1,
-        size: params.size || 10
-      }
-      resolve(mockData)
-    }, 300)
+  console.log('🚀 调用模版列表API，参数:', params)
+  return request.post<Api.SystemManage.TemplateList>({
+    url: '/template/list',
+    data: params
   })
 }
 
 // 添加模版
 export function fetchAddTemplate(data: Api.SystemManage.TemplateAddParams) {
-  // 使用mock数据
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        code: 200,
-        msg: '创建模版成功',
-        data: {
-          id: Date.now(),
-          ...data,
-          createTime: new Date().toISOString().slice(0, 19).replace('T', ' '),
-          updateTime: new Date().toISOString().slice(0, 19).replace('T', ' ')
-        }
-      })
-    }, 500)
+  console.log('🚀 调用添加模版API，数据:', data)
+  return request.post<number>({
+    url: '/template/create',
+    data
   })
 }
 
 // 更新模版
 export function fetchUpdateTemplate(data: Api.SystemManage.TemplateUpdateParams) {
-  // 使用mock数据
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        code: 200,
-        msg: '更新模版成功',
-        data: {
-          ...data,
-          updateTime: new Date().toISOString().slice(0, 19).replace('T', ' ')
-        }
-      })
-    }, 500)
+  console.log('🚀 调用更新模版API，数据:', data)
+  return request.post<Api.SystemManage.TemplateListItem>({
+    url: '/template/updateTemplate',
+    data
   })
 }
 
-// 删除模版
-export function fetchDeleteTemplate(ids: number[]) {
-  // 使用mock数据
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        code: 200,
-        msg: `成功删除 ${ids.length} 个模版`,
-        data: { ids }
-      })
-    }, 500)
+// 禁用模版
+export function fetchDisableTemplate(templateId: number) {
+  console.log('🚫 调用禁用模版API，ID:', templateId)
+  return request.post<boolean>({
+    url: `/template/disable/${templateId}`,
+    data: {}
+  })
+}
+
+// 启用模版
+export function fetchEnableTemplate(templateId: number) {
+  console.log('✅ 调用启用模版API，ID:', templateId)
+  return request.post<boolean>({
+    url: `/template/enable/${templateId}`,
+    data: {}
   })
 }
 
 // 更新设备
 export function fetchUpdateDevice(data: Api.SystemManage.DeviceUpdateParams) {
-  return request.put({
-    url: '/api/device/update',
+  console.log('🚀 调用更新设备API，数据:', data)
+  return request.post<Api.SystemManage.DeviceListItem>({
+    url: '/device/updateDevice',
     data
   })
 }
 
-// 删除设备
+// 删除设备 - 管理员专有
 export function fetchDeleteDevice(id: number) {
-  return request.del({
-    url: `/api/device/${id}`
+  console.log('🗑️ 调用删除设备API，ID:', id)
+  return request.post<boolean>({
+    url: '/device/deleteDevice',
+    data: { id }
+  })
+}
+
+// 更新设备状态 - 公开接口（借还设备等）
+export function fetchUpdateDeviceStatus(data: { deviceId: number; status: number }) {
+  console.log('🚀 调用更新设备状态API，数据:', data)
+  return request.post<boolean>({
+    url: '/device/updateDeviceStatus',
+    data
   })
 }
 

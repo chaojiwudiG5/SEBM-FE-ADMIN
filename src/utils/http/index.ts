@@ -48,16 +48,36 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   (request: InternalAxiosRequestConfig) => {
     const { accessToken } = useUserStore()
-    if (accessToken) request.headers.set('Authorization', accessToken)
+    
+    // 登录接口不需要Authorization头
+    const isLoginRequest = request.url?.includes('/auth/login') || request.url?.includes('/user/login')
+    
+    console.log('🚀 [HTTP拦截器] 请求详情:', {
+      url: request.url,
+      method: request.method,
+      isLoginRequest,
+      hasToken: !!accessToken,
+      headers: request.headers,
+      data: request.data
+    })
+    
+    if (accessToken && !isLoginRequest) {
+      request.headers.set('Authorization', `Bearer ${accessToken}`)
+      console.log('✅ [HTTP拦截器] 添加Authorization头')
+    } else if (isLoginRequest) {
+      console.log('⏭️ [HTTP拦截器] 登录请求，跳过Authorization头')
+    }
 
     if (request.data && !(request.data instanceof FormData) && !request.headers['Content-Type']) {
       request.headers.set('Content-Type', 'application/json')
       request.data = JSON.stringify(request.data)
     }
 
+    console.log('📤 [HTTP拦截器] 最终请求头:', request.headers)
     return request
   },
   (error) => {
+    console.error('❌ [HTTP拦截器] 请求配置错误:', error)
     showError(createHttpError($t('httpMsg.requestConfigError'), ApiStatus.error))
     return Promise.reject(error)
   }
@@ -66,12 +86,46 @@ axiosInstance.interceptors.request.use(
 /** 响应拦截器 */
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse<Http.BaseResponse>) => {
-    const { code, msg } = response.data
-    if (code === ApiStatus.success) return response
+    console.log('📥 [HTTP拦截器] 收到响应:', {
+      status: response.status,
+      statusText: response.statusText,
+      url: response.config.url,
+      data: response.data
+    })
+    
+    // 详细分析响应数据结构
+    const responseData = response.data
+    console.log('🔍 [HTTP拦截器] 响应数据分析:', {
+      dataType: typeof responseData,
+      hasCode: 'code' in responseData,
+      code: responseData.code,
+      hasMsg: 'msg' in responseData,
+      msg: responseData.msg,
+      hasMessage: 'message' in responseData,
+      message: responseData.message,
+      keys: Object.keys(responseData)
+    })
+    
+    // 兼容不同的响应格式
+    const code = responseData.code ?? (responseData as any).status ?? response.status
+    const msg = responseData.msg ?? (responseData as any).message ?? 'Success'
+    
+    console.log('📊 [HTTP拦截器] 提取的状态:', { code, msg, expectSuccess: ApiStatus.success })
+    
+    // ✅ 兼容后端成功码: 0 或 200
+    if (code === ApiStatus.success || code === 0) return response
     if (code === ApiStatus.unauthorized) handleUnauthorizedError(msg)
     throw createHttpError(msg || $t('httpMsg.requestFailed'), code)
   },
   (error) => {
+    console.error('❌ [HTTP拦截器] 响应错误:', {
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      url: error.config?.url,
+      data: error.response?.data,
+      message: error.message
+    })
+    
     if (error.response?.status === ApiStatus.unauthorized) handleUnauthorizedError()
     return Promise.reject(handleError(error))
   }

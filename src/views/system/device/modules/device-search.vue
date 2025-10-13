@@ -27,10 +27,10 @@
             clearable
             style="width: 120px"
           >
-            <ElOption label="停用" value="disabled" />
-            <ElOption label="正常" value="normal" />
-            <ElOption label="维修" value="maintenance" />
-            <ElOption label="报废" value="scrapped" />
+            <ElOption label="可用" :value="0" />
+            <ElOption label="借出" :value="1" />
+            <ElOption label="维修" :value="2" />
+            <ElOption label="预留" :value="3" />
           </ElSelect>
         </ElFormItem>
 
@@ -45,11 +45,11 @@
 
         <ElFormItem>
           <ElButton type="primary" @click="handleSearch" v-ripple>
-            <Icon name="search" />
+            <ElIcon><Search /></ElIcon>
             查询
           </ElButton>
           <ElButton @click="handleReset" v-ripple>
-            <Icon name="refresh" />
+            <ElIcon><Refresh /></ElIcon>
             重置
           </ElButton>
         </ElFormItem>
@@ -59,6 +59,8 @@
 </template>
 
 <script setup lang="ts">
+  import { Search, Refresh } from '@element-plus/icons-vue'
+  
   interface Props {
     modelValue: Record<string, any>
   }
@@ -79,7 +81,7 @@
   const formData = reactive({
     deviceName: '',
     deviceType: '',
-    status: undefined as string | undefined,
+    status: undefined as Api.SystemManage.DeviceStatus | undefined,
     location: ''
   })
 
@@ -108,12 +110,9 @@
     const searchParams = { ...formData }
     // 过滤空值
     Object.keys(searchParams).forEach((key) => {
-      if (
-        searchParams[key] === '' ||
-        searchParams[key] === null ||
-        searchParams[key] === undefined
-      ) {
-        delete searchParams[key]
+      const value = searchParams[key as keyof typeof searchParams]
+      if (value === '' || value === null || value === undefined) {
+        delete (searchParams as any)[key]
       }
     })
     emit('search', searchParams)

@@ -47,18 +47,6 @@
             @keyup.enter="handleSubmit"
             style="margin-top: 25px"
           >
-            <ElFormItem prop="account">
-              <ElSelect v-model="formData.account" @change="setupAccount" class="account-select">
-                <ElOption
-                  v-for="account in accounts"
-                  :key="account.key"
-                  :label="account.label"
-                  :value="account.key"
-                >
-                  <span>{{ account.label }}</span>
-                </ElOption>
-              </ElSelect>
-            </ElFormItem>
             <ElFormItem prop="username">
               <ElInput :placeholder="$t('login.placeholder[0]')" v-model.trim="formData.username" />
             </ElFormItem>
@@ -72,23 +60,6 @@
                 show-password
               />
             </ElFormItem>
-            <div class="drag-verify">
-              <div class="drag-verify-content" :class="{ error: !isPassing && isClickPass }">
-                <ArtDragVerify
-                  ref="dragVerify"
-                  v-model:value="isPassing"
-                  :text="$t('login.sliderText')"
-                  textColor="var(--art-gray-800)"
-                  :successText="$t('login.sliderSuccessText')"
-                  :progressBarBg="getCssVar('--el-color-primary')"
-                  background="var(--art-gray-200)"
-                  handlerBg="var(--art-main-bg-color)"
-                />
-              </div>
-              <p class="error-text" :class="{ 'show-error-text': !isPassing && isClickPass }">{{
-                $t('login.placeholder[2]')
-              }}</p>
-            </div>
 
             <div class="forget-password">
               <ElCheckbox v-model="formData.rememberPassword">{{
@@ -127,13 +98,12 @@
   import { RoutesAlias } from '@/router/routesAlias'
   import { ElNotification, ElMessage } from 'element-plus'
   import { useUserStore } from '@/store/modules/user'
-  import { getCssVar } from '@/utils/ui'
   import { languageOptions } from '@/locales'
   import { LanguageEnum } from '@/enums/appEnum'
   import { useI18n } from 'vue-i18n'
   import { HttpError } from '@/utils/http/error'
   import { themeAnimation } from '@/utils/theme/animation'
-  import { fetchLogin, fetchGetUserInfo } from '@/api/auth'
+  import { fetchLogin} from '@/api/auth'
   import { useHeaderBar } from '@/composables/useHeaderBar'
 
   defineOptions({ name: 'Login' })
@@ -142,56 +112,17 @@
   import { useSettingStore } from '@/store/modules/setting'
   import type { FormInstance, FormRules } from 'element-plus'
 
-  type AccountKey = 'technician' | 'admin' | 'user'
-
-  export interface Account {
-    key: AccountKey
-    label: string
-    userName: string
-    password: string
-    roles: string[]
-  }
-
-  const accounts = computed<Account[]>(() => [
-    {
-      key: 'admin',
-      label: t('login.roles.admin'),
-      userName: 'Admin',
-      password: '123456',
-      roles: ['R_ADMIN']
-    },
-    {
-      key: 'user',
-      label: t('login.roles.user'),
-      userName: 'User',
-      password: '123456',
-      roles: ['R_USER']
-    },
-    {
-      key: 'technician',
-      label: t('login.roles.technician'),
-      userName: 'Technician',
-      password: '123456',
-      roles: ['R_TECHNICIAN']
-    }
-  ])
-
   const settingStore = useSettingStore()
   const { isDark } = storeToRefs(settingStore)
   const { shouldShowThemeToggle, shouldShowLanguage } = useHeaderBar()
 
-  const dragVerify = ref()
-
   const userStore = useUserStore()
   const router = useRouter()
-  const isPassing = ref(false)
-  const isClickPass = ref(false)
 
   const systemName = AppConfig.systemInfo.name
   const formRef = ref<FormInstance>()
 
   const formData = reactive({
-    account: '',
     username: '',
     password: '',
     rememberPassword: true
@@ -205,17 +136,10 @@
   const loading = ref(false)
 
   onMounted(() => {
-    // 不设置默认账号，让用户主动选择
-    formData.account = ''
+    // 清空表单数据
+    formData.username = ''
+    formData.password = ''
   })
-
-  // 设置账号
-  const setupAccount = (key: AccountKey) => {
-    const selectedAccount = accounts.value.find((account: Account) => account.key === key)
-    formData.account = key
-    formData.username = selectedAccount?.userName ?? ''
-    formData.password = selectedAccount?.password ?? ''
-  }
 
   // 登录
   const handleSubmit = async () => {
@@ -226,36 +150,56 @@
       const valid = await formRef.value.validate()
       if (!valid) return
 
-      // 拖拽验证
-      if (!isPassing.value) {
-        isClickPass.value = true
-        return
-      }
-
       loading.value = true
 
       // 登录请求
       const { username, password } = formData
 
-      const { token, refreshToken } = await fetchLogin({
-        userName: username,
+      console.log('🔐 开始登录请求...')
+      const response = await fetchLogin({
+        username, // 使用正确的字段名
         password
       })
 
+      console.log('📥 登录响应完整数据:', response)
+
+      // 根据后端实际响应结构提取token
+      // 后端登录时直接返回完整的用户信息，包含token
+      const token = response.token
+      
+      console.log('🔑 提取的token:', token ? '***' + token.slice(-10) : 'null')
+      
       // 验证token
       if (!token) {
-        throw new Error('Login failed - no token received')
+        throw new Error('登录失败 - 未收到token')
       }
 
-      // 存储token和用户信息
-      userStore.setToken(token, refreshToken)
-      const userInfo = await fetchGetUserInfo()
-      userStore.setUserInfo(userInfo)
+      // 存储token（使用同一个token作为refreshToken）
+      userStore.setToken(token, token)
+      console.log('💾 Token已存储')
+
+      // 设置用户信息（登录响应已包含完整用户信息）
+      userStore.setUserInfo(response)
       userStore.setLoginStatus(true)
+      console.log('👤 用户信息已设置:', userStore.getUserInfo)
+      console.log('🔐 用户登录状态:', userStore.isLogin)
 
       // 登录成功处理
       showLoginSuccessNotice()
-      router.push('/')
+      console.log('🚀 准备跳转到 /dashboard/console')
+      
+      // 使用 nextTick 确保状态更新后再跳转
+      await nextTick()
+      
+      // 尝试跳转
+      try {
+        await router.push('/dashboard/console')
+        console.log('✅ 路由跳转成功')
+      } catch (routerError) {
+        console.error('❌ 路由跳转失败:', routerError)
+        // 如果跳转失败，尝试替换到根路径让路由守卫处理
+        await router.replace('/')
+      }
     } catch (error) {
       // 处理 HttpError
       if (error instanceof HttpError) {
@@ -267,13 +211,7 @@
       }
     } finally {
       loading.value = false
-      resetDragVerify()
     }
-  }
-
-  // 重置拖拽验证
-  const resetDragVerify = () => {
-    dragVerify.value.reset()
   }
 
   // 登录成功提示

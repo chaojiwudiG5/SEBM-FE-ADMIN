@@ -2,7 +2,8 @@
  * namespace: Api
  *
  * 所有接口相关类型定义
- * 在.vue文件使用会报错，需要在 eslint.config.mjs 中配置 globals: { Api: 'readonly' }
+ * 在.vue文件中可以直接使用 Api.xxx.xxx 访问类型
+ * 如果 TypeScript 报错"找不到命名空间 Api"，请在 eslint.config.mjs 中配置 globals: { Api: 'readonly' }
  */
 
 declare namespace Api {
@@ -37,23 +38,43 @@ declare namespace Api {
   namespace Auth {
     /** 登录参数 */
     interface LoginParams {
-      userName: string
+      username: string
       password: string
     }
 
+    /** 注册参数 */
+    interface RegisterParams {
+      username: string      // 用户昵称
+      password: string      // 登录密码（最少6位）
+      checkPassword: string // 确认密码（必须与password一致）
+      phone: string         // 手机号码（唯一标识）
+    }
+
     /** 登录响应 */
-    interface LoginResponse {
-      token: string
-      refreshToken: string
+    interface LoginResponse extends UserInfo {
+      // 登录响应包含完整的用户信息
     }
 
     /** 用户信息 */
     interface UserInfo {
+      id: number
+      username: string
+      email: string
+      phone: string
+      gender: number
+      avatarUrl: string | null
+      userRole: number // 后端返回的角色ID：1=ADMIN
+      userStatus: number
+      age: number
+      createTime: string
+      updateTime: string
+      token?: string
+      active: boolean
+      // 前端处理后的字段
       buttons: string[]
       roles: string[]
       userId: number
       userName: string
-      email: string
       avatar?: string
     }
   }
@@ -65,7 +86,28 @@ declare namespace Api {
 
     /** 用户列表项 */
     interface UserListItem {
+      // 后端原始字段
       id: number
+      username: string
+      password?: string        // 密码字段（通常不显示）
+      email: string
+      phone: string
+      gender: number // 0=未知，1=男，2=女
+      avatarUrl: string | null
+      userRole: number // 0=普通用户，1=管理员，2=技工
+      userStatus: number // 0=正常，1=禁用
+      age: number
+      level: number
+      overdueTimes: number
+      borrowedDeviceCount: number
+      maxBorrowedDeviceCount: number
+      maxOverdueTimes: number
+      createTime: string
+      updateTime: string
+      isDelete: number         // 是否删除：0=未删除，1=已删除
+      isActive: boolean
+      token?: string
+      // 前端显示用的映射字段
       avatar: string
       status: string
       userName: string
@@ -74,20 +116,46 @@ declare namespace Api {
       userPhone: string
       userEmail: string
       userRoles: string[]
+      role: string           // 角色名称
+      statusText: string     // 状态文本
       createBy: string
-      createTime: string
       updateBy: string
-      updateTime: string
     }
 
     /** 用户搜索参数 */
-    type UserSearchParams = Partial<
-      Pick<UserListItem, 'id' | 'userName' | 'userGender' | 'userPhone' | 'userEmail' | 'status'> &
-        Api.Common.CommonSearchParams
-    >
+    type UserSearchParams = {
+      // 分页参数（必填）
+      pageNumber: number    // 页码，必填，最小值为1
+      pageSize: number      // 每页条数，必填，最小值为1
+      // 搜索条件（可选）
+      id?: number
+      username?: string
+      email?: string
+      phone?: string
+      gender?: number       // 0=未知，1=男，2=女
+      userStatus?: number   // 0=正常，1=禁用
+    }
+
+    /** 用户添加参数 */
+    type UserAddParams = {
+      username: string
+      password?: string
+      email: string
+      phone: string
+      gender: number
+      userRole: number
+      userStatus: number
+      age?: number
+      level?: number
+      maxBorrowedDeviceCount?: number
+      maxOverdueTimes?: number
+    }
+
+    /** 用户更新参数 */
+    type UserUpdateParams = Partial<UserAddParams> & { id: number }
 
     /** 设备状态类型 */
-    type DeviceStatus = 'disabled' | 'normal' | 'maintenance' | 'scrapped' // disabled:停用 normal:正常 maintenance:维修 scrapped:报废
+    type DeviceStatus = 0 | 1 | 2 | 3 // 0=可用，1=借出，2=维修，3=预留
 
     /** 设备列表 */
     type DeviceList = Api.Common.PaginatedResponse<DeviceListItem>
@@ -100,16 +168,20 @@ declare namespace Api {
       status: DeviceStatus
       location: string
       description: string
-      image: string
-      createTime: string
-      updateTime: string
+      image?: string
+      createTime?: string
+      updateTime?: string
     }
 
     /** 设备搜索参数 */
-    type DeviceSearchParams = Partial<
-      Pick<DeviceListItem, 'deviceName' | 'deviceType' | 'status' | 'location'> &
-        Api.Common.CommonSearchParams
-    >
+    type DeviceSearchParams = {
+      pageNumber: number    // 页码，必填，最小值为1
+      pageSize: number      // 每页条数，必填，最小值为1
+      deviceName?: string   // 设备名称，可选，最大50字符
+      deviceType?: string   // 设备类型，可选，最大20字符
+      status?: DeviceStatus // 设备状态，可选，范围0-3
+      location?: string     // 存放位置，可选，最大100字符
+    }
 
     /** 设备添加参数 */
     type DeviceAddParams = Omit<DeviceListItem, 'id' | 'createTime' | 'updateTime'>

@@ -20,7 +20,7 @@
       <!-- 表格 -->
       <ArtTable
         :loading="loading"
-        :data="data"
+        :data="data as UserListItem[]"
         :columns="columns"
         :pagination="pagination"
         @selection-change="handleSelectionChange"
@@ -36,18 +36,25 @@
         :user-data="currentUserData"
         @submit="handleDialogSubmit"
       />
+
+      <!-- 用户详情弹窗 -->
+      <UserDetail
+        v-model:visible="detailVisible"
+        :user-data="currentUserData"
+        @edit="handleDetailEdit"
+      />
     </ElCard>
   </div>
 </template>
 
 <script setup lang="ts">
   import ArtButtonTable from '@/components/core/forms/art-button-table/index.vue'
-  import { ACCOUNT_TABLE_DATA } from '@/mock/temp/formData'
   import { ElMessageBox, ElMessage, ElTag, ElImage } from 'element-plus'
   import { useTable } from '@/composables/useTable'
-  import { fetchGetUserList } from '@/api/system-manage'
+  import { fetchGetUserList, fetchDeleteUser, fetchAddUser, fetchUpdateUser } from '@/api/system-manage'
   import UserSearch from './modules/user-search.vue'
   import UserDialog from './modules/user-dialog.vue'
+  import UserDetail from './modules/user-detail.vue'
 
   defineOptions({ name: 'User' })
 
@@ -56,6 +63,7 @@
   // 弹窗相关
   const dialogType = ref<Form.DialogType>('add')
   const dialogVisible = ref(false)
+  const detailVisible = ref(false)
   const currentUserData = ref<Partial<UserListItem>>({})
 
   // 选中行
@@ -72,8 +80,8 @@
 
   // 用户状态配置
   const USER_STATUS_CONFIG = {
-    '1': { type: 'normal' as const, text: '正常' },
-    '2': { type: 'blocked' as const, text: '封锁' }
+    '0': { type: 'success' as const, text: '正常' },
+    '1': { type: 'danger' as const, text: '封禁' }
   } as const
 
   /**
@@ -86,6 +94,94 @@
         text: '未知'
       }
     )
+  }
+
+  /**
+   * 将后端用户数据转换为前端显示格式
+   */
+  const transformUserData = (userData: any): UserListItem => {
+    // 角色映射
+    const roleMap = {
+      0: '普通用户',
+      1: '管理员', 
+      2: '技工'
+    }
+
+    // 性别映射
+    const genderMap = {
+      0: '未知',
+      1: '男',
+      2: '女'
+    }
+
+    // 状态映射
+    const statusMap = {
+      0: '正常',
+      1: '封禁'
+    }
+
+    return {
+      // 保留所有后端原始字段
+      ...userData,
+      
+      // 前端显示字段映射
+      userName: userData.username || '',
+      userEmail: userData.email || '',
+      userPhone: userData.phone || '',
+      userGender: genderMap[userData.gender as keyof typeof genderMap] || '未知',
+      avatar: userData.avatarUrl || '/src/assets/img/avatar/default.png',
+      status: userData.userStatus?.toString() || '0', // 保持字符串格式给状态配置使用
+      role: roleMap[userData.userRole as keyof typeof roleMap] || '普通用户',
+      statusText: statusMap[userData.userStatus as keyof typeof statusMap] || '正常',
+      userRoles: [roleMap[userData.userRole as keyof typeof roleMap] || '普通用户'],
+      nickName: userData.username || '',
+      createBy: 'System',
+      updateBy: 'System'
+    }
+  }
+
+  /**
+   * 包装后的用户列表获取函数，包含数据转换
+   */
+  const wrappedFetchGetUserList = async (params: any) => {
+    console.log('📤 原始请求参数:', params)
+    
+    // 转换分页参数字段名：前端使用 current/size，后端期望 pageNumber/pageSize
+    const transformedParams = {
+      ...params,
+      pageNumber: params.current || 1,      // current -> pageNumber
+      pageSize: params.size || 999999,      // 取消条数限制，设置大数值获取所有数据
+    }
+    
+    // 删除前端字段名，避免重复
+    delete transformedParams.current
+    delete transformedParams.size
+    
+    console.log('📤 转换后的请求参数:', transformedParams)
+    
+    try {
+      const response = await fetchGetUserList(transformedParams)
+      console.log('📊 原始用户列表数据:', response)
+      
+      // 如果后端返回的是分页数据结构
+      if (response && typeof response === 'object' && 'records' in response) {
+        return {
+          ...response,
+          records: (response as any).records.map(transformUserData)
+        }
+      }
+      
+      // 如果后端直接返回数组
+      if (Array.isArray(response)) {
+        return (response as any[]).map(transformUserData)
+      }
+      
+      // 如果是其他结构，尝试处理
+      return response
+    } catch (error) {
+      console.error('❌ 获取用户列表失败:', error)
+      throw error
+    }
   }
 
   const {
@@ -103,74 +199,156 @@
   } = useTable({
     // 核心配置
     core: {
-      apiFn: fetchGetUserList,
+      apiFn: wrappedFetchGetUserList,
       apiParams: {
         current: 1,
-        size: 20,
+        size: 999999,  // 取消条数限制
         ...searchForm.value
       },
       // 排除 apiParams 中的属性
       excludeParams: [],
+      // 分页字段映射：告诉useTable前端使用的字段名
+      paginationKey: {
+        current: 'current',
+        size: 'size'
+      },
       columnsFactory: () => [
         { type: 'selection' }, // 勾选列
         { type: 'index', width: 60, label: '序号' }, // 序号
         {
-          prop: 'avatar',
+          prop: 'username',
           label: '用户名',
-          width: 280,
+          width: 120,
+          formatter: (row) => (row as UserListItem).username || '-'
+        },
+        {
+          prop: 'email',
+          label: '邮箱',
+          width: 180,
+          formatter: (row) => (row as UserListItem).email || '-'
+        },
+        {
+          prop: 'phone',
+          label: '手机号',
+          width: 130,
+          formatter: (row) => (row as UserListItem).phone || '-'
+        },
+        { 
+          prop: 'gender', 
+          label: '性别', 
+          width: 80,
           formatter: (row) => {
-            return h('div', { class: 'user', style: 'display: flex; align-items: center' }, [
-              h(ElImage, {
-                class: 'avatar',
-                src: row.avatar,
-                previewSrcList: [row.avatar],
-                // 图片预览是否插入至 body 元素上，用于解决表格内部图片预览样式异常
-                previewTeleported: true
-              }),
-              h('div', {}, [
-                h('p', { class: 'user-name' }, row.userName),
-                h('p', { class: 'email' }, row.userEmail)
-              ])
-            ])
+            const userRow = row as UserListItem
+            const genderMap = { 0: '未知', 1: '男', 2: '女' }
+            return genderMap[userRow.gender as keyof typeof genderMap] || '未知'
+          }
+        },
+        { 
+          prop: 'userRole', 
+          label: '角色',
+          width: 100,
+          formatter: (row) => {
+            const userRow = row as UserListItem
+            const roleMap = { 0: '普通用户', 1: '管理员', 2: '技工' }
+            return roleMap[userRow.userRole as keyof typeof roleMap] || '普通用户'
           }
         },
         {
-          prop: 'userGender',
-          label: '性别',
-          sortable: true,
-          // checked: false, // 隐藏列
-          formatter: (row) => row.userGender
-        },
-        { prop: 'userPhone', label: '手机号' },
-        {
-          prop: 'status',
+          prop: 'userStatus',
           label: '状态',
+          width: 80,
           formatter: (row) => {
-            const statusConfig = getUserStatusConfig(row.status)
+            const userRow = row as UserListItem
+            const statusConfig = getUserStatusConfig(userRow.userStatus?.toString() || '0')
             return h(ElTag, { type: statusConfig.type }, () => statusConfig.text)
           }
         },
+        { 
+          prop: 'age', 
+          label: '年龄',
+          width: 80,
+          formatter: (row) => (row as UserListItem).age || '-'
+        },
+        { 
+          prop: 'level', 
+          label: '等级',
+          width: 80,
+          formatter: (row) => (row as UserListItem).level || '-'
+        },
+        { 
+          prop: 'overdueTimes', 
+          label: '逾期次数',
+          width: 100,
+          formatter: (row) => {
+            const userRow = row as UserListItem
+            const current = userRow.overdueTimes || 0
+            const isOverLimit = current > 0
+            return h('span', 
+              { style: isOverLimit ? 'color: #f56c6c; font-weight: bold;' : '' }, 
+              current.toString()
+            )
+          }
+        },
+        { 
+          prop: 'borrowedDeviceCount', 
+          label: '已借设备',
+          width: 100,
+          formatter: (row) => (row as UserListItem).borrowedDeviceCount || 0
+        },
+        { 
+          prop: 'maxBorrowedDeviceCount', 
+          label: '最大可借',
+          width: 100,
+          formatter: (row) => (row as UserListItem).maxBorrowedDeviceCount || 0
+        },
+        { 
+          prop: 'maxOverdueTimes', 
+          label: '最大逾期',
+          width: 100,
+          formatter: (row) => (row as UserListItem).maxOverdueTimes || 0
+        },
         {
           prop: 'createTime',
-          label: '创建日期',
-          sortable: true
+          label: '创建时间',
+          width: 160,
+          sortable: true,
+          formatter: (row) => {
+            const time = (row as UserListItem).createTime
+            return time ? new Date(time).toLocaleString('zh-CN') : '-'
+          }
+        },
+        {
+          prop: 'updateTime',
+          label: '更新时间',
+          width: 160,
+          sortable: true,
+          formatter: (row) => {
+            const time = (row as UserListItem).updateTime
+            return time ? new Date(time).toLocaleString('zh-CN') : '-'
+          }
         },
         {
           prop: 'operation',
           label: '操作',
-          width: 120,
-          fixed: 'right', // 固定列
-          formatter: (row) =>
-            h('div', [
+          width: 180,
+          fixed: 'right',
+          formatter: (row) => {
+            const userRow = row as UserListItem
+            return h('div', { style: 'display: flex; gap: 8px;' }, [
+              h(ArtButtonTable, {
+                type: 'view',
+                onClick: () => showDetail(userRow)
+              }),
               h(ArtButtonTable, {
                 type: 'edit',
-                onClick: () => showDialog('edit', row)
+                onClick: () => showDialog('edit', userRow)
               }),
               h(ArtButtonTable, {
                 type: 'delete',
-                onClick: () => deleteUser(row)
+                onClick: () => deleteUser(userRow)
               })
             ])
+          }
         }
       ]
     },
@@ -184,13 +362,8 @@
           return []
         }
 
-        // 使用本地头像替换接口返回的头像
-        return records.map((item: any, index: number) => {
-          return {
-            ...item,
-            avatar: ACCOUNT_TABLE_DATA[index % ACCOUNT_TABLE_DATA.length].avatar
-          }
-        })
+        // 直接返回接口数据，不再使用mock头像
+        return records
       }
     }
   })
@@ -218,17 +391,48 @@
   }
 
   /**
+   * 显示用户详情
+   */
+  const showDetail = (row: UserListItem): void => {
+    console.log('显示用户详情:', row)
+    currentUserData.value = { ...row }
+    detailVisible.value = true
+  }
+
+  /**
+   * 详情弹窗编辑按钮
+   */
+  const handleDetailEdit = (userData: Partial<UserListItem>): void => {
+    console.log('详情编辑用户:', userData)
+    currentUserData.value = { ...userData }
+    dialogType.value = 'edit'
+    dialogVisible.value = true
+  }
+
+  /**
    * 删除用户
    */
   const deleteUser = (row: UserListItem): void => {
     console.log('删除用户:', row)
-    ElMessageBox.confirm(`确定要注销该用户吗？`, '注销用户', {
+    ElMessageBox.confirm(`确定要删除用户「${row.username || row.userName}」吗？`, '删除用户', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'error'
-    }).then(() => {
-      ElMessage.success('注销成功')
     })
+      .then(async () => {
+        try {
+          await fetchDeleteUser(row.id)
+          ElMessage.success('删除成功')
+          // 重新获取数据
+          getData()
+        } catch (error) {
+          console.error('删除失败:', error)
+          ElMessage.error('删除失败')
+        }
+      })
+      .catch(() => {
+        ElMessage.info('已取消删除')
+      })
   }
 
   /**
@@ -238,6 +442,8 @@
     try {
       dialogVisible.value = false
       currentUserData.value = {}
+      // 重新获取数据
+      getData()
     } catch (error) {
       console.error('提交失败:', error)
     }
