@@ -103,7 +103,7 @@
   import { useI18n } from 'vue-i18n'
   import { HttpError } from '@/utils/http/error'
   import { themeAnimation } from '@/utils/theme/animation'
-  import { fetchLogin} from '@/api/auth'
+  import { fetchLogin } from '@/api/auth'
   import { useHeaderBar } from '@/composables/useHeaderBar'
 
   defineOptions({ name: 'Login' })
@@ -166,9 +166,9 @@
       // 根据后端实际响应结构提取token
       // 后端登录时直接返回完整的用户信息，包含token
       const token = response.token
-      
+
       console.log('🔑 提取的token:', token ? '***' + token.slice(-10) : 'null')
-      
+
       // 验证token
       if (!token) {
         throw new Error('登录失败 - 未收到token')
@@ -186,14 +186,14 @@
 
       // 登录成功处理
       showLoginSuccessNotice()
-      console.log('🚀 准备跳转到 /dashboard/console')
-      
+      console.log('🚀 准备跳转到 /user')
+
       // 使用 nextTick 确保状态更新后再跳转
       await nextTick()
-      
+
       // 尝试跳转
       try {
-        await router.push('/dashboard/console')
+        await router.push('/user')
         console.log('✅ 路由跳转成功')
       } catch (routerError) {
         console.error('❌ 路由跳转失败:', routerError)
