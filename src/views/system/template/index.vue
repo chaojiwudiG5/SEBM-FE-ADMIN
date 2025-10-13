@@ -6,7 +6,6 @@
       v-model="searchForm"
       @search="handleSearch"
       @reset="resetSearchForm"
-      @quickSearch="handleQuickSearch"
     ></TemplateSearch>
 
     <ElCard class="art-table-card" shadow="never">
@@ -461,19 +460,7 @@
     getData()
   }
 
-  /**
-   * 处理快速搜索
-   */
-  const handleQuickSearch = () => {
-    console.log('快速搜索')
-    // 重置搜索参数
-    Object.keys(searchForm.value).forEach(key => {
-      (searchParams as any)[key] = undefined
-    })
-    // 重置到第一页
-    searchParams.pageNumber = 1
-    getData()
-  }
+  
 
   /**
    * 处理选择变化

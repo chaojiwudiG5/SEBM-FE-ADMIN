@@ -118,6 +118,15 @@ export function fetchEnableTemplate(templateId: number) {
   })
 }
 
+// 获取通知记录列表
+export function fetchGetNotificationRecordList(params: Api.SystemManage.NotificationRecordSearchParams) {
+  console.log('🚀 调用通知记录列表API，参数:', params)
+  return request.post<Api.SystemManage.NotificationRecordList>({
+    url: '/notification/record/list',
+    data: params
+  })
+}
+
 // 更新设备
 export function fetchUpdateDevice(data: Api.SystemManage.DeviceUpdateParams) {
   console.log('🚀 调用更新设备API，数据:', data)

@@ -25,6 +25,8 @@ export enum RoutesAlias {
   Role = '/system/role', // 角色
   Device = '/system/device', // 设备管理
   Template = '/system/template', // 模版管理
+  Notification = '/system/notification', // 通知管理
+  NotificationRecords = '/system/notification/records', // 通知记录查询
   UserCenter = '/system/user-center', // 用户中心
   Menu = '/system/menu' // 菜单
 }

@@ -159,22 +159,10 @@
       <ElFormItem>
         <ElSpace>
           <ElButton type="primary" @click="$emit('search')" v-ripple>
-            <template #icon>
-              <i class="iconfont-sys">&#xe65c;</i>
-            </template>
             搜索
           </ElButton>
           <ElButton @click="handleReset" v-ripple>
-            <template #icon>
-              <i class="iconfont-sys">&#xe6aa;</i>
-            </template>
             重置
-          </ElButton>
-          <ElButton type="success" @click="handleQuickSearch" v-ripple>
-            <template #icon>
-              <i class="iconfont-sys">&#xe65d;</i>
-            </template>
-            快速搜索
           </ElButton>
         </ElSpace>
       </ElFormItem>
@@ -230,7 +218,6 @@
     (e: 'update:modelValue', value: SearchForm): void
     (e: 'search'): void
     (e: 'reset'): void
-    (e: 'quickSearch'): void
   }
 
   const props = defineProps<Props>()
@@ -284,27 +271,7 @@
     emit('reset')
   }
 
-  /**
-   * 快速搜索
-   */
-  const handleQuickSearch = () => {
-    // 使用默认的快速搜索条件
-    const quickSearchParams = {
-      templateTitle: undefined,
-      notificationNode: undefined,
-      notificationMethod: undefined,
-      notificationEvent: undefined,
-      notificationType: undefined,
-      notificationRole: undefined,
-      createTimeRange: undefined,
-      templateDesc: undefined,
-      relateTimeOffsetMin: undefined,
-      relateTimeOffsetMax: undefined
-    }
-    
-    emit('update:modelValue', quickSearchParams)
-    emit('quickSearch')
-  }
+  
 
   /**
    * 添加搜索历史

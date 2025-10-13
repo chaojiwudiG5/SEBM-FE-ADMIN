@@ -247,5 +247,33 @@ declare namespace Api {
       Pick<RoleListItem, 'roleId' | 'roleName' | 'roleCode' | 'description' | 'enabled'> &
         Api.Common.CommonSearchParams
     >
+
+    /** 通知记录 - 列表 */
+    type NotificationRecordList = Api.Common.PaginatedResponse<NotificationRecordItem>
+
+    /** 通知记录 - 列表项 */
+    interface NotificationRecordItem {
+      userId?: string | number
+      content: string
+      event: string
+      method: string
+      sendTime: string
+    }
+
+    /** 通知记录 - 查询参数 */
+    type NotificationRecordSearchParams = {
+      pageNumber: number
+      pageSize: number
+      /** 用户ID（可选） */
+      userId?: string | number
+      /** 标题关键字（可选） */
+      titleKeyword?: string
+      /** 查询角色：0-管理员，1-用户（可选） */
+      queryRole?: number
+      /** 开始时间（秒级时间戳，可选） */
+      startTime?: number
+      /** 结束时间（秒级时间戳，可选） */
+      endTime?: number
+    }
   }
 }

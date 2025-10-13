@@ -78,14 +78,36 @@ export const asyncRoutes: AppRouteRecord[] = [
         }
       },
       {
-        path: 'template',
-        name: 'Template',
-        component: RoutesAlias.Template,
+        path: 'notification',
+        name: 'Notification',
+        component: RoutesAlias.Notification,
         meta: {
-          title: 'menus.system.template',
+          title: '通知管理',
           keepAlive: true,
           roles: ['R_ADMIN']
-        }
+        },
+        children: [
+          {
+            path: 'template',
+            name: 'Template',
+            component: RoutesAlias.Template,
+            meta: {
+              title: '模版管理',
+              keepAlive: true,
+              roles: ['R_ADMIN']
+            }
+          },
+          {
+            path: 'records',
+            name: 'NotificationRecords',
+            component: RoutesAlias.NotificationRecords,
+            meta: {
+              title: '记录查询',
+              keepAlive: true,
+              roles: ['R_ADMIN']
+            }
+          }
+        ]
       },
       {
         path: 'user-center',
