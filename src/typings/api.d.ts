@@ -196,22 +196,32 @@ declare namespace Api {
     interface TemplateListItem {
       id: number
       templateTitle: string
-      templateType: string
       notificationNode: number
-      notificationMethod: number
+      notificationMethod: number[]
+      /** 状态：'1' 启用，其它为禁用 */
+      status?: string
       relateTimeOffset?: number
       content: string
-      notificationRole?: number
+      notificationRole: number
+      notificationEvent: string
+      notificationType: number
       templateDesc?: string
       createTime: string
       updateTime: string
     }
 
     /** 模版搜索参数 */
-    type TemplateSearchParams = Partial<
-      Pick<TemplateListItem, 'templateTitle' | 'templateType' | 'notificationNode' | 'notificationMethod'> &
-        Api.Common.CommonSearchParams
-    >
+    type TemplateSearchParams = {
+      // 分页参数（必填）
+      pageNumber: number    // 页码，必填，最小值为1
+      pageSize: number      // 每页条数，必填，最小值为1
+      // 搜索条件（可选）
+      templateTitle?: string
+      notificationNode?: number
+      notificationMethod?: number
+      notificationEvent?: string
+      notificationType?: number
+    }
 
     /** 模版添加参数 */
     type TemplateAddParams = Omit<TemplateListItem, 'id' | 'createTime' | 'updateTime'>

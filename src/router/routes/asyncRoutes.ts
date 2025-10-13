@@ -84,7 +84,7 @@ export const asyncRoutes: AppRouteRecord[] = [
         meta: {
           title: 'menus.system.template',
           keepAlive: true,
-          roles: ['R_SUPER', 'R_ADMIN']
+          roles: ['R_ADMIN']
         }
       },
       {
