@@ -255,8 +255,6 @@ declare namespace Api {
     interface NotificationRecordItem {
       userId?: string | number
       content: string
-      event: string
-      method: string
       sendTime: string
     }
 

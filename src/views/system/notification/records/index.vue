@@ -32,8 +32,6 @@
         <ElTable :data="list" v-loading="loading" border>
           <ElTableColumn prop="userId" label="用户ID" width="140" />
           <ElTableColumn prop="content" label="内容" min-width="200" show-overflow-tooltip />
-          <ElTableColumn prop="event" label="事件" width="140" />
-          <ElTableColumn prop="method" label="方式" width="120" />
           <ElTableColumn prop="sendTime" label="发送时间" width="180" />
         </ElTable>
 
@@ -59,8 +57,6 @@
   interface RecordItem {
     userId?: string | number
     content: string
-    event: string
-    method: string
     sendTime: string
   }
 
