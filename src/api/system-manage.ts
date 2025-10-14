@@ -134,3 +134,39 @@ export function fetchTemplateList(data: {
     data
   })
 }
+
+// 批量标记消息为已读
+export function batchMarkAsRead(data: { ids: number[] }) {
+  console.log('🚀 批量标记为已读 API，参数:', data)
+  return request.post({
+    url: '/notification/record/batchMarkAsRead',
+    data
+  })
+}
+
+// 标记全部未读消息为已读
+export function markAllAsRead(userId: number) {
+  console.log('🚀 标记全部为已读 API，userId:', userId)
+  return request.post({
+    url: '/notification/record/markAllAsRead',
+    params: { userId }
+  })
+}
+
+// 批量删除消息
+export function batchDeleteMessages(data: { ids: number[] }) {
+  console.log('🚀 批量删除消息 API，参数:', data)
+  return request.post({
+    url: '/notification/record/batchDelete',
+    data
+  })
+}
+
+// 删除单条消息
+export function deleteMessage(data: { id: number }) {
+  console.log('🚀 删除单条消息 API，参数:', data)
+  return request.post({
+    url: '/notification/record/delete',
+    data
+  })
+}
