@@ -2,12 +2,14 @@
 @use '@styles/mixin.scss' as *;
 
 .notice {
-  position: absolute;
+  position: fixed;
   top: 60px;
   right: 20px;
   width: 360px;
-  height: 500px;
+  height: auto;
+  max-height: 80vh;
   overflow: hidden;
+  z-index: 2000;
   background: var(--art-main-bg-color);
   border: 1px solid var(--art-border-color);
   border-radius: calc(var(--custom-radius) / 2 + 6px) !important;
@@ -85,10 +87,13 @@
   .content {
     width: 100%;
     height: calc(100% - 95px);
+    max-height: calc(80vh - 95px);
 
     .scroll {
       height: calc(100% - 60px);
-      overflow-y: scroll;
+      max-height: calc(80vh - 155px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
 
       &::-webkit-scrollbar {
         width: 5px !important;

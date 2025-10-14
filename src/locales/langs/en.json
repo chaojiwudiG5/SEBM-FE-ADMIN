@@ -227,7 +227,7 @@
     "system": {
       "title": "System Management",
       "user": "User Management",
-      "role": "Role Management",
+  "role": "Notifications",
       "device": "Device Management",
       "userCenter": "User Center",
       "menu": "Menu Management"

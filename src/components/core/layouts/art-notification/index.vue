@@ -1,90 +1,90 @@
 <!-- 通知组件 -->
 <template>
-  <div
-    class="notice"
-    v-show="visible"
-    :style="{
-      transform: show ? 'scaleY(1)' : 'scaleY(0.9)',
-      opacity: show ? 1 : 0
-    }"
-    @click.stop=""
-  >
-    <div class="header">
-      <span class="text">{{ $t('notice.title') }}</span>
-      <span class="btn">{{ $t('notice.btnRead') }}</span>
-    </div>
+  <Teleport to="body">
+    <div
+      class="notice"
+      v-show="visible"
+      :style="{
+        transform: show ? 'scaleY(1)' : 'scaleY(0.9)',
+        opacity: show ? 1 : 0
+      }"
+      @click.stop=""
+    >
+      <div class="header">
+        <span class="text">{{ $t('notice.title') }}</span>
+        <span class="btn">{{ $t('notice.btnRead') }}</span>
+      </div>
 
-    <ul class="bar">
-      <li
-        v-for="(item, index) in barList"
-        :key="index"
-        :class="{ active: barActiveIndex === index }"
-        @click="changeBar(index)"
-      >
-        {{ item.name }} ({{ item.num }})
-      </li>
-    </ul>
+      <ul class="bar">
+        <li
+          v-for="(item, index) in barList"
+          :key="index"
+          :class="{ active: barActiveIndex === index }"
+          @click="changeBar(index)"
+        >
+          {{ item.name }} ({{ item.num }})
+        </li>
+      </ul>
 
-    <div class="content">
-      <div class="scroll">
-        <!-- 通知 -->
-        <ul class="notice-list" v-show="barActiveIndex === 0">
-          <li v-for="(item, index) in noticeList" :key="index">
-            <div
-              class="icon"
-              :style="{ background: getNoticeStyle(item.type).backgroundColor + '!important' }"
-            >
-              <i
-                class="iconfont-sys"
-                :style="{ color: getNoticeStyle(item.type).iconColor + '!important' }"
-                v-html="getNoticeStyle(item.type).icon"
+      <div class="content">
+        <div class="scroll">
+          <!-- 通知 -->
+          <ul class="notice-list" v-show="barActiveIndex === 0">
+            <li v-for="(item, index) in noticeList" :key="index">
+              <div
+                class="icon"
+                :style="{ background: getNoticeStyle(item.type).backgroundColor + '!important' }"
               >
-              </i>
-            </div>
-            <div class="text">
+                <i
+                  class="iconfont-sys"
+                  :style="{ color: getNoticeStyle(item.type).iconColor + '!important' }"
+                  v-html="getNoticeStyle(item.type).icon"
+                >
+                </i>
+              </div>
+              <div class="text">
+                <h4>{{ item.title }}</h4>
+                <p>{{ item.time }}</p>
+              </div>
+            </li>
+          </ul>
+
+          <!-- 消息 -->
+          <ul class="user-list" v-show="barActiveIndex === 1">
+            <li v-for="(item, index) in msgList" :key="index">
+              <div class="avatar">
+                <img :src="item.avatar" />
+              </div>
+              <div class="text">
+                <h4>{{ item.title }}</h4>
+                <p>{{ item.time }}</p>
+              </div>
+            </li>
+          </ul>
+
+          <!-- 待办 -->
+          <ul class="base" v-show="barActiveIndex === 2">
+            <li v-for="(item, index) in pendingList" :key="index">
               <h4>{{ item.title }}</h4>
               <p>{{ item.time }}</p>
-            </div>
-          </li>
-        </ul>
+            </li>
+          </ul>
 
-        <!-- 消息 -->
-        <ul class="user-list" v-show="barActiveIndex === 1">
-          <li v-for="(item, index) in msgList" :key="index">
-            <div class="avatar">
-              <img :src="item.avatar" />
-            </div>
-            <div class="text">
-              <h4>{{ item.title }}</h4>
-              <p>{{ item.time }}</p>
-            </div>
-          </li>
-        </ul>
+          <!-- 空状态 -->
+          <div class="empty-tips" v-show="currentTabIsEmpty">
+            <i class="iconfont-sys">&#xe8d7;</i>
+            <p>{{ $t('notice.text[0]') }}{{ barList[barActiveIndex].name }}</p>
+          </div>
+        </div>
 
-        <!-- 待办 -->
-        <ul class="base" v-show="barActiveIndex === 2">
-          <li v-for="(item, index) in pendingList" :key="index">
-            <h4>{{ item.title }}</h4>
-            <p>{{ item.time }}</p>
-          </li>
-        </ul>
-
-        <!-- 空状态 -->
-        <div class="empty-tips" v-show="currentTabIsEmpty">
-          <i class="iconfont-sys">&#xe8d7;</i>
-          <p>{{ $t('notice.text[0]') }}{{ barList[barActiveIndex].name }}</p>
+        <div class="btn-wrapper">
+          <el-button class="view-all" @click="handleViewAll" v-ripple>
+            {{ $t('notice.viewAll') }}
+          </el-button>
         </div>
       </div>
-
-      <div class="btn-wrapper">
-        <el-button class="view-all" @click="handleViewAll" v-ripple>
-          {{ $t('notice.viewAll') }}
-        </el-button>
-      </div>
     </div>
-
-    <div style="height: 100px"></div>
-  </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
@@ -185,6 +185,16 @@
       },
       {
         title: '菜单mock本地真实数据',
+        time: '2024-1-17 22:06',
+        type: 'notice'
+      },
+      {
+        title: '修复已知BUG',
+        time: '2024-1-17 22:06',
+        type: 'notice'
+      },
+      {
+        title: '新增黑暗主题',
         time: '2024-1-17 22:06',
         type: 'notice'
       }

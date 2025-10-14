@@ -1,7 +1,8 @@
 <template>
   <template v-for="item in filteredMenuItems" :key="item.path">
-    <!-- 包含子菜单的项目 -->
-    <ElSubMenu v-if="hasChildren(item)" :index="item.path || item.meta.title" :level="level">
+    <!-- 包含子菜单且无自身 path（容器类型）则渲染为可展开的 SubMenu；
+      如果项有 children 但自身具有 path，则不展开，直接渲染为可点击的 MenuItem -->
+    <ElSubMenu v-if="hasChildren(item) && !item.path" :index="item.path || item.meta.title" :level="level">
       <template #title>
         <MenuItemIcon :icon="item.meta.icon" :color="theme?.iconColor" />
         <span class="menu-name">
@@ -19,7 +20,7 @@
       />
     </ElSubMenu>
 
-    <!-- 普通菜单项 -->
+    <!-- 普通菜单项（包括有 children 但自身有 path 的情况——直接跳转，取消展开） -->
     <ElMenuItem
       v-else
       :index="item.path || item.meta.title"

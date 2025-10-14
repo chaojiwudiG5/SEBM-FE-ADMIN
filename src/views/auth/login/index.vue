@@ -4,11 +4,7 @@
 
     <div class="right-wrap">
       <div class="top-right-wrap">
-        <div v-if="shouldShowThemeToggle" class="btn theme-btn" @click="themeAnimation">
-          <i class="iconfont-sys">
-            {{ isDark ? '&#xe6b5;' : '&#xe725;' }}
-          </i>
-        </div>
+        <!-- 主题切换已移除 -->
         <ElDropdown
           v-if="shouldShowLanguage"
           @command="changeLanguage"
@@ -102,7 +98,7 @@
   import { LanguageEnum } from '@/enums/appEnum'
   import { useI18n } from 'vue-i18n'
   import { HttpError } from '@/utils/http/error'
-  import { themeAnimation } from '@/utils/theme/animation'
+  
   import { fetchLogin } from '@/api/auth'
   import { useHeaderBar } from '@/composables/useHeaderBar'
 
@@ -114,7 +110,7 @@
 
   const settingStore = useSettingStore()
   const { isDark } = storeToRefs(settingStore)
-  const { shouldShowThemeToggle, shouldShowLanguage } = useHeaderBar()
+  const { shouldShowLanguage } = useHeaderBar()
 
   const userStore = useUserStore()
   const router = useRouter()

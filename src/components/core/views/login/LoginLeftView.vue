@@ -34,11 +34,10 @@
       <div class="geo-element bg-bubble animate-scale-in" style="animation-delay: 0.5"></div>
 
       <!-- 太阳/月亮 -->
-      <div
-        class="geo-element circle-top-right animate-fade-in-down"
-        style="animation-delay: 0.5"
-        @click="themeAnimation"
-      ></div>
+        <div
+          class="geo-element circle-top-right animate-fade-in-down"
+          style="animation-delay: 0.5"
+        ></div>
 
       <!-- 装饰点 -->
       <div class="geo-element dot dot-top-left animate-bounce-in" style="animation-delay: 0s"></div>
@@ -73,7 +72,6 @@
 <script setup lang="ts">
   import AppConfig from '@/config'
   import loginIcon from '@imgs/svg/login_icon.svg'
-  import { themeAnimation } from '@/utils/theme/animation'
 
   // 定义 props
   defineProps<{

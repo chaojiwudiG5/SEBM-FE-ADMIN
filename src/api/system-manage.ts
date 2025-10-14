@@ -120,3 +120,12 @@ export async function fetchGetMenuList(delay = 300): Promise<MenuResponse> {
     throw error instanceof Error ? error : new Error('获取菜单失败')
   }
 }
+
+// 获取消息/模板列表
+export function fetchTemplateList(data: { pageNumber: number; pageSize: number; queryRole: number }) {
+  console.log('🚀 调用模板列表 API，参数:', data)
+  return request.post({
+    url: '/template/list',
+    data
+  })
+}

@@ -178,15 +178,9 @@
       return findIframeMenuList(route.path, allMenus)
     }
 
-    // 处理一级菜单
-    if (route.meta.isFirstLevel) {
-      return []
-    }
-
-    // 返回当前顶级路径对应的子菜单
-    const currentTopPath = `/${route.path.split('/')[1]}`
-    const currentMenu = allMenus.find((menu) => menu.path === currentTopPath)
-    return currentMenu?.children ?? []
+    // 我们将左侧/双列模式下菜单改为仅显示一级菜单（取消二级菜单展示）
+    // 返回顶级菜单列表并移除 children，避免 SidebarSubmenu 渲染二级菜单
+    return allMenus.map((m) => ({ ...m, children: undefined }))
   })
 
   /**
