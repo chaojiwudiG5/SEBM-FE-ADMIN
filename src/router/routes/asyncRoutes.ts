@@ -39,21 +39,21 @@ export const asyncRoutes: AppRouteRecord[] = [
     ]
   },
   {
-    path: '/role',
-    name: 'Role',
+    path: '/message',
+    name: 'Message',
     component: RoutesAlias.Layout,
     meta: {
-      title: 'menus.system.role',
+      title: 'menus.system.message',
       icon: '&#xe7b9;',
       roles: ['R_ADMIN']
     },
     children: [
       {
         path: '',
-        name: 'RoleIndex',
-        component: RoutesAlias.Role,
+        name: 'MessageIndex',
+        component: RoutesAlias.Message,
         meta: {
-          title: 'menus.system.role',
+          title: 'menus.system.message',
           keepAlive: true,
           roles: ['R_ADMIN']
         }
@@ -78,33 +78,6 @@ export const asyncRoutes: AppRouteRecord[] = [
           title: 'menus.system.device',
           keepAlive: true,
           roles: ['R_ADMIN']
-        }
-      }
-    ]
-  },
-  {
-    path: '/menu',
-    name: 'Menus',
-    component: RoutesAlias.Layout,
-    meta: {
-      title: 'menus.system.menu',
-      icon: '&#xe7b9;',
-      roles: ['R_ADMIN']
-    },
-    children: [
-      {
-        path: '',
-        name: 'MenuIndex',
-        component: RoutesAlias.Menu,
-        meta: {
-          title: 'menus.system.menu',
-          keepAlive: true,
-          roles: ['R_ADMIN'],
-          authList: [
-            { title: '新增', authMark: 'add' },
-            { title: '编辑', authMark: 'edit' },
-            { title: '删除', authMark: 'delete' }
-          ]
         }
       }
     ]

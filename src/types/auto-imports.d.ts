@@ -8,6 +8,7 @@ export {}
 declare global {
   const BaseTransition: typeof import('vue')['BaseTransition']
   const EffectScope: typeof import('vue')['EffectScope']
+  const ElMessageBox: typeof import('element-plus/es')['ElMessageBox']
   const Fragment: typeof import('vue')['Fragment']
   const KeepAlive: typeof import('vue')['KeepAlive']
   const Suspense: typeof import('vue')['Suspense']

@@ -2,7 +2,7 @@
 <template>
   <nav class="breadcrumb" aria-label="breadcrumb">
     <ul>
-  <li v-for="(item, index) in breadcrumbItems" :key="item.key">
+      <li v-for="(item, index) in breadcrumbItems" :key="item.path">
         <div
           :class="{ clickable: isClickable(item, index) }"
           @click="handleBreadcrumbClick(item, index)"
@@ -32,7 +32,6 @@
   export interface BreadcrumbItem {
     path: string
     meta: RouteRecordRaw['meta']
-    key: string // 唯一 key（path + index），用来避免 v-for 重复 key
   }
 
   const route = useRoute()
@@ -56,8 +55,8 @@
     const currentRouteMeta = currentRoute.meta
 
     let items = isFirstLevel
-      ? [createBreadcrumbItem(currentRoute, lastIndex)]
-      : matched.map((r, i) => createBreadcrumbItem(r, i))
+      ? [createBreadcrumbItem(currentRoute)]
+      : matched.map(createBreadcrumbItem)
 
     // 过滤包裹容器：如果有多个项目且第一个是容器路由（如 /outside），则移除它
     if (items.length > 1 && isWrapperContainer(items[0])) {
@@ -66,7 +65,7 @@
 
     // IFrame 页面特殊处理：如果过滤后只剩一个 iframe 页面，或者所有项都是包裹容器，则仅展示当前页
     if (currentRouteMeta?.isIframe && (items.length === 1 || items.every(isWrapperContainer))) {
-      return [createBreadcrumbItem(currentRoute, lastIndex)]
+      return [createBreadcrumbItem(currentRoute)]
     }
 
     return items
@@ -77,10 +76,9 @@
     item.path === '/outside' && !!item.meta?.isIframe
 
   // 辅助函数：创建面包屑项目
-  const createBreadcrumbItem = (route: RouteLocationMatched, idx: number = 0): BreadcrumbItem => ({
+  const createBreadcrumbItem = (route: RouteLocationMatched): BreadcrumbItem => ({
     path: route.path,
-    meta: route.meta,
-    key: `${route.path}-${idx}`
+    meta: route.meta
   })
 
   // 辅助函数：判断是否为首页

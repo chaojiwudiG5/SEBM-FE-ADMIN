@@ -227,10 +227,9 @@
     "system": {
       "title": "System Management",
       "user": "User Management",
-  "role": "Notifications",
+      "message": "Message Notification",
       "device": "Device Management",
-      "userCenter": "User Center",
-      "menu": "Menu Management"
+      "userCenter": "User Center"
     }
   },
   "table": {
