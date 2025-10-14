@@ -122,7 +122,12 @@ export async function fetchGetMenuList(delay = 300): Promise<MenuResponse> {
 }
 
 // 获取消息/模板列表
-export function fetchTemplateList(data: { pageNumber: number; pageSize: number; queryRole: number }) {
+export function fetchTemplateList(data: { 
+  pageNumber: number
+  pageSize: number
+  queryRole: number
+  readStatus?: number // 0=未读，1=已读
+}) {
   console.log('🚀 调用模板列表 API，参数:', data)
   return request.post({
     url: '/notification/record/list',
