@@ -254,8 +254,8 @@
     loading.value = true
     try {
       const params = {
-        pageNumber: unreadPagination.current,
-        pageSize: unreadPagination.size,
+        pageNumber: 1,
+        pageSize: 999999,
         queryRole: 0,
         readStatus: 0 // 0表示未读
       }
@@ -298,8 +298,8 @@
     loading.value = true
     try {
       const params = {
-        pageNumber: readPagination.current,
-        pageSize: readPagination.size,
+        pageNumber: 1,
+        pageSize: 999999,
         queryRole: 0,
         readStatus: 1 // 1表示已读
       }

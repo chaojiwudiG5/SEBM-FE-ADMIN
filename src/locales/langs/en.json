@@ -20,8 +20,6 @@
     },
     "user": {
       "userCenter": "User center",
-      "docs": "Document",
-      "github": "Github",
       "lockScreen": "Lock screen",
       "logout": "Log out"
     },
@@ -105,7 +103,7 @@
   "notice": {
     "title": "Notice",
     "btnRead": "Mark as read",
-    "bar": ["Notice", "Message", "Todo"],
+    "bar": ["System Notice", "Rental Message", "Pending"],
     "text": ["No"],
     "viewAll": "View all"
   },
@@ -122,8 +120,8 @@
   },
   "login": {
     "leftView": {
-      "title": "An Admin template focused on user experience",
-      "subTitle": "A sleek and practical interface for a great user experience"
+      "title": "SEBM Campus Equipment Rental System",
+      "subTitle": "Convenient and efficient equipment rental platform for campus community"
     },
     "title": "Welcome back",
     "subTitle": "Please enter your account and password to login",
@@ -153,7 +151,7 @@
   },
   "register": {
     "title": "Create account",
-    "subTitle": "Welcome to join us, please fill in the following information to complete the registration",
+    "subTitle": "Welcome to SEBM rental system, please fill in the following information to complete the registration",
     "placeholder": [
       "Please enter your account",
       "Please enter your password",
@@ -206,11 +204,8 @@
     "forgetPassword": {
       "title": "Forget Password"
     },
-    "outside": {
-      "title": "Outside"
-    },
     "dashboard": {
-      "title": "Dashboard",
+      "title": "Data Overview",
       "console": "Console"
     },
     "result": {

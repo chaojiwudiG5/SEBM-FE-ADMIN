@@ -20,8 +20,6 @@
     },
     "user": {
       "userCenter": "个人中心",
-      "docs": "使用文档",
-      "github": "Github",
       "lockScreen": "锁定屏幕",
       "logout": "退出登录"
     },
@@ -105,7 +103,7 @@
   "notice": {
     "title": "通知",
     "btnRead": "标为已读",
-    "bar": ["通知", "消息", "代办"],
+    "bar": ["系统通知", "租借消息", "待处理"],
     "text": ["暂无"],
     "viewAll": "查看全部"
   },
@@ -122,8 +120,8 @@
   },
   "login": {
     "leftView": {
-      "title": "专注于用户体验的后台管理系统模版",
-      "subTitle": "美观实用的界面，经过视觉优化，确保卓越的用户体验"
+      "title": "SEBM 校园物品租借管理系统",
+      "subTitle": "为校园师生提供便捷、高效的物品租借服务平台"
     },
     "title": "欢迎回来",
     "subTitle": "输入您的账号和密码登录",
@@ -149,7 +147,7 @@
   },
   "register": {
     "title": "创建账号",
-    "subTitle": "欢迎加入我们，请填写以下信息完成注册",
+    "subTitle": "欢迎使用SEBM租借系统，请填写以下信息完成注册",
     "placeholder": ["请输入账号", "请输入密码", "请再次输入密码"],
     "rule": [
       "请再次输入密码",
@@ -198,11 +196,8 @@
     "forgetPassword": {
       "title": "忘记密码"
     },
-    "outside": {
-      "title": "内嵌页面"
-    },
     "dashboard": {
-      "title": "仪表盘",
+      "title": "数据概览",
       "console": "工作台"
     },
     "result": {
