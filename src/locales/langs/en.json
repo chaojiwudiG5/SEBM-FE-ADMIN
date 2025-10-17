@@ -254,5 +254,134 @@
     "zebra": "Zebra",
     "border": "Border",
     "headerBackground": "Header BG"
+  },
+  "message": {
+    "tab": {
+      "unread": "Unread Messages",
+      "read": "Read Messages"
+    },
+    "button": {
+      "markRead": "Mark as Read",
+      "markAllRead": "Mark All as Read",
+      "batchDelete": "Batch Delete",
+      "delete": "Delete"
+    },
+    "column": {
+      "title": "Message Title",
+      "content": "Message Content",
+      "sendTime": "Send Time",
+      "action": "Action"
+    },
+    "confirm": {
+      "markRead": "Are you sure to mark this message as read?",
+      "markBatchRead": "Are you sure to mark {count} selected messages as read?",
+      "markAllRead": "Are you sure to mark all unread messages as read?",
+      "delete": "Are you sure to delete this message?",
+      "batchDelete": "Are you sure to delete {count} selected messages?"
+    },
+    "success": {
+      "markRead": "Marked successfully",
+      "delete": "Deleted successfully"
+    },
+    "error": {
+      "fetchUnread": "Failed to fetch unread messages",
+      "fetchRead": "Failed to fetch read messages",
+      "markRead": "Failed to mark as read",
+      "delete": "Failed to delete",
+      "noUserInfo": "Unable to get user information"
+    },
+    "warning": {
+      "selectFirst": "Please select messages first"
+    }
+  },
+  "user": {
+    "search": {
+      "username": "Username",
+      "phone": "Phone",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "gender": "Gender",
+      "ageRange": "Age Range",
+      "level": "Level",
+      "placeholder": {
+        "username": "Please enter username",
+        "phone": "Please enter phone number",
+        "email": "Please enter email",
+        "role": "Please select role",
+        "status": "Please select status",
+        "level": "Please select level"
+      }
+    },
+    "role": {
+      "user": "User",
+      "admin": "Admin",
+      "technician": "Technician"
+    },
+    "status": {
+      "normal": "Normal",
+      "banned": "Banned",
+      "online": "Online",
+      "offline": "Offline",
+      "abnormal": "Abnormal",
+      "cancelled": "Cancelled"
+    },
+    "dialog": {
+      "addTitle": "Add User",
+      "editTitle": "Edit User",
+      "username": "Username",
+      "phone": "Phone",
+      "password": "Password",
+      "checkPassword": "Confirm Password",
+      "placeholder": {
+        "username": "Please enter username (nickname)",
+        "phone": "Please enter phone number (unique)",
+        "password": "Please enter password (at least 6 characters)",
+        "checkPassword": "Please enter password again"
+      },
+      "tip": "Tip: After successful registration, other user information (email, gender, role, etc.) will use system defaults and can be edited in the user list."
+    }
+  },
+  "userCenter": {
+    "description": "SEBM Campus Equipment Rental System - Convenient rental service for campus community",
+    "position": "Interaction Expert",
+    "location": "Shenzhen, Guangdong",
+    "company": "ByteDance - Platform Dept - UED",
+    "tags": "Tags",
+    "tagList": ["Focused Design", "Creative", "Spicy", "Long Legs", "Sichuan Girl", "Inclusive"],
+    "basicSettings": "Basic Settings",
+    "changePassword": "Change Password",
+    "field": {
+      "realName": "Name",
+      "nickname": "Nickname",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "gender": "Gender",
+      "introduction": "Introduction",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password"
+    },
+    "button": {
+      "edit": "Edit",
+      "save": "Save"
+    },
+    "validation": {
+      "nameRequired": "Please enter name",
+      "nameLength": "Length should be 2 to 30 characters",
+      "nicknameRequired": "Please enter nickname",
+      "emailRequired": "Please enter email",
+      "phoneRequired": "Please enter phone number",
+      "addressRequired": "Please enter address",
+      "genderRequired": "Please select gender"
+    },
+    "greeting": {
+      "morning": "Good morning",
+      "noon": "Good noon",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening",
+      "night": "It's late, go to bed early"
+    }
   }
 }
