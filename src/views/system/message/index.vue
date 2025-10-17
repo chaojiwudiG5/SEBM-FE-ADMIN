@@ -70,6 +70,7 @@
 </template>
 
 <script setup lang="ts">
+  import { ref, reactive, computed, onMounted, watch } from 'vue'
   import { 
     fetchTemplateList, 
     batchMarkAsRead, 
@@ -109,8 +110,12 @@
   const selectedUnreadIds = ref<number[]>([])
   const selectedReadIds = ref<number[]>([])
   
-  // 未读消息数量
+  // 未读消息数量（展示用）
   const unreadCount = computed(() => unreadPagination.total)
+  
+  // 与全局徽章同步（以服务端分页返回的 total 为准）
+  import { useWebSocketStore } from '@/store/modules/websocket'
+  const websocketStore = useWebSocketStore()
   
   // 分页配置 - 未读消息
   const unreadPagination = reactive({
@@ -281,6 +286,9 @@
         .sort((a, b) => new Date(b.sendTime).getTime() - new Date(a.sendTime).getTime())
       
       unreadPagination.total = total
+      // 同步到全局未读徽章
+      websocketStore.setUnreadTotal(total)
+      console.log('✅ [Message] 已同步未读总数到全局:', total)
       
       console.log('✅ 未读消息:', unreadMessages.value.length, '条，总数:', total)
     } catch (error) {
@@ -451,6 +459,7 @@
       // 清空选择并刷新列表
       selectedUnreadIds.value = []
       await fetchUnreadMessages()
+      // 由于后端已更新未读数，同步最新 total
     } catch (error: any) {
       if (error !== 'cancel') {
         console.error('❌ 批量标记已读失败:', error)
@@ -477,18 +486,24 @@
       )
 
       loading.value = true
-      const userId = userStore.getUserInfo?.userId
+      const userId = userStore.getUserInfo?.id  // 使用 id 而不是 userId
+      console.log('📝 [Message] 准备标记全部已读，userId:', userId, 'userInfo:', userStore.getUserInfo)
+      
       if (!userId) {
+        console.error('❌ [Message] 无法获取用户ID')
         ElMessage.error('无法获取用户信息')
         return
       }
 
       await markAllAsRead(userId)
+      console.log('✅ [Message] 全部标记已读成功')
       ElMessage.success('全部标记成功')
       
       // 清空选择并刷新列表
       selectedUnreadIds.value = []
       await fetchUnreadMessages()
+      // 全部标记后未读为 0
+      websocketStore.setUnreadTotal(0)
     } catch (error: any) {
       if (error !== 'cancel') {
         console.error('❌ 标记全部已读失败:', error)
@@ -578,6 +593,18 @@
   onMounted(() => {
     fetchUnreadMessages()
   })
+  
+  // 监听 WebSocket 消息变化，自动刷新未读列表
+  watch(
+    () => websocketStore.messages.length,
+    (newLength, oldLength) => {
+      // 仅当有新消息增加且当前在未读消息页时才刷新
+      if (newLength > oldLength && activeTab.value === 'unread') {
+        console.log('🔄 [MessagePage] 收到新消息，自动刷新未读列表')
+        fetchUnreadMessages()
+      }
+    }
+  )
 </script>
 
 <style scoped lang="scss">

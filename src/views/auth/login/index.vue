@@ -182,20 +182,15 @@
 
       // 登录成功处理
       showLoginSuccessNotice()
-      console.log('🚀 准备跳转到 /user')
+      console.log('🚀 准备跳转到首页')
 
       // 使用 nextTick 确保状态更新后再跳转
       await nextTick()
 
-      // 尝试跳转
-      try {
-        await router.push('/user')
-        console.log('✅ 路由跳转成功')
-      } catch (routerError) {
-        console.error('❌ 路由跳转失败:', routerError)
-        // 如果跳转失败，尝试替换到根路径让路由守卫处理
-        await router.replace('/')
-      }
+      // 跳转到根路径，让路由守卫自动处理动态路由注册和跳转
+      console.log('📍 跳转到根路径 / ，由路由守卫处理后续跳转')
+      await router.push('/')
+      console.log('✅ 路由跳转完成')
     } catch (error) {
       // 处理 HttpError
       if (error instanceof HttpError) {

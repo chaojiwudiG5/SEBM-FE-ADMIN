@@ -149,7 +149,7 @@ export function markAllAsRead(userId: number) {
   console.log('🚀 标记全部为已读 API，userId:', userId)
   return request.post({
     url: '/notification/record/markAllAsRead',
-    params: { userId }
+    params: { userId }  // 后端使用 @RequestParam，需要用 params（URL查询参数）
   })
 }
 

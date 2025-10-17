@@ -40,7 +40,6 @@
       </div>
 
       <div class="right">
-        <!-- 搜索/全屏/通知/聊天 已移除 -->
         <!-- 语言 -->
         <div class="btn-box" v-if="shouldShowLanguage">
           <ElDropdown @command="changeLanguage" popper-class="langDropDownStyle">

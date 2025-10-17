@@ -17,6 +17,8 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { setupGlobDirectives } from './directives'
 import { setupErrorHandle } from './utils/sys/error-handle'
 import language from './locales'
+// WebSocket延迟加载 - 在用户登录后才初始化
+import { useWebSocketInit } from './composables/useWebSocketInit'
 
 document.addEventListener(
   'touchstart',
@@ -35,5 +37,10 @@ app.use(language)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
+
+// 应用挂载
 app.mount('#app')
+
+// 初始化WebSocket延迟加载（在用户登录后才会真正初始化）
+useWebSocketInit()
 

@@ -175,6 +175,15 @@
     top: 5px;
     bottom: auto;
   }
+  
+  // WebSocket未读消息红点（闪烁效果）
+  &.unread-message-dot {
+    width: 8px;
+    height: 8px;
+    background: #ff4d4f;
+    box-shadow: 0 0 8px rgba(255, 77, 79, 0.8);
+    animation: badge-blink 1.5s ease-in-out infinite;
+  }
 }
 
 // 文字徽章样式
@@ -193,6 +202,38 @@
   text-align: center;
   background: #fd4e4e;
   border-radius: 4px;
+  
+  // WebSocket未读消息徽章（红色，带呼吸动画）
+  &.unread-message-badge {
+    background: #ff4d4f;
+    font-weight: bold;
+    box-shadow: 0 0 6px rgba(255, 77, 79, 0.6);
+    animation: badge-breathe 2s ease-in-out infinite;
+  }
+}
+
+@keyframes badge-breathe {
+  0% {
+    box-shadow: 0 0 6px rgba(255, 77, 79, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(255, 77, 79, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 6px rgba(255, 77, 79, 0.6);
+  }
+}
+
+// 闪烁动画
+@keyframes badge-blink {
+  0%, 100% {
+    opacity: 1;
+    box-shadow: 0 0 8px rgba(255, 77, 79, 0.8);
+  }
+  50% {
+    opacity: 0.3;
+    box-shadow: 0 0 3px rgba(255, 77, 79, 0.3);
+  }
 }
 
 @keyframes breathe {
