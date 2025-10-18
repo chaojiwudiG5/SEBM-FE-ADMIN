@@ -52,6 +52,7 @@
         
         <!-- 编辑用户：显示完整字段 -->
         <template v-else>
+          <!-- 基本信息 -->
           <ElCol :span="12">
             <ElFormItem label="用户名" prop="username">
               <ElInput v-model="formData.username" placeholder="请输入用户名" />
@@ -77,6 +78,28 @@
             </ElFormItem>
           </ElCol>
           <ElCol :span="12">
+            <ElFormItem label="年龄" prop="age">
+              <ElInputNumber 
+                v-model="formData.age" 
+                :min="0" 
+                :max="120" 
+                :controls="false"
+                placeholder="请输入年龄"
+                style="width: 100%;"
+              />
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="12">
+            <ElFormItem label="头像URL" prop="avatarUrl">
+              <ElInput v-model="formData.avatarUrl" placeholder="请输入头像URL" />
+            </ElFormItem>
+          </ElCol>
+          
+          <!-- 权限与状态管理 -->
+          <ElCol :span="24">
+            <ElDivider content-position="left">权限与状态管理</ElDivider>
+          </ElCol>
+          <ElCol :span="12">
             <ElFormItem label="角色" prop="userRole">
               <ElSelect v-model="formData.userRole" placeholder="请选择角色">
                 <ElOption label="普通用户" :value="0" />
@@ -94,22 +117,50 @@
             </ElFormItem>
           </ElCol>
           <ElCol :span="12">
-            <ElFormItem label="年龄" prop="age">
-              <ElInputNumber 
-                v-model="formData.age" 
-                :min="0" 
-                :max="120" 
-                placeholder="请输入年龄"
+            <ElFormItem label="激活状态" prop="isActive">
+              <ElSwitch 
+                v-model="formData.isActive" 
+                active-text="已激活" 
+                inactive-text="未激活"
               />
             </ElFormItem>
           </ElCol>
+          
+          <!-- 业务管理字段 -->
+          <ElCol :span="24">
+            <ElDivider content-position="left">设备借用业务管理</ElDivider>
+          </ElCol>
           <ElCol :span="12">
-            <ElFormItem label="等级" prop="level">
+            <ElFormItem label="用户等级" prop="level">
               <ElInputNumber 
                 v-model="formData.level" 
                 :min="1" 
                 :max="10" 
+                :controls="false"
                 placeholder="请输入等级"
+                style="width: 100%;"
+              />
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="12">
+            <ElFormItem label="逾期次数" prop="overdueTimes">
+              <ElInputNumber 
+                v-model="formData.overdueTimes" 
+                :min="0" 
+                :controls="false"
+                placeholder="当前逾期次数"
+                style="width: 100%;"
+              />
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="12">
+            <ElFormItem label="已借设备数" prop="borrowedDeviceCount">
+              <ElInputNumber 
+                v-model="formData.borrowedDeviceCount" 
+                :min="0" 
+                :controls="false"
+                placeholder="当前已借设备数量"
+                style="width: 100%;"
               />
             </ElFormItem>
           </ElCol>
@@ -119,7 +170,9 @@
                 v-model="formData.maxBorrowedDeviceCount" 
                 :min="0" 
                 :max="50" 
+                :controls="false"
                 placeholder="请输入最大可借设备数"
+                style="width: 100%;"
               />
             </ElFormItem>
           </ElCol>
@@ -129,7 +182,9 @@
                 v-model="formData.maxOverdueTimes" 
                 :min="0" 
                 :max="20" 
+                :controls="false"
                 placeholder="请输入最大允许逾期次数"
+                style="width: 100%;"
               />
             </ElFormItem>
           </ElCol>
@@ -184,16 +239,24 @@
 
   // 表单数据
   const formData = reactive({
+    // 新增用户字段
     username: '',
-    email: '',
     phone: '',
-    password: '',          // 新增密码字段
-    checkPassword: '',     // 新增确认密码字段
+    password: '',
+    checkPassword: '',
+    // 编辑用户字段
+    email: '',
     gender: 0,
+    avatarUrl: '',
+    age: undefined as number | undefined,
+    // 权限与状态管理
     userRole: 0,
     userStatus: 0,
-    age: undefined as number | undefined,
+    isActive: true,
+    // 业务管理字段
     level: undefined as number | undefined,
+    overdueTimes: undefined as number | undefined,
+    borrowedDeviceCount: undefined as number | undefined,
     maxBorrowedDeviceCount: undefined as number | undefined,
     maxOverdueTimes: undefined as number | undefined
   })
@@ -231,23 +294,17 @@
       }
     }
     
-    // 编辑用户：验证完整字段（不包含密码）
+    // 编辑用户：取消必填限制，只保留格式验证
     return {
       username: [
-        { required: true, message: '请输入用户名', trigger: 'blur' },
         { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
       ],
       email: [
-        { required: true, message: '请输入邮箱', trigger: 'blur' },
         { type: 'email', message: '请输入正确的邮箱格式', trigger: 'blur' }
       ],
       phone: [
-        { required: true, message: '请输入手机号', trigger: 'blur' },
         { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号格式', trigger: 'blur' }
-      ],
-      gender: [{ required: true, message: '请选择性别', trigger: 'blur' }],
-      userRole: [{ required: true, message: '请选择角色', trigger: 'blur' }],
-      userStatus: [{ required: true, message: '请选择用户状态', trigger: 'blur' }]
+      ]
     }
   })
 
@@ -256,20 +313,47 @@
     const isEdit = props.type === 'edit' && props.userData
     const row = props.userData
 
-    Object.assign(formData, {
-      username: isEdit ? row.username || '' : '',
-      email: isEdit ? row.email || '' : '',
-      phone: isEdit ? row.phone || '' : '',
-      password: '',          // 新增时清空密码
-      checkPassword: '',     // 新增时清空确认密码
-      gender: isEdit ? (row.gender ?? 0) : 0,
-      userRole: isEdit ? (row.userRole ?? 0) : 0,
-      userStatus: isEdit ? (row.userStatus ?? 0) : 0,
-      age: isEdit ? row.age : undefined,
-      level: isEdit ? row.level : undefined,
-      maxBorrowedDeviceCount: isEdit ? row.maxBorrowedDeviceCount : undefined,
-      maxOverdueTimes: isEdit ? row.maxOverdueTimes : undefined
-    })
+    if (isEdit) {
+      // 编辑模式：加载所有字段
+      Object.assign(formData, {
+        username: row.username || '',
+        email: row.email || '',
+        phone: row.phone || '',
+        gender: row.gender ?? 0,
+        avatarUrl: row.avatarUrl || '',
+        age: row.age,
+        userRole: row.userRole ?? 0,
+        userStatus: row.userStatus ?? 0,
+        isActive: row.isActive ?? true,
+        level: row.level,
+        overdueTimes: row.overdueTimes,
+        borrowedDeviceCount: row.borrowedDeviceCount,
+        maxBorrowedDeviceCount: row.maxBorrowedDeviceCount,
+        maxOverdueTimes: row.maxOverdueTimes,
+        password: '',
+        checkPassword: ''
+      })
+    } else {
+      // 新增模式：清空所有字段
+      Object.assign(formData, {
+        username: '',
+        phone: '',
+        password: '',
+        checkPassword: '',
+        email: '',
+        gender: 0,
+        avatarUrl: '',
+        age: undefined,
+        userRole: 0,
+        userStatus: 0,
+        isActive: true,
+        level: undefined,
+        overdueTimes: undefined,
+        borrowedDeviceCount: undefined,
+        maxBorrowedDeviceCount: undefined,
+        maxOverdueTimes: undefined
+      })
+    }
   }
 
   // 统一监听对话框状态变化
@@ -309,21 +393,28 @@
             
             ElMessage.success('添加用户成功')
           } else {
-            // 更新用户（不包含密码字段）
-            const updateData = {
+            // 更新用户（包含所有可修改字段，不包含password和isDelete）
+            const updateData: Api.SystemManage.UserUpdateParams = {
               id: props.userData?.id,
               username: formData.username,
               email: formData.email,
               phone: formData.phone,
               gender: formData.gender,
+              avatarUrl: formData.avatarUrl || undefined,
+              age: formData.age,
               userRole: formData.userRole,
               userStatus: formData.userStatus,
-              age: formData.age,
+              isActive: formData.isActive,
               level: formData.level,
+              overdueTimes: formData.overdueTimes,
+              borrowedDeviceCount: formData.borrowedDeviceCount,
               maxBorrowedDeviceCount: formData.maxBorrowedDeviceCount,
               maxOverdueTimes: formData.maxOverdueTimes
             }
+            
+            console.log('📝 准备更新用户，数据:', updateData)
             await fetchUpdateUser(updateData)
+            console.log('✅ 更新用户成功')
             ElMessage.success('更新用户成功')
           }
           

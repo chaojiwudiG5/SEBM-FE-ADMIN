@@ -20,8 +20,6 @@
     },
     "user": {
       "userCenter": "个人中心",
-      "docs": "使用文档",
-      "github": "Github",
       "lockScreen": "锁定屏幕",
       "logout": "退出登录"
     },
@@ -105,7 +103,7 @@
   "notice": {
     "title": "通知",
     "btnRead": "标为已读",
-    "bar": ["通知", "消息", "代办"],
+    "bar": ["系统通知", "租借消息", "待处理"],
     "text": ["暂无"],
     "viewAll": "查看全部"
   },
@@ -122,8 +120,8 @@
   },
   "login": {
     "leftView": {
-      "title": "专注于用户体验的后台管理系统模版",
-      "subTitle": "美观实用的界面，经过视觉优化，确保卓越的用户体验"
+      "title": "SEBM 校园物品租借管理系统",
+      "subTitle": "为校园师生提供便捷、高效的物品租借服务平台"
     },
     "title": "欢迎回来",
     "subTitle": "输入您的账号和密码登录",
@@ -149,7 +147,7 @@
   },
   "register": {
     "title": "创建账号",
-    "subTitle": "欢迎加入我们，请填写以下信息完成注册",
+    "subTitle": "欢迎使用SEBM租借系统，请填写以下信息完成注册",
     "placeholder": ["请输入账号", "请输入密码", "请再次输入密码"],
     "rule": [
       "请再次输入密码",
@@ -198,11 +196,8 @@
     "forgetPassword": {
       "title": "忘记密码"
     },
-    "outside": {
-      "title": "内嵌页面"
-    },
     "dashboard": {
-      "title": "仪表盘",
+      "title": "数据概览",
       "console": "工作台"
     },
     "result": {
@@ -219,7 +214,7 @@
     "system": {
       "title": "系统管理",
       "user": "用户管理",
-      "role": "角色管理",
+      "message": "消息通知",
       "device": "设备管理",
       "template": "模版管理",
       "userCenter": "个人中心",
@@ -253,5 +248,134 @@
     "zebra": "斑马纹",
     "border": "边框",
     "headerBackground": "表头背景"
+  },
+  "message": {
+    "tab": {
+      "unread": "未读消息",
+      "read": "已读消息"
+    },
+    "button": {
+      "markRead": "标记已读",
+      "markAllRead": "全部标记已读",
+      "batchDelete": "批量删除",
+      "delete": "删除"
+    },
+    "column": {
+      "title": "消息标题",
+      "content": "消息内容",
+      "sendTime": "发送时间",
+      "action": "操作"
+    },
+    "confirm": {
+      "markRead": "确定要将该消息标记为已读吗？",
+      "markBatchRead": "确定要将选中的 {count} 条消息标记为已读吗？",
+      "markAllRead": "确定要将所有未读消息标记为已读吗？",
+      "delete": "确定要删除该消息吗？",
+      "batchDelete": "确定要删除选中的 {count} 条消息吗？"
+    },
+    "success": {
+      "markRead": "标记成功",
+      "delete": "删除成功"
+    },
+    "error": {
+      "fetchUnread": "获取未读消息失败",
+      "fetchRead": "获取已读消息失败",
+      "markRead": "标记失败",
+      "delete": "删除失败",
+      "noUserInfo": "无法获取用户信息"
+    },
+    "warning": {
+      "selectFirst": "请先选择要标记的消息"
+    }
+  },
+  "user": {
+    "search": {
+      "username": "用户名",
+      "phone": "手机号",
+      "email": "邮箱",
+      "role": "角色",
+      "status": "状态",
+      "gender": "性别",
+      "ageRange": "年龄范围",
+      "level": "等级",
+      "placeholder": {
+        "username": "请输入用户名",
+        "phone": "请输入手机号",
+        "email": "请输入邮箱",
+        "role": "请选择角色",
+        "status": "请选择状态",
+        "level": "请选择等级"
+      }
+    },
+    "role": {
+      "user": "普通用户",
+      "admin": "管理员",
+      "technician": "技工"
+    },
+    "status": {
+      "normal": "正常",
+      "banned": "封禁",
+      "online": "在线",
+      "offline": "离线",
+      "abnormal": "异常",
+      "cancelled": "注销"
+    },
+    "dialog": {
+      "addTitle": "添加用户",
+      "editTitle": "编辑用户",
+      "username": "用户名",
+      "phone": "手机号",
+      "password": "密码",
+      "checkPassword": "确认密码",
+      "placeholder": {
+        "username": "请输入用户名（昵称）",
+        "phone": "请输入手机号（唯一标识）",
+        "password": "请输入密码（最少6位）",
+        "checkPassword": "请再次输入密码"
+      },
+      "tip": "提示：注册成功后，其他用户信息（邮箱、性别、角色等）将使用系统默认值，可在用户列表中编辑修改。"
+    }
+  },
+  "userCenter": {
+    "description": "SEBM校园物品租借系统 - 为校园师生提供便捷的租借服务",
+    "position": "交互专家",
+    "location": "广东省深圳市",
+    "company": "字节跳动－某某平台部－UED",
+    "tags": "标签",
+    "tagList": ["专注设计", "很有想法", "辣~", "大长腿", "川妹子", "海纳百川"],
+    "basicSettings": "基本设置",
+    "changePassword": "更改密码",
+    "field": {
+      "realName": "姓名",
+      "nickname": "昵称",
+      "email": "邮箱",
+      "phone": "手机",
+      "address": "地址",
+      "gender": "性别",
+      "introduction": "个人介绍",
+      "currentPassword": "当前密码",
+      "newPassword": "新密码",
+      "confirmPassword": "确认新密码"
+    },
+    "button": {
+      "edit": "编辑",
+      "save": "保存"
+    },
+    "validation": {
+      "nameRequired": "请输入姓名",
+      "nameLength": "长度在 2 到 30 个字符",
+      "nicknameRequired": "请输入昵称",
+      "emailRequired": "请输入邮箱",
+      "phoneRequired": "请输入手机号码",
+      "addressRequired": "请输入地址",
+      "genderRequired": "请选择性别"
+    },
+    "greeting": {
+      "morning": "早上好",
+      "noon": "中午好",
+      "afternoon": "下午好",
+      "evening": "晚上好",
+      "night": "很晚了，早点睡"
+    }
   }
 }

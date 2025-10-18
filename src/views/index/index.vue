@@ -20,6 +20,8 @@
 </template>
 
 <script setup lang="ts">
+  import ArtWebsocketStatusBar from '@/components/core/layouts/art-websocket-status-bar/index.vue'
+  
   defineOptions({ name: 'AppLayout' })
 </script>
 

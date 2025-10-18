@@ -190,18 +190,22 @@ async function handleDynamicRoutes(
     }
 
     await getMenuData(router)
+    console.log('✅ 菜单数据获取完成')
 
     // 处理根路径跳转
     if (handleRootPathRedirect(to, next)) {
+      console.log('🏠 已处理根路径跳转')
       return
     }
 
+    console.log('📍 准备跳转到目标路径:', to.path)
     next({
       path: to.path,
       query: to.query,
       hash: to.hash,
       replace: true
     })
+    console.log('✅ 路由跳转命令已发出')
   } catch (error) {
     console.error('动态路由注册失败:', error)
     next('/exception/500')
@@ -233,22 +237,32 @@ async function processFrontendMenu(router: Router): Promise<void> {
   console.log('📋 原始菜单列表长度:', menuList.length)
   
   const userStore = useUserStore()
-  const roles = userStore.info.roles
+  const roles = userStore.info?.roles
   console.log('👤 用户角色:', roles)
+  console.log('👤 用户信息:', userStore.info)
 
-  if (!roles) {
-    console.error('❌ 获取用户角色失败')
-    throw new Error('获取用户角色失败')
+  // 当后端未返回角色或角色为空时，默认放行所有菜单，避免阻塞登录后的跳转
+  const filteredMenuList = !roles || roles.length === 0
+    ? menuList
+    : filterMenuByRoles(menuList, roles)
+
+  if (!roles || roles.length === 0) {
+    console.warn('⚠️ 未获取到用户角色，已默认放行全部菜单用于继续流程')
   }
 
-  const filteredMenuList = filterMenuByRoles(menuList, roles)
   console.log('✅ 权限过滤后的菜单数量:', filteredMenuList.length)
-  console.log('📄 过滤后的菜单:', filteredMenuList)
-
-  // 添加延时以提升用户体验
-  await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY))
-
-  await registerAndStoreMenu(router, filteredMenuList)
+  
+  if (filteredMenuList.length === 0) {
+    console.error('❌ 过滤后菜单为空！这会导致无法跳转')
+    console.log('📊 原始菜单:', menuList)
+    // 如果过滤后为空，使用原始菜单
+    await registerAndStoreMenu(router, menuList)
+  } else {
+    // 添加延时以提升用户体验
+    await new Promise((resolve) => setTimeout(resolve, LOADING_DELAY))
+    await registerAndStoreMenu(router, filteredMenuList)
+  }
+  
   console.log('🎯 菜单注册完成')
 }
 
@@ -360,10 +374,10 @@ export function resetRouterState(): void {
 function handleRootPathRedirect(to: RouteLocationNormalized, next: NavigationGuardNext): boolean {
   if (to.path === '/') {
     const { homePath } = useCommon()
-    if (homePath.value) {
-      next({ path: homePath.value, replace: true })
-      return true
-    }
+    const targetPath = homePath.value || '/dashboard/console'
+    console.log('🏠 根路径跳转，目标路径:', targetPath)
+    next({ path: targetPath, replace: true })
+    return true
   }
   return false
 }

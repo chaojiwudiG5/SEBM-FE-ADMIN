@@ -1,7 +1,8 @@
 <template>
   <template v-for="item in filteredMenuItems" :key="item.path">
-    <!-- 包含子菜单的项目 -->
-    <ElSubMenu v-if="hasChildren(item)" :index="item.path || item.meta.title" :level="level">
+    <!-- 包含子菜单且无自身 path（容器类型）则渲染为可展开的 SubMenu；
+      如果项有 children 但自身具有 path，则不展开，直接渲染为可点击的 MenuItem -->
+    <ElSubMenu v-if="hasChildren(item) && !item.path" :index="item.path || item.meta.title" :level="level">
       <template #title>
         <MenuItemIcon :icon="item.meta.icon" :color="theme?.iconColor" />
         <span class="menu-name">
@@ -19,7 +20,7 @@
       />
     </ElSubMenu>
 
-    <!-- 普通菜单项 -->
+    <!-- 普通菜单项（包括有 children 但自身有 path 的情况——直接跳转，取消展开） -->
     <ElMenuItem
       v-else
       :index="item.path || item.meta.title"
@@ -27,18 +28,39 @@
       @click="goPage(item)"
     >
       <MenuItemIcon :icon="item.meta.icon" :color="theme?.iconColor" />
+      <!-- 常规圆点徽章（菜单收起时） -->
       <div
         v-show="item.meta.showBadge && level === 0 && !menuOpen"
         class="art-badge"
+        style="right: 5px"
+      />
+      <!-- WebSocket未读消息徽章（菜单收起时显示红色圆点） -->
+      <div
+        v-show="item.path === '/message' && unreadCount > 0 && level === 0 && !menuOpen"
+        class="art-badge unread-message-dot"
         style="right: 5px"
       />
 
       <template #title>
         <span class="menu-name">
           {{ formatMenuTitle(item.meta.title) }}
+          <!-- 临时调试：显示未读数量 -->
+          <span v-if="item.path === '/message'" style="color: #ff4d4f; font-size: 10px; margin-left: 5px; font-weight: bold;">
+            [{{ unreadCount }}]
+          </span>
         </span>
         <div v-if="item.meta.showBadge" class="art-badge" />
-        <div v-if="item.meta.showTextBadge && (level > 0 || menuOpen)" class="art-text-badge">
+        <!-- WebSocket未读消息红色圆点（只在有未读消息时显示） -->
+        <div 
+          v-if="item.path === '/message' && unreadCount > 0" 
+          class="art-badge unread-message-dot"
+          :style="{ animation: 'badge-blink 1.5s ease-in-out infinite' }"
+        />
+        <!-- 其他文本徽章 -->
+        <div 
+          v-else-if="item.path !== '/message' && item.meta.showTextBadge && (level > 0 || menuOpen)" 
+          class="art-text-badge"
+        >
           {{ item.meta.showTextBadge }}
         </div>
       </template>
@@ -47,11 +69,13 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
+  import { computed, watch } from 'vue'
+  import { storeToRefs } from 'pinia'
   import type { AppRouteRecord } from '@/types/router'
   import { formatMenuTitle } from '@/router/utils/utils'
   import { handleMenuJump } from '@/utils/navigation'
   import { useSettingStore } from '@/store/modules/setting'
+  import { useWebSocketStore } from '@/store/modules/websocket'
 
   interface MenuTheme {
     iconColor?: string
@@ -86,8 +110,24 @@
   const emit = defineEmits<Emits>()
 
   const settingStore = useSettingStore()
+  const websocketStore = useWebSocketStore()
 
   const { menuOpen } = storeToRefs(settingStore)
+  const { unreadTotal } = storeToRefs(websocketStore)
+  
+  // 获取未读数量（使用 storeToRefs 确保响应式）
+  const unreadCount = computed(() => {
+    return unreadTotal.value || 0
+  })
+  
+  // 监听 unreadCount 变化（仅在开发环境输出日志）
+  if (import.meta.env.DEV) {
+    watch(unreadCount, (newVal, oldVal) => {
+      if (newVal !== oldVal) {
+        console.log('🔔 [SidebarMenu] 未读消息数变化:', { 旧: oldVal, 新: newVal })
+      }
+    })
+  }
 
   /**
    * 过滤后的菜单项列表

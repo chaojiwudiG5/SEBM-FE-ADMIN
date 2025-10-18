@@ -22,7 +22,7 @@ export enum RoutesAlias {
 
   // 系统管理
   User = '/system/user', // 账户
-  Role = '/system/role', // 角色
+  Message = '/system/message', // 消息通知
   Device = '/system/device', // 设备管理
   Template = '/system/template', // 模版管理
   Notification = '/system/notification', // 通知管理

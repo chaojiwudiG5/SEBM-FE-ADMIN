@@ -12,11 +12,11 @@ const fastEnterConfig: FastEnterConfig = {
   // 应用列表
   applications: [
     {
-      name: '工作台',
-      description: '系统概览与数据统计',
-      icon: '&#xe721;',
+      name: '用户管理',
+      description: '查看和管理用户信息',
+      icon: '&#xe7b9;',
       iconColor: '#377dff',
-      path: RoutesAlias.Dashboard,
+      path: '/user',
       enabled: true,
       order: 1
     },
@@ -48,11 +48,11 @@ const fastEnterConfig: FastEnterConfig = {
       order: 4
     },
     {
-      name: '技术支持',
-      description: '技术支持与问题反馈',
-      icon: '&#xe86e;',
-      iconColor: '#ff6b6b',
-      path: WEB_LINKS.COMMUNITY,
+      name: '消息通知',
+      description: '查看系统消息与通知',
+      icon: '&#xe788;',
+      iconColor: '#10b981',
+      path: '/message',
       enabled: true,
       order: 5
     },
@@ -69,28 +69,22 @@ const fastEnterConfig: FastEnterConfig = {
   // 快速链接
   quickLinks: [
     {
-      name: '登录',
-      path: RoutesAlias.Login,
+      name: '用户管理',
+      path: '/user',
       enabled: true,
       order: 1
     },
     {
-      name: '注册',
-      path: RoutesAlias.Register,
+      name: '设备管理',
+      path: '/device',
       enabled: true,
       order: 2
     },
     {
-      name: '忘记密码',
-      path: RoutesAlias.ForgetPassword,
+      name: '消息通知',
+      path: '/message',
       enabled: true,
       order: 3
-    },
-    {
-      name: '个人中心',
-      path: RoutesAlias.UserCenter,
-      enabled: true,
-      order: 4
     }
   ]
 }

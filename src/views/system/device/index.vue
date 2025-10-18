@@ -12,7 +12,7 @@
 
     <ElCard class="art-table-card" shadow="never">
       <!-- 表格头部 -->
-      <ArtTableHeader v-model:columns="columnChecks" :loading="loading" @refresh="refreshData">
+      <ArtTableHeader v-model:columns="columnChecks" :loading="loading" @refresh="refreshData" layout="">
         <template #left>
           <ElSpace wrap>
             <ElButton @click="showDialog('add')" v-ripple>新增设备</ElButton>
@@ -144,7 +144,6 @@
       // 排除 apiParams 中的属性
       excludeParams: [],
       columnsFactory: () => [
-        { type: 'selection' }, // 勾选列
         { type: 'index', width: 60, label: '序号' }, // 序号
         {
           prop: 'deviceName',

@@ -27,9 +27,15 @@ export const menuDataToRouter = (route: AppRouteRecord, parentPath = ''): AppRou
  * @returns 构建后的完整路径
  */
 const buildRoutePath = (route: AppRouteRecord, parentPath: string): string => {
-  if (!route.path) return ''
+  // 如果路由的 path 为 ''（默认子路由），则应该继承父路径
+  if (route.path === '') {
+    return parentPath || ''
+  }
 
-  // iframe 类型路由直接使用原始路径
+  // 如果没有定义 path（undefined/null），视为无效
+  if (route.path == null) return ''
+
+  // iframe 类型路由直接使用原始 path
   if (route.meta?.isIframe) return route.path
 
   // 拼接并规范化路径

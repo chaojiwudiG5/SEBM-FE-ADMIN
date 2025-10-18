@@ -4,11 +4,7 @@
 
     <div class="right-wrap">
       <div class="top-right-wrap">
-        <div v-if="shouldShowThemeToggle" class="btn theme-btn" @click="themeAnimation">
-          <i class="iconfont-sys">
-            {{ isDark ? '&#xe6b5;' : '&#xe725;' }}
-          </i>
-        </div>
+        <!-- 主题切换已移除 -->
         <ElDropdown
           v-if="shouldShowLanguage"
           @command="changeLanguage"
@@ -102,8 +98,8 @@
   import { LanguageEnum } from '@/enums/appEnum'
   import { useI18n } from 'vue-i18n'
   import { HttpError } from '@/utils/http/error'
-  import { themeAnimation } from '@/utils/theme/animation'
-  import { fetchLogin} from '@/api/auth'
+  
+  import { fetchLogin } from '@/api/auth'
   import { useHeaderBar } from '@/composables/useHeaderBar'
 
   defineOptions({ name: 'Login' })
@@ -114,7 +110,7 @@
 
   const settingStore = useSettingStore()
   const { isDark } = storeToRefs(settingStore)
-  const { shouldShowThemeToggle, shouldShowLanguage } = useHeaderBar()
+  const { shouldShowLanguage } = useHeaderBar()
 
   const userStore = useUserStore()
   const router = useRouter()
@@ -166,9 +162,9 @@
       // 根据后端实际响应结构提取token
       // 后端登录时直接返回完整的用户信息，包含token
       const token = response.token
-      
+
       console.log('🔑 提取的token:', token ? '***' + token.slice(-10) : 'null')
-      
+
       // 验证token
       if (!token) {
         throw new Error('登录失败 - 未收到token')
@@ -186,20 +182,15 @@
 
       // 登录成功处理
       showLoginSuccessNotice()
-      console.log('🚀 准备跳转到 /dashboard/console')
-      
+      console.log('🚀 准备跳转到首页')
+
       // 使用 nextTick 确保状态更新后再跳转
       await nextTick()
-      
-      // 尝试跳转
-      try {
-        await router.push('/dashboard/console')
-        console.log('✅ 路由跳转成功')
-      } catch (routerError) {
-        console.error('❌ 路由跳转失败:', routerError)
-        // 如果跳转失败，尝试替换到根路径让路由守卫处理
-        await router.replace('/')
-      }
+
+      // 跳转到根路径，让路由守卫自动处理动态路由注册和跳转
+      console.log('📍 跳转到根路径 / ，由路由守卫处理后续跳转')
+      await router.push('/')
+      console.log('✅ 路由跳转完成')
     } catch (error) {
       // 处理 HttpError
       if (error instanceof HttpError) {
