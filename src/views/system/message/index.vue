@@ -90,7 +90,6 @@
     title: string
     content: string
     status: number
-    statusDesc: string
     readStatus: number // 阅读状态：1=已读，0=未读
     sendTime: string
     createTime: string
@@ -245,7 +244,6 @@
       title: messageData.title,
       content: messageData.content,
       status: messageData.status,
-      statusDesc: messageData.statusDesc,
       readStatus: messageData.readStatus || 0, // 默认为未读
       sendTime: messageData.sendTime,
       createTime: messageData.createTime

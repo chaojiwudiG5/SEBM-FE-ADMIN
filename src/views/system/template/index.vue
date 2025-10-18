@@ -146,9 +146,10 @@
   // 通知节点配置
   const NOTIFICATION_NODE_CONFIG = {
     0: { type: 'info' as const, text: '未知节点' },
-    1: { type: 'primary' as const, text: '租借审批成功' },
+    1: { type: 'success' as const, text: '租借成功' },
     2: { type: 'info' as const, text: '未知节点' },
-    3: { type: 'warning' as const, text: '到期提醒' }
+    3: { type: 'warning' as const, text: '到期提醒' },
+    4: { type: 'success' as const, text: '归还成功' }
   } as const
 
   // 通知方式配置

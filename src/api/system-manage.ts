@@ -118,12 +118,36 @@ export function fetchEnableTemplate(templateId: number) {
   })
 }
 
-// 获取通知记录列表
+// 获取通知记录列表（旧接口）
 export function fetchGetNotificationRecordList(params: Api.SystemManage.NotificationRecordSearchParams) {
-  console.log('🚀 调用通知记录列表API，参数:', params)
+  // 设置默认管理员角色
+  const requestData = {
+    ...params,
+    queryRole: params.queryRole ?? 0  // 默认为 0（管理员）
+  }
+  console.log('🚀 调用通知记录列表API，参数:', requestData)
   return request.post<Api.SystemManage.NotificationRecordList>({
     url: '/notification/record/list',
-    data: params
+    data: requestData
+  })
+}
+
+// 查询所有已发送通知记录 - 管理员接口
+export function queryAllSentNotifications(data: {
+  pageNumber: number
+  pageSize: number
+  userId?: number | string       // 用户ID（可选）
+  titleKeyword?: string          // 标题关键词（可选）
+  readStatus?: number            // 已读状态：0=未读，1=已读（可选）
+  isDelete?: number              // 删除状态：0=未删除，1=已删除（可选）
+  notificationRole?: number      // 通知角色：0=管理员，1=用户，2=技工（可选）
+  startTime?: number             // 开始时间，秒级时间戳（可选）
+  endTime?: number               // 结束时间，秒级时间戳（可选）
+}) {
+  console.log('🚀 调用查询所有已发送通知记录API，参数:', data)
+  return request.post({
+    url: '/notification/record/admin/listAll',
+    data
   })
 }
 
@@ -179,13 +203,18 @@ export async function fetchGetMenuList(delay = 300): Promise<MenuResponse> {
 export function fetchTemplateList(data: { 
   pageNumber: number
   pageSize: number
-  queryRole: number
+  queryRole?: number // 默认为管理员角色（0-管理员，1-用户）
   readStatus?: number // 0=未读，1=已读
 }) {
-  console.log('🚀 调用模板列表 API，参数:', data)
+  // 设置默认管理员角色
+  const requestData = {
+    ...data,
+    queryRole: data.queryRole ?? 0  // 默认为 0（管理员）
+  }
+  console.log('🚀 调用模板列表 API，参数:', requestData)
   return request.post({
     url: '/notification/record/list',
-    data
+    data: requestData
   })
 }
 
@@ -199,11 +228,11 @@ export function batchMarkAsRead(data: { ids: number[] }) {
 }
 
 // 标记全部未读消息为已读
-export function markAllAsRead(userId: number) {
-  console.log('🚀 标记全部为已读 API，userId:', userId)
+export function markAllAsRead(userId: number, userRole: number = 1) {
+  console.log('🚀 标记全部为已读 API，userId:', userId, 'userRole:', userRole)
   return request.post({
-    url: '/notification/record/markAllAsRead',
-    params: { userId }  // 后端使用 @RequestParam，需要用 params（URL查询参数）
+    url: `/notification/record/markAllAsRead?userId=${userId}&userRole=${userRole}`,  // 添加 userRole 参数，默认为 1（特殊处理）
+    data: {}
   })
 }
 

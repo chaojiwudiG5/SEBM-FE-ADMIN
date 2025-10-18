@@ -286,7 +286,7 @@
 
   // 是否显示时间偏移输入栏（只有非即时通知才显示）
   const showTimeOffset = computed(() => {
-    return formData.value.notificationType !== 1
+    return formData.value.notificationType !== 0
   })
 
   // 预览内容
@@ -311,7 +311,7 @@
     notificationMethod: [],
     notificationRole: 0,
     notificationEvent: '',
-    notificationType: 1,
+    notificationType: 0,
     relateTimeOffset: null,
     templateDesc: '',
     content: ''
@@ -320,8 +320,9 @@
 
   // 通知节点选项
   const notificationNodeOptions = [
-    { label: '租借审批成功', value: 1 },
-    { label: '到期提醒', value: 3 }
+    { label: '租借成功', value: 1 },
+    { label: '到期提醒', value: 3 },
+    { label: '归还成功', value: 4 }
   ]
 
   // 通知方式选项
@@ -339,11 +340,11 @@
   ]
 
 
-  // 通知类型选项
+  // 通知类型选项（与后端枚举对齐）
   const notificationTypeOptions = [
-    { label: '即时通知', value: 1 },
-    { label: '定时通知', value: 2 },
-    { label: '周期通知', value: 3 }
+    { label: '提前通知', value: -1 },
+    { label: '即时通知', value: 0 },
+    { label: '延迟通知', value: 1 }
   ]
 
   // 表单验证规则
@@ -400,7 +401,7 @@
         notificationMethod: [],
         notificationRole: 0,
         notificationEvent: '',
-        notificationType: 1,
+        notificationType: 0,
         relateTimeOffset: null,
         templateDesc: '',
         content: ''

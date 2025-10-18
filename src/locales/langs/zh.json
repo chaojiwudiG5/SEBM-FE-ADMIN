@@ -217,8 +217,19 @@
       "message": "消息通知",
       "device": "设备管理",
       "template": "模版管理",
+      "notificationRecords": "通知记录",
       "userCenter": "个人中心",
       "menu": "菜单管理"
+    },
+    "notificationNode": {
+      "borrowSuccess": "租借成功",
+      "dueDateReminder": "到期提醒",
+      "returnSuccess": "归还成功"
+    },
+    "notificationType": {
+      "advanceType": "提前通知",
+      "immediateType": "即时通知",
+      "delayType": "延迟通知"
     }
   },
   "table": {
@@ -265,6 +276,12 @@
       "content": "消息内容",
       "sendTime": "发送时间",
       "action": "操作"
+    },
+    "notificationMethod": {
+      "label": "通知方式",
+      "email": "邮件",
+      "sms": "短信",
+      "inApp": "站内信"
     },
     "confirm": {
       "markRead": "确定要将该消息标记为已读吗？",

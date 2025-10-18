@@ -225,8 +225,19 @@
       "message": "Message Notification",
       "device": "Device Management",
       "template": "Template Management",
+      "notificationRecords": "Notification Records",
       "userCenter": "User Center",
       "menu": "Menu Management"
+    },
+    "notificationNode": {
+      "borrowSuccess": "Borrow Success",
+      "dueDateReminder": "Due Date Reminder",
+      "returnSuccess": "Return Success"
+    },
+    "notificationType": {
+      "advanceType": "Advance Type",
+      "immediateType": "Immediate Type",
+      "delayType": "Delay Type"
     }
   },
   "table": {
@@ -273,6 +284,12 @@
       "content": "Message Content",
       "sendTime": "Send Time",
       "action": "Action"
+    },
+    "notificationMethod": {
+      "label": "Notification Method",
+      "email": "Email",
+      "sms": "SMS",
+      "inApp": "In-App"
     },
     "confirm": {
       "markRead": "Are you sure to mark this message as read?",

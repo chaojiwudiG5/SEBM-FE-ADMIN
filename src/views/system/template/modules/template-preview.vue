@@ -239,16 +239,18 @@
   // 通知节点相关
   const getNotificationNodeText = (node: number) => {
     const nodeMap = {
-      1: '租借审批成功',
-      3: '到期提醒'
+      1: '租借成功',
+      3: '到期提醒',
+      4: '归还成功'
     }
     return nodeMap[node as keyof typeof nodeMap] || '未知节点'
   }
 
   const getNotificationNodeType = (node: number) => {
     const typeMap = {
-      1: 'primary' as const,
-      3: 'warning' as const
+      1: 'success' as const,
+      3: 'warning' as const,
+      4: 'success' as const
     }
     return typeMap[node as keyof typeof typeMap] || 'info'
   }
@@ -294,20 +296,18 @@
   // 通知类型相关
   const getNotificationTypeText = (type: number) => {
     const typeMap = {
-      0: '未知类型',
-      1: '即时通知',
-      2: '定时通知',
-      3: '周期通知'
+      [-1]: '提前通知',
+      0: '即时通知',
+      1: '延迟通知'
     }
     return typeMap[type as keyof typeof typeMap] || '未知类型'
   }
 
   const getNotificationTypeType = (type: number) => {
     const typeMap = {
-      0: 'info' as const,
-      1: 'primary' as const,
-      2: 'warning' as const,
-      3: 'success' as const
+      [-1]: 'warning' as const,
+      0: 'primary' as const,
+      1: 'success' as const
     }
     return typeMap[type as keyof typeof typeMap] || 'info'
   }

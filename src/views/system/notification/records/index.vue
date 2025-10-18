@@ -32,6 +32,11 @@
         <ElTable :data="list" v-loading="loading" border>
           <ElTableColumn prop="userId" label="用户ID" width="140" />
           <ElTableColumn prop="content" label="内容" min-width="200" show-overflow-tooltip />
+          <ElTableColumn label="通知方式" width="120">
+            <template #default="{ row }">
+              <span>{{ getNotificationMethodText(row.notificationMethod) }}</span>
+            </template>
+          </ElTableColumn>
           <ElTableColumn prop="sendTime" label="发送时间" width="180" />
         </ElTable>
 
@@ -52,12 +57,15 @@
 </template>
 
 <script setup lang="ts">
+  import { ElMessage } from 'element-plus'
+  
   defineOptions({ name: 'NotificationRecords' })
 
   interface RecordItem {
     userId?: string | number
     content: string
     sendTime: string
+    notificationMethod?: number  // 1-邮件, 2-短信, 3-站内信
   }
 
   const loading = ref(false)
@@ -72,25 +80,30 @@
     loading.value = true
     try {
       // 构造查询参数
-      const params: Api.SystemManage.NotificationRecordSearchParams = {
+      const params: any = {
         pageNumber: pagination.pageNumber,
-        pageSize: pagination.pageSize
-      }
-      if (String(search.userId).trim()) {
-        params.userId = String(search.userId).trim()
+        pageSize: pagination.pageSize,
+        isDelete: 0  // 只查询未删除的记录
       }
       
+      // 如果输入了用户ID，转换为数字类型
+      if (String(search.userId).trim()) {
+        const userIdNum = Number(String(search.userId).trim())
+        if (!isNaN(userIdNum)) {
+          params.userId = userIdNum
+        }
+      }
+      
+      // 如果选择了时间范围，转换为秒级时间戳
       if (search.timeRange && search.timeRange.length === 2) {
-        // 转换为秒级时间戳
         params.startTime = Math.floor(new Date(search.timeRange[0].replace(' ', 'T')).getTime() / 1000)
         params.endTime = Math.floor(new Date(search.timeRange[1].replace(' ', 'T')).getTime() / 1000)
       }
-      // 默认管理员查询角色
-      params.queryRole = 0
 
-      // 调用后端接口（后端默认按发送时间倒序返回；若无该逻辑，请在接口中实现）
+      // 调用新接口：queryAllSentNotifications
       console.log('[通知记录] 请求参数:', params)
-      const res = await (await import('@/api/system-manage')).fetchGetNotificationRecordList(params)
+      const res = await (await import('@/api/system-manage')).queryAllSentNotifications(params)
+      console.log('[通知记录] 响应数据:', res)
 
       // 兼容通用分页结构
       const resp: any = res
@@ -98,6 +111,10 @@
       const total = resp?.total ?? resp?.totalCount ?? resp?.count ?? 0
       list.value = records
       pagination.total = total
+      console.log('[通知记录] 解析结果:', { 记录数: records.length, 总数: total })
+    } catch (error) {
+      console.error('[通知记录] 查询失败:', error)
+      ElMessage.error('查询通知记录失败')
     } finally {
       loading.value = false
     }
@@ -119,6 +136,16 @@
   const handleCurrentChange = (page: number) => {
     pagination.pageNumber = page
     fetchData()
+  }
+
+  // 获取通知方式文本
+  const getNotificationMethodText = (method?: number): string => {
+    const methodMap: Record<number, string> = {
+      1: '邮件',
+      2: '短信',
+      3: '站内信'
+    }
+    return methodMap[method as number] || '-'
   }
 
   onMounted(fetchData)

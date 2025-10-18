@@ -83,8 +83,52 @@ export const asyncRoutes: AppRouteRecord[] = [
     ]
   },
   {
+    path: '/template',
+    name: 'Template',
+    component: RoutesAlias.Layout,
+    meta: {
+      title: 'menus.system.template',
+      icon: '&#xe7b9;',
+      roles: ['R_ADMIN']
+    },
+    children: [
+      {
+        path: '',
+        name: 'TemplateIndex',
+        component: RoutesAlias.Template,
+        meta: {
+          title: 'menus.system.template',
+          keepAlive: true,
+          roles: ['R_ADMIN']
+        }
+      }
+    ]
+  },
+  {
+    path: '/notification-records',
+    name: 'NotificationRecords',
+    component: RoutesAlias.Layout,
+    meta: {
+      title: 'menus.system.notificationRecords',
+      icon: '&#xe7b9;',
+      roles: ['R_ADMIN']
+    },
+    children: [
+      {
+        path: '',
+        name: 'NotificationRecordsIndex',
+        component: RoutesAlias.NotificationRecords,
+        meta: {
+          title: 'menus.system.notificationRecords',
+          keepAlive: true,
+          roles: ['R_ADMIN']
+        }
+      }
+    ]
+  },
+  {
     path: '/user-center',
-    name: 'UserCenter',
+    name: 'UserCenterLayout',
     component: RoutesAlias.Layout,
     meta: {
       title: 'menus.system.userCenter',
@@ -95,39 +139,7 @@ export const asyncRoutes: AppRouteRecord[] = [
     },
     children: [
       {
-        path: 'notification',
-        name: 'Notification',
-        component: RoutesAlias.Notification,
-        meta: {
-          title: '通知管理',
-          keepAlive: true,
-          roles: ['R_ADMIN']
-        },
-        children: [
-          {
-            path: 'template',
-            name: 'Template',
-            component: RoutesAlias.Template,
-            meta: {
-              title: '模版管理',
-              keepAlive: true,
-              roles: ['R_ADMIN']
-            }
-          },
-          {
-            path: 'records',
-            name: 'NotificationRecords',
-            component: RoutesAlias.NotificationRecords,
-            meta: {
-              title: '记录查询',
-              keepAlive: true,
-              roles: ['R_ADMIN']
-            }
-          }
-        ]
-      },
-      {
-        path: 'user-center',
+        path: '',
         name: 'UserCenter',
         component: RoutesAlias.UserCenter,
         meta: {

@@ -231,8 +231,9 @@
 
   // 通知节点选项
   const notificationNodeOptions = [
-    { label: '租借审批成功', value: 1 },
-    { label: '到期提醒', value: 3 }
+    { label: '租借成功', value: 1 },
+    { label: '到期提醒', value: 3 },
+    { label: '归还成功', value: 4 }
   ]
 
   // 通知方式选项
