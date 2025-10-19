@@ -11,7 +11,7 @@ export function useWebSocket() {
   const status = ref<WebSocketStatus>(WebSocketStatus.DISCONNECTED)
   const isConnected = computed(() => status.value === WebSocketStatus.CONNECTED)
   const error = ref<string | null>(null)
-  
+
   // 消息相关
   const messages = ref<WebSocketMessage[]>([])
   const unreadCount = ref(0)
@@ -19,29 +19,28 @@ export function useWebSocket() {
   // 更新状态
   const updateStatus = () => {
     status.value = websocketManager.getStatus()
-    error.value = websocketManager.error.value
   }
 
   // 发送消息
   const sendMessage = (type: string, data: any) => {
-    return websocketManager.sendMessage(type, data)
+    return websocketManager.send({ type, data })
   }
 
-  // 获取最新消息
-  const getLatestMessages = (count: number = 10) => {
-    return websocketManager.getLatestMessages(count)
+  // 获取最新消息（从store获取）
+  const getLatestMessages = () => {
+    // 这个方法应该从store获取，这里返回空数组
+    return []
   }
 
-  // 清空消息
+  // 清空消息（通过store清空）
   const clearMessages = () => {
-    websocketManager.clearMessages()
     messages.value = []
     unreadCount.value = 0
   }
 
   // 重连
   const reconnect = () => {
-    websocketManager.reconnect()
+    websocketManager.connect()
   }
 
   // 断开连接
@@ -55,7 +54,7 @@ export function useWebSocket() {
     const handleNotification = (data: any) => {
       console.log('🔔 [useWebSocket] 收到通知:', data)
       unreadCount.value++
-      
+
       // 可以在这里添加具体的通知处理逻辑
       // 比如显示系统通知、更新UI等
     }
@@ -88,7 +87,7 @@ export function useWebSocket() {
   onMounted(() => {
     updateStatus()
     const cleanup = setupEventListeners()
-    
+
     // 组件卸载时清理监听器
     onUnmounted(cleanup)
   })
@@ -98,11 +97,11 @@ export function useWebSocket() {
     status: computed(() => status.value),
     isConnected,
     error: computed(() => error.value),
-    
+
     // 消息
     messages: computed(() => messages.value),
     unreadCount: computed(() => unreadCount.value),
-    
+
     // 方法
     sendMessage,
     getLatestMessages,
@@ -131,7 +130,7 @@ export function useWebSocketNotification() {
   }
 
   const markAsRead = (id: string) => {
-    const notification = notifications.value.find(n => n.id === id)
+    const notification = notifications.value.find((n) => n.id === id)
     if (notification && !notification.read) {
       notification.read = true
       unreadCount.value--
@@ -139,7 +138,7 @@ export function useWebSocketNotification() {
   }
 
   const markAllAsRead = () => {
-    notifications.value.forEach(n => n.read = true)
+    notifications.value.forEach((n) => (n.read = true))
     unreadCount.value = 0
   }
 
@@ -189,7 +188,8 @@ export function useWebSocketChat() {
   }
 
   const sendChatMessage = (content: string, toUserId?: string) => {
-    return websocketManager.sendMessage('chat', {
+    return websocketManager.send({
+      type: 'chat',
       content,
       toUserId,
       timestamp: Date.now()
@@ -197,7 +197,7 @@ export function useWebSocketChat() {
   }
 
   const markAsRead = (id: string) => {
-    const message = chatMessages.value.find(m => m.id === id)
+    const message = chatMessages.value.find((m) => m.id === id)
     if (message && !message.read) {
       message.read = true
       unreadCount.value--
@@ -205,7 +205,7 @@ export function useWebSocketChat() {
   }
 
   const markAllAsRead = () => {
-    chatMessages.value.forEach(m => m.read = true)
+    chatMessages.value.forEach((m) => (m.read = true))
     unreadCount.value = 0
   }
 

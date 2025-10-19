@@ -18,6 +18,12 @@ type Events = {
   openChat: void
   // 打开锁屏事件 - 无参数
   openLockScreen: void
+  // WebSocket通知事件
+  'websocket-notification': any
+  // WebSocket聊天消息事件
+  'websocket-chat-message': any
+  // WebSocket系统消息事件
+  'websocket-system-message': any
 }
 
 // 创建类型安全的事件总线实例

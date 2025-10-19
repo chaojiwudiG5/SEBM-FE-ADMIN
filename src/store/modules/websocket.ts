@@ -17,7 +17,14 @@ export interface MessageFilter {
 }
 
 export const useWebSocketStore = defineStore('websocket', {
-  state: () => ({
+  state: (): {
+    messages: WebSocketMessage[]
+    notifications: WebSocketMessage[]
+    status: WebSocketStatus
+    isConnected: boolean
+    lastMessageTime: number
+    unreadTotal: number
+  } => ({
     messages: [] as WebSocketMessage[],
     notifications: [] as WebSocketMessage[],
     status: WebSocketStatus.DISCONNECTED,
@@ -29,50 +36,54 @@ export const useWebSocketStore = defineStore('websocket', {
 
   getters: {
     // 获取所有消息
-    allMessages: (state) => state.messages,
-    
+    allMessages: (state): WebSocketMessage[] => state.messages,
+
     // 获取未读消息
-    unreadMessages: (state) => state.messages.filter(msg => !msg.read),
-    
+    unreadMessages: (state): WebSocketMessage[] => state.messages.filter((msg) => !msg.read),
+
     // 获取未读消息数量
-    unreadCount: (state) => state.messages.filter(msg => !msg.read).length,
-    
+    unreadCount: (state): number => state.messages.filter((msg) => !msg.read).length,
+
     // 获取未读通知数量
-    unreadNotifications: (state) => state.notifications.filter(n => !n.read).length,
-    
+    unreadNotifications: (state): number => state.notifications.filter((n) => !n.read).length,
+
     // 总未读数量
-    totalUnreadCount: (state) => state.notifications.filter(n => !n.read).length,
-    
+    totalUnreadCount: (state): number => state.notifications.filter((n) => !n.read).length,
+
     // 按类型过滤消息
-    messagesByType: (state) => (type: string) => 
-      state.messages.filter(msg => msg.type === type),
-    
+    messagesByType:
+      (state) =>
+      (type: string): WebSocketMessage[] =>
+        state.messages.filter((msg) => msg.type === type),
+
     // 按优先级过滤消息
-    messagesByPriority: (state) => (priority: string) => 
-      state.messages.filter(msg => msg.priority === priority),
-    
+    messagesByPriority:
+      (state) =>
+      (priority: string): WebSocketMessage[] =>
+        state.messages.filter((msg) => msg.priority === priority),
+
     // 获取紧急消息
-    urgentMessages: (state) => 
-      state.messages.filter(msg => msg.priority === 'urgent'),
-    
+    urgentMessages: (state): WebSocketMessage[] =>
+      state.messages.filter((msg) => msg.priority === 'urgent'),
+
     // 获取高优先级消息
-    highPriorityMessages: (state) => 
-      state.messages.filter(msg => msg.priority === 'high'),
-    
+    highPriorityMessages: (state): WebSocketMessage[] =>
+      state.messages.filter((msg) => msg.priority === 'high'),
+
     // 按时间排序的消息
-    sortedMessages: (state) => 
+    sortedMessages: (state): WebSocketMessage[] =>
       [...state.messages].sort((a, b) => b.timestamp - a.timestamp),
-    
+
     // 最近的消息
-    recentMessages: (state) => (limit: number = 10) => 
-      [...state.messages]
-        .sort((a, b) => b.timestamp - a.timestamp)
-        .slice(0, limit),
-    
+    recentMessages:
+      (state) =>
+      (limit: number = 10): WebSocketMessage[] =>
+        [...state.messages].sort((a, b) => b.timestamp - a.timestamp).slice(0, limit),
+
     // 按日期分组的消息
-    messagesByDate: (state) => {
+    messagesByDate: (state): { [key: string]: WebSocketMessage[] } => {
       const groups: { [key: string]: WebSocketMessage[] } = {}
-      state.messages.forEach(msg => {
+      state.messages.forEach((msg) => {
         const date = new Date(msg.timestamp).toDateString()
         if (!groups[date]) {
           groups[date] = []
@@ -93,7 +104,7 @@ export const useWebSocketStore = defineStore('websocket', {
         // 添加消息处理器
         websocketManager.onMessage(this.handleWebSocketMessage)
         websocketManager.onStatusChange(this.handleWebSocketStatus)
-        
+
         console.log('🔵 [Store] 已添加消息和状态处理器')
         // 连接WebSocket
         console.log('🔵 [Store] 开始调用 websocketManager.connect()...')
@@ -124,11 +135,11 @@ export const useWebSocketStore = defineStore('websocket', {
         read: message.read,
         当前unreadTotal: this.unreadTotal
       })
-      
+
       // 检查是否已存在相同ID的消息
-      const existingMsgIndex = this.messages.findIndex(msg => msg.id === message.id)
-      const existingNotifIndex = this.notifications.findIndex(n => n.id === message.id)
-      
+      const existingMsgIndex = this.messages.findIndex((msg) => msg.id === message.id)
+      const existingNotifIndex = this.notifications.findIndex((n) => n.id === message.id)
+
       if (existingMsgIndex > -1) {
         // 更新现有消息
         const prev = this.messages[existingMsgIndex]
@@ -153,10 +164,10 @@ export const useWebSocketStore = defineStore('websocket', {
           console.log('📨 [Store] 添加新未读消息，unreadTotal++:', this.unreadTotal)
         }
       }
-      
+
       // 更新最后消息时间
       this.lastMessageTime = message.timestamp
-      
+
       // 限制消息数量，避免内存溢出（两个数组使用相同限制）
       const maxMessages = 1000
       if (this.messages.length > maxMessages) {
@@ -165,8 +176,13 @@ export const useWebSocketStore = defineStore('websocket', {
       if (this.notifications.length > maxMessages) {
         this.notifications = this.notifications.slice(0, maxMessages)
       }
-      
-      console.log('📨 [Store] 消息处理完成，最终unreadTotal:', this.unreadTotal, '未读消息数:', this.unreadCount)
+
+      console.log(
+        '📨 [Store] 消息处理完成，最终unreadTotal:',
+        this.unreadTotal,
+        '未读消息数:',
+        this.messages.filter((msg) => !msg.read).length
+      )
     },
 
     /**
@@ -200,23 +216,26 @@ export const useWebSocketStore = defineStore('websocket', {
         read: false,
         data: notification
       }
-      
+
       // 使用handleWebSocketMessage统一处理，确保同时添加到messages和notifications
       this.handleWebSocketMessage(message)
-      
-      console.log('📨 [Store] 已添加通知，当前未读:', this.unreadCount)
+
+      console.log(
+        '📨 [Store] 已添加通知，当前未读:',
+        this.messages.filter((msg) => !msg.read).length
+      )
     },
 
     /**
      * 标记消息为已读
      */
     markAsRead(messageId: string) {
-      const message = this.messages.find(msg => msg.id === messageId)
+      const message = this.messages.find((msg) => msg.id === messageId)
       if (message && !message.read) {
         message.read = true
         this.unreadTotal = Math.max(0, this.unreadTotal - 1)
       }
-      const notification = this.notifications.find(n => n.id === messageId)
+      const notification = this.notifications.find((n) => n.id === messageId)
       if (notification && !notification.read) {
         notification.read = true
       }
@@ -234,10 +253,10 @@ export const useWebSocketStore = defineStore('websocket', {
      * 标记所有消息为已读
      */
     markAllAsRead() {
-      this.messages.forEach(msg => {
+      this.messages.forEach((msg) => {
         msg.read = true
       })
-      this.notifications.forEach(n => {
+      this.notifications.forEach((n) => {
         n.read = true
       })
       this.unreadTotal = 0
@@ -255,14 +274,14 @@ export const useWebSocketStore = defineStore('websocket', {
      * 删除消息
      */
     removeMessage(messageId: string) {
-      const msgIndex = this.messages.findIndex(msg => msg.id === messageId)
+      const msgIndex = this.messages.findIndex((msg) => msg.id === messageId)
       if (msgIndex > -1) {
         if (!this.messages[msgIndex].read) {
           this.unreadTotal = Math.max(0, this.unreadTotal - 1)
         }
         this.messages.splice(msgIndex, 1)
       }
-      const notifIndex = this.notifications.findIndex(n => n.id === messageId)
+      const notifIndex = this.notifications.findIndex((n) => n.id === messageId)
       if (notifIndex > -1) {
         this.notifications.splice(notifIndex, 1)
       }
@@ -291,15 +310,15 @@ export const useWebSocketStore = defineStore('websocket', {
      * 清空已读消息
      */
     clearReadMessages() {
-      this.messages = this.messages.filter(msg => !msg.read)
-      this.notifications = this.notifications.filter(n => !n.read)
+      this.messages = this.messages.filter((msg) => !msg.read)
+      this.notifications = this.notifications.filter((n) => !n.read)
     },
 
     /**
      * 过滤消息
      */
     filterMessages(filter: MessageFilter): WebSocketMessage[] {
-      return this.messages.filter(msg => {
+      return this.messages.filter((msg) => {
         if (filter.type && msg.type !== filter.type) return false
         if (filter.priority && msg.priority !== filter.priority) return false
         if (filter.read !== undefined && msg.read !== filter.read) return false
@@ -317,9 +336,10 @@ export const useWebSocketStore = defineStore('websocket', {
      */
     searchMessages(query: string): WebSocketMessage[] {
       const lowerQuery = query.toLowerCase()
-      return this.messages.filter(msg => 
-        msg.title.toLowerCase().includes(lowerQuery) ||
-        msg.content.toLowerCase().includes(lowerQuery)
+      return this.messages.filter(
+        (msg) =>
+          msg.title.toLowerCase().includes(lowerQuery) ||
+          msg.content.toLowerCase().includes(lowerQuery)
       )
     },
 
@@ -329,12 +349,12 @@ export const useWebSocketStore = defineStore('websocket', {
     getMessageStats() {
       const stats = {
         total: this.messages.length,
-        unread: this.unreadCount,
+        unread: this.messages.filter((msg) => !msg.read).length,
         byType: {} as { [key: string]: number },
         byPriority: {} as { [key: string]: number }
       }
 
-      this.messages.forEach(msg => {
+      this.messages.forEach((msg) => {
         // 按类型统计
         stats.byType[msg.type] = (stats.byType[msg.type] || 0) + 1
         // 按优先级统计
@@ -357,7 +377,7 @@ export const useWebSocketStore = defineStore('websocket', {
         priority: priority as any,
         read: false
       }
-      
+
       this.handleWebSocketMessage(testMessage)
       console.log('✅ [Store] 测试消息已添加:', testMessage)
     },
@@ -382,7 +402,6 @@ export const useWebSocketStore = defineStore('websocket', {
   // 持久化配置
   persist: {
     key: 'websocket-store',
-    storage: localStorage,
-    paths: ['messages', 'notifications', 'lastMessageTime', 'unreadTotal'] // 持久化消息、最后消息时间和未读总数
+    storage: localStorage
   }
 })

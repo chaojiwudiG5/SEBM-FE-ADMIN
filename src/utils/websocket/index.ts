@@ -2,8 +2,11 @@
  * WebSocket连接管理工具
  * 参考SEBM-FE项目实现
  */
-import { ElMessage, ElNotification } from 'element-plus'
+import { ElNotification } from 'element-plus'
 import { WebSocketStatus, NotificationPriority, type WebSocketMessage } from '@/types/websocket'
+
+// 导出类型供外部使用
+export { WebSocketStatus, NotificationPriority, type WebSocketMessage } from '@/types/websocket'
 
 class WebSocketManager {
   private ws: WebSocket | null = null
@@ -22,13 +25,14 @@ class WebSocketManager {
     // 从localStorage获取用户信息 - Pinia user store 持久化的 key 是 'user'
     const userStoreData = JSON.parse(localStorage.getItem('user') || '{}')
     console.log('📦 [WebSocket] localStorage 中的 user 数据:', userStoreData)
-    
+
     // 尝试多种方式获取userId - 支持不同的数据结构
-    const userId = userStoreData.userInfo?.id || 
-                   userStoreData.userInfo?.userId ||
-                   userStoreData.info?.userId || 
-                   userStoreData.info?.id
-    
+    const userId =
+      userStoreData.userInfo?.id ||
+      userStoreData.userInfo?.userId ||
+      userStoreData.info?.userId ||
+      userStoreData.info?.id
+
     if (!userId) {
       console.error('❌ [WebSocket] 无法获取用户ID')
       console.error('❌ [WebSocket] user store 数据:', userStoreData)
@@ -43,7 +47,7 @@ class WebSocketManager {
     const wsUrl = import.meta.env.DEV
       ? `ws://localhost:29578/ws/notification?userId=${userId}`
       : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws/notification?userId=${userId}`
-    
+
     console.log('🌐 [WebSocket] 连接地址:', wsUrl)
     return wsUrl
   }
@@ -58,7 +62,7 @@ class WebSocketManager {
         console.log('🔌 [WebSocket] 开始连接:', url)
         console.log('📊 [WebSocket] 当前环境:', import.meta.env.DEV ? '开发环境' : '生产环境')
         console.log('📊 [WebSocket] 浏览器支持:', 'WebSocket' in window ? '是' : '否')
-        
+
         this.ws = new WebSocket(url)
         this.status = WebSocketStatus.CONNECTING
         this.notifyStatusHandlers()
@@ -75,7 +79,7 @@ class WebSocketManager {
         this.ws.onmessage = (event) => {
           try {
             const rawMessage = JSON.parse(event.data)
-            
+
             // 适配后端消息格式
             const message: WebSocketMessage = this.adaptBackendMessage(rawMessage)
             this.handleMessage(message)
@@ -89,7 +93,7 @@ class WebSocketManager {
           this.status = WebSocketStatus.DISCONNECTED
           this.stopHeartbeat()
           this.notifyStatusHandlers()
-          
+
           // 如果不是主动关闭，尝试重连
           if (event.code !== 1000 && this.reconnectAttempts < this.maxReconnectAttempts) {
             this.scheduleReconnect()
@@ -102,7 +106,6 @@ class WebSocketManager {
           this.notifyStatusHandlers()
           reject(error)
         }
-
       } catch (error) {
         console.error('❌ [WebSocket] 创建连接失败:', error)
         this.status = WebSocketStatus.ERROR
@@ -175,16 +178,16 @@ class WebSocketManager {
     // 如果是notification类型，根据notificationType细分
     if (type === 'notification' && notificationType) {
       const typeMap: { [key: string]: string } = {
-        'DEVICE_UPDATE': 'device_update',
-        'MAINTENANCE_UPDATE': 'maintenance_update',
-        'BORROW_UPDATE': 'borrow_update',
-        'USER_UPDATE': 'user_update',
-        'SECURITY_ALERT': 'security_alert',
-        'SYSTEM_MAINTENANCE': 'system_maintenance'
+        DEVICE_UPDATE: 'device_update',
+        MAINTENANCE_UPDATE: 'maintenance_update',
+        BORROW_UPDATE: 'borrow_update',
+        USER_UPDATE: 'user_update',
+        SECURITY_ALERT: 'security_alert',
+        SYSTEM_MAINTENANCE: 'system_maintenance'
       }
       return typeMap[notificationType] || 'notification'
     }
-    
+
     // 直接类型映射
     return type === 'system' ? 'system' : 'notification'
   }
@@ -210,10 +213,10 @@ class WebSocketManager {
     if (!notificationType) {
       return type === 'system' ? NotificationPriority.NORMAL : NotificationPriority.NORMAL
     }
-    
+
     const highPriorityTypes = ['SECURITY_ALERT', 'SYSTEM_MAINTENANCE']
     const urgentTypes = ['SECURITY_ALERT']
-    
+
     if (urgentTypes.includes(notificationType)) {
       return NotificationPriority.URGENT
     }
@@ -233,9 +236,9 @@ class WebSocketManager {
     }
 
     console.log('📨 [WebSocket] 收到消息:', message)
-    
+
     // 通知所有消息处理器
-    this.messageHandlers.forEach(handler => {
+    this.messageHandlers.forEach((handler) => {
       try {
         handler(message)
       } catch (error) {
@@ -253,7 +256,7 @@ class WebSocketManager {
   private showNotification(message: WebSocketMessage): void {
     const notificationType = this.getNotificationType(message.priority)
     const duration = this.getNotificationDuration(message.priority)
-    
+
     // 使用ElNotification显示桌面通知
     ElNotification({
       title: message.title,
@@ -267,7 +270,9 @@ class WebSocketManager {
   /**
    * 获取通知类型
    */
-  private getNotificationType(priority: NotificationPriority): 'success' | 'warning' | 'error' | 'info' {
+  private getNotificationType(
+    priority: NotificationPriority
+  ): 'success' | 'warning' | 'error' | 'info' {
     switch (priority) {
       case NotificationPriority.URGENT:
         return 'error'
@@ -325,15 +330,20 @@ class WebSocketManager {
   private scheduleReconnect(): void {
     this.reconnectAttempts++
     const delay = this.reconnectInterval * Math.pow(2, this.reconnectAttempts - 1)
-    
-    console.log(`🔄 [WebSocket] 计划重连 (${this.reconnectAttempts}/${this.maxReconnectAttempts}) 延迟 ${delay}ms`)
+
+    console.log(
+      `🔄 [WebSocket] 计划重连 (${this.reconnectAttempts}/${this.maxReconnectAttempts}) 延迟 ${delay}ms`
+    )
     this.status = WebSocketStatus.RECONNECTING
     this.notifyStatusHandlers()
-    
+
     setTimeout(() => {
-      if (this.status === WebSocketStatus.RECONNECTING || this.status === WebSocketStatus.DISCONNECTED) {
+      if (
+        this.status === WebSocketStatus.RECONNECTING ||
+        this.status === WebSocketStatus.DISCONNECTED
+      ) {
         console.log(`🔄 [WebSocket] 开始第 ${this.reconnectAttempts} 次重连...`)
-        this.connect().catch(error => {
+        this.connect().catch((error) => {
           console.error('❌ [WebSocket] 重连失败:', error)
         })
       }
@@ -378,7 +388,7 @@ class WebSocketManager {
    * 通知状态处理器
    */
   private notifyStatusHandlers(): void {
-    this.statusHandlers.forEach(handler => {
+    this.statusHandlers.forEach((handler) => {
       try {
         handler(this.status)
       } catch (error) {

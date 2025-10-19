@@ -33,6 +33,13 @@ declare module 'qrcode.vue' {
 // 全局变量声明
 declare const __APP_VERSION__: string // 版本号
 
+// Window 全局对象扩展（WebSocket测试工具）
+interface Window {
+  __sendTestWebSocketMessage?: (type?: string, priority?: string) => void
+  __debugWebSocket?: () => any
+  __setUnreadCount?: (count: number) => void
+}
+
 // 环境变量提示
 // interface ImportMetaEnv {
 //   VITE_BASE_API_URL: string

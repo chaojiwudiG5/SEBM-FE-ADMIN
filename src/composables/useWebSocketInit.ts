@@ -57,20 +57,23 @@ export function useWebSocketInit() {
   }
 
   // 在组件挂载时初始化（如果用户已登录）
-  if (userStore.userInfo) {
+  if (userStore.info?.id) {
     initializeWebSocket()
   }
 
   // 监听用户登录状态变化
-  watch(() => userStore.userInfo, (newUserInfo, oldUserInfo) => {
-    if (newUserInfo && !oldUserInfo) {
-      // 用户刚登录，初始化WebSocket
-      initializeWebSocket()
-    } else if (!newUserInfo && oldUserInfo) {
-      // 用户登出，断开WebSocket
-      disconnectWebSocket()
+  watch(
+    () => userStore.info,
+    (newUserInfo, oldUserInfo) => {
+      if (newUserInfo?.id && !oldUserInfo?.id) {
+        // 用户刚登录，初始化WebSocket
+        initializeWebSocket()
+      } else if (!newUserInfo?.id && oldUserInfo?.id) {
+        // 用户登出，断开WebSocket
+        disconnectWebSocket()
+      }
     }
-  })
+  )
 
   // 组件卸载时清理（注意：不主动断开WebSocket）
   onUnmounted(() => {
