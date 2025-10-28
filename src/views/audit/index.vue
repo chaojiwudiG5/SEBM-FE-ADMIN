@@ -64,9 +64,9 @@ import BorrowChart from '@/components/audit/BorrowChart.vue'
 import PersonnelChart from '@/components/audit/PersonnelChart.vue'
 import { fetchAuditDevices } from '@/services/audit'
 
-const devices = ref([])
+const devices = ref<any[]>([])
 const range = ref<any[]>([])
-const selectedType = ref<string | null>(null)
+const selectedType = ref<string>('')
 const loading = ref(false)
 
 const load = async () => {
@@ -110,7 +110,7 @@ const applyFilters = () => {
 
 const resetFilters = () => {
   range.value = []
-  selectedType.value = null
+  selectedType.value = ''
 }
 
 onMounted(load)
