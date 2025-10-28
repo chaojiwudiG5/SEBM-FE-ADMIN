@@ -56,6 +56,25 @@ export function fetchGetDeviceList(params: Api.SystemManage.DeviceSearchParams) 
   })
 }
 
+// 获取所有用户维修报单（管理员查看）
+export function fetchGetUserMaintenanceList(params: Api.SystemManage.Maintenance.UserMaintenanceRecordSearchParams) {
+  console.log('🚀 调用用户维修报单列表API，参数:', params)
+  return request.post<Api.SystemManage.Maintenance.UserMaintenanceRecordList>({
+    url: '/userMaintenanceRecord/getAllList',
+    data: params
+  })
+}
+
+// 分配维修任务给技工（管理员）
+export function fetchAssignMechanicToMaintenance(data: { userMaintenanceRecordId: number; mechanicId: number }) {
+  console.log('🚀 调用分配维修任务 API，参数:', data)
+  // 后端要求 URL 参数形式，这里使用 POST body 兼容处理
+  return request.post<number>({
+    url: '/mechanicanMaintenanceRecord/add',
+    data
+  })
+}
+
 // 获取单个设备详情 - 公开接口
 export function fetchGetDevice(id: number) {
   console.log('🚀 调用设备详情API，ID:', id)

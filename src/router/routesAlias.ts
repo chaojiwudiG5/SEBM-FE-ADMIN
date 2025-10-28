@@ -28,4 +28,6 @@ export enum RoutesAlias {
   NotificationRecords = '/system/notification/records', // 通知记录查询
   UserCenter = '/system/user-center', // 用户中心
   Menu = '/system/menu' // 菜单
+  ,
+  Maintenance = '/system/maintenance' // 维修报单管理
 }

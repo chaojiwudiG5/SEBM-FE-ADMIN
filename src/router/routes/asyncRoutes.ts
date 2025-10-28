@@ -151,4 +151,27 @@ export const asyncRoutes: AppRouteRecord[] = [
       }
     ]
   }
+  ,
+  {
+    path: '/maintenance',
+    name: 'Maintenance',
+    component: RoutesAlias.Layout,
+    meta: {
+      title: 'menus.system.maintenance',
+      icon: '&#xe7b9;',
+      roles: ['R_ADMIN']
+    },
+    children: [
+      {
+        path: '',
+        name: 'MaintenanceIndex',
+        component: RoutesAlias.Maintenance,
+        meta: {
+          title: 'menus.system.maintenance',
+          keepAlive: true,
+          roles: ['R_ADMIN']
+        }
+      }
+    ]
+  }
 ]

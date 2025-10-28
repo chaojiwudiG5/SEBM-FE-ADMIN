@@ -289,5 +289,30 @@ declare namespace Api {
       /** 结束时间（秒级时间戳，可选） */
       endTime?: number
     }
+
+    /** 用户报修/维修相关类型 */
+    namespace Maintenance {
+      /** 单条用户维修报单项 */
+      interface UserMaintenanceRecordItem {
+        id: number
+        deviceName: string
+        userId: number | string
+        description?: string
+        image?: string
+        status: 0 | 1 // 0=处理中,1=已处理
+        createTime?: string
+        updateTime?: string
+      }
+
+      /** 列表响应 */
+      type UserMaintenanceRecordList = Api.Common.PaginatedResponse<UserMaintenanceRecordItem>
+
+      /** 查询参数 */
+      type UserMaintenanceRecordSearchParams = {
+        pageNumber: number
+        pageSize: number
+        status?: 0 | 1
+      }
+    }
   }
 }

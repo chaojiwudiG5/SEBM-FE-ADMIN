@@ -219,6 +219,7 @@
       "template": "模版管理",
       "notificationRecords": "通知记录",
       "userCenter": "个人中心",
+      "maintenance": "维修报单管理",
       "menu": "菜单管理"
     },
     "notificationNode": {
