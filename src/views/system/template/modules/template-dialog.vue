@@ -284,7 +284,7 @@
     return titleMap[props.type] || '模版'
   })
 
-  // 是否显示时间偏移输入栏（只有非即时通知才显示）
+  // Whether to show time offset input (only for non-instant notifications)
   const showTimeOffset = computed(() => {
     return formData.value.notificationType !== 0
   })
@@ -318,33 +318,33 @@
   })
 
 
-  // 通知节点选项
+  // Notification node options
   const notificationNodeOptions = [
-    { label: '租借成功', value: 1 },
-    { label: '到期提醒', value: 3 },
-    { label: '归还成功', value: 4 }
+    { label: 'Borrow Success', value: 1 },
+    { label: 'Due Reminder', value: 3 },
+    { label: 'Return Success', value: 4 }
   ]
 
-  // 通知方式选项
+  // Notification method options
   const notificationMethodOptions = [
-    { label: '邮件', value: 1 },
-    { label: '短信', value: 2 },
-    { label: '站内信', value: 3 }
+    { label: 'Email', value: 1 },
+    { label: 'SMS', value: 2 },
+    { label: 'In-app', value: 3 }
   ]
 
-  // 通知角色选项
+  // Notification role options
   const notificationRoleOptions = [
-    { label: '管理员', value: 0 },
-    { label: '借用人', value: 1 },
-    { label: '技术人员', value: 2 }
+    { label: 'Admin', value: 0 },
+    { label: 'Borrower', value: 1 },
+    { label: 'Technician', value: 2 }
   ]
 
 
-  // 通知类型选项（与后端枚举对齐）
+  // Notification type options (aligned with backend enum)
   const notificationTypeOptions = [
-    { label: '提前通知', value: -1 },
-    { label: '即时通知', value: 0 },
-    { label: '延迟通知', value: 1 }
+    { label: 'Advance Notice', value: -1 },
+    { label: 'Instant Notice', value: 0 },
+    { label: 'Delayed Notice', value: 1 }
   ]
 
   // 表单验证规则
