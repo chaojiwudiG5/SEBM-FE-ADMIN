@@ -1,9 +1,9 @@
 <template>
   <div class="maintenance-page art-full-height">
     <ElCard class="art-table-card" shadow="never">
-      <!-- 标签页：未完成/已完成 -->
+      <!-- Tabs: Pending/Completed -->
       <ElTabs v-model="activeTab" @tab-change="handleTabChange">
-        <ElTabPane label="未完成报单" name="pending">
+        <ElTabPane label="Incomplete Reports" name="pending">
           <!-- 表格头部 -->
           <ArtTableHeader 
             v-model:columns="pendingColumnChecks" 
@@ -17,7 +17,7 @@
                   :disabled="!selectedPendingRows.length"
                   @click="showAssignDialog"
                 >
-                  分配维修任务
+                  Assign Maintenance Task
                 </ElButton>
               </ElSpace>
             </template>
@@ -36,7 +36,7 @@
           </ArtTable>
         </ElTabPane>
 
-        <ElTabPane label="已完成报单" name="completed">
+        <ElTabPane label="Completed Reports" name="completed">
           <!-- 表格头部 -->
           <ArtTableHeader 
             v-model:columns="completedColumnChecks" 
@@ -97,7 +97,7 @@ const activeTab = ref<'pending' | 'completed'>('pending')
 const dialogVisible = ref(false)
 const selectedPendingRows = ref<MaintenanceRecord[]>([])
 
-// 创建未完成报单的 useTable
+// Create pending table
 const createPendingTable = () => {
   const wrappedFetchPendingRecords = async (params: any) => {
     try {
@@ -114,7 +114,7 @@ const createPendingTable = () => {
       
       const maintenanceRecords = await getAllMaintenanceRecords(transformedParams)
 
-      console.log('未完成维修报单数据:', maintenanceRecords)
+      console.log('Pending maintenance records:', maintenanceRecords)
       
       if (Array.isArray(maintenanceRecords)) {
         return {
@@ -126,7 +126,7 @@ const createPendingTable = () => {
         }
       }
 
-      ElMessage.error('获取维修报单列表失败')
+      ElMessage.error('Failed to get maintenance report list')
       return {
         data: [],
         records: [],
@@ -135,8 +135,8 @@ const createPendingTable = () => {
         size: pageSize
       }
     } catch (error) {
-      console.error('获取维修报单列表失败:', error)
-      ElMessage.error('获取维修报单列表失败')
+      console.error('Failed to get maintenance report list:', error)
+      ElMessage.error('Failed to get maintenance report list')
       return {
         data: [],
         records: [],
@@ -161,18 +161,18 @@ const createPendingTable = () => {
       },
       columnsFactory: () => [
         { type: 'selection', width: 55 },
-        { prop: 'id', label: '报单ID', width: 80 },
-        { prop: 'deviceName', label: '设备名称', minWidth: 120 },
-        { prop: 'userId', label: '报修用户ID', width: 100 },
+        { prop: 'id', label: 'Report ID', width: 80 },
+        { prop: 'deviceName', label: 'Device Name', minWidth: 120 },
+        { prop: 'userId', label: 'User ID', width: 100 },
         { 
           prop: 'description', 
-          label: '故障描述', 
+          label: 'Fault Description', 
           minWidth: 200,
           showOverflowTooltip: true 
         },
         {
           prop: 'image',
-          label: '故障图片',
+          label: 'Fault Image',
           width: 100,
           formatter: (row) => {
             const record = row as MaintenanceRecord
@@ -183,36 +183,36 @@ const createPendingTable = () => {
                   previewSrcList: [record.image],
                   fit: 'cover'
                 })
-              : '无'
+              : 'None'
           }
         },
         {
           prop: 'status',
-          label: '状态',
+          label: 'Status',
           width: 100,
           formatter: (row) => {
             const record = row as MaintenanceRecord
             return h('el-tag', {
               type: record.status === 0 ? 'warning' : 'success'
-            }, () => record.status === 0 ? '处理中' : '已处理')
+            }, () => record.status === 0 ? 'Processing' : 'Completed')
           }
         },
         {
           prop: 'createTime',
-          label: '创建时间',
+          label: 'Create Time',
           width: 180,
           formatter: (row) => {
             const time = (row as MaintenanceRecord).createTime
-            return time ? new Date(time).toLocaleString('zh-CN') : '-'
+            return time ? new Date(time).toLocaleString('en-US') : '-'
           }
         },
         {
           prop: 'updateTime',
-          label: '更新时间',
+          label: 'Update Time',
           width: 180,
           formatter: (row) => {
             const time = (row as MaintenanceRecord).updateTime
-            return time ? new Date(time).toLocaleString('zh-CN') : '-'
+            return time ? new Date(time).toLocaleString('en-US') : '-'
           }
         }
       ]
@@ -237,7 +237,7 @@ const createCompletedTable = () => {
       
       const maintenanceRecords = await getAllMaintenanceRecords(transformedParams)
 
-      console.log('已完成维修报单数据:', maintenanceRecords)
+      console.log('Completed maintenance records:', maintenanceRecords)
       
       if (Array.isArray(maintenanceRecords)) {
         return {
@@ -249,7 +249,7 @@ const createCompletedTable = () => {
         }
       }
 
-      ElMessage.error('获取维修报单列表失败')
+      ElMessage.error('Failed to get maintenance report list')
       return {
         data: [],
         records: [],
@@ -258,8 +258,8 @@ const createCompletedTable = () => {
         size: pageSize
       }
     } catch (error) {
-      console.error('获取维修报单列表失败:', error)
-      ElMessage.error('获取维修报单列表失败')
+      console.error('Failed to get maintenance report list:', error)
+      ElMessage.error('Failed to get maintenance report list')
       return {
         data: [],
         records: [],
@@ -284,18 +284,18 @@ const createCompletedTable = () => {
       },
       columnsFactory: () => [
         { type: 'selection', width: 55 },
-        { prop: 'id', label: '报单ID', width: 80 },
-        { prop: 'deviceName', label: '设备名称', minWidth: 120 },
-        { prop: 'userId', label: '报修用户ID', width: 100 },
+        { prop: 'id', label: 'Report ID', width: 80 },
+        { prop: 'deviceName', label: 'Device Name', minWidth: 120 },
+        { prop: 'userId', label: 'User ID', width: 100 },
         { 
           prop: 'description', 
-          label: '故障描述', 
+          label: 'Fault Description', 
           minWidth: 200,
           showOverflowTooltip: true 
         },
         {
           prop: 'image',
-          label: '故障图片',
+          label: 'Fault Image',
           width: 100,
           formatter: (row) => {
             const record = row as MaintenanceRecord
@@ -306,36 +306,36 @@ const createCompletedTable = () => {
                   previewSrcList: [record.image],
                   fit: 'cover'
                 })
-              : '无'
+              : 'None'
           }
         },
         {
           prop: 'status',
-          label: '状态',
+          label: 'Status',
           width: 100,
           formatter: (row) => {
             const record = row as MaintenanceRecord
             return h('el-tag', {
               type: record.status === 0 ? 'warning' : 'success'
-            }, () => record.status === 0 ? '处理中' : '已处理')
+            }, () => record.status === 0 ? 'Processing' : 'Completed')
           }
         },
         {
           prop: 'createTime',
-          label: '创建时间',
+          label: 'Create Time',
           width: 180,
           formatter: (row) => {
             const time = (row as MaintenanceRecord).createTime
-            return time ? new Date(time).toLocaleString('zh-CN') : '-'
+            return time ? new Date(time).toLocaleString('en-US') : '-'
           }
         },
         {
           prop: 'updateTime',
-          label: '更新时间',
+          label: 'Update Time',
           width: 180,
           formatter: (row) => {
             const time = (row as MaintenanceRecord).updateTime
-            return time ? new Date(time).toLocaleString('zh-CN') : '-'
+            return time ? new Date(time).toLocaleString('en-US') : '-'
           }
         }
       ]
@@ -367,36 +367,36 @@ const {
   refreshData: refreshCompletedData
 } = createCompletedTable()
 
-// 标签页切换处理
+// Tab change handler
 const handleTabChange = (tabName: string | number) => {
-  console.log('切换到标签页:', tabName)
+  console.log('Switch to tab:', tabName)
   if (tabName === 'pending') {
     getPendingData()
   } else if (tabName === 'completed') {
-    // 已完成数据会在标签页切换时自动获取
+    // Completed data will be automatically fetched when switching tabs
   }
 }
 
-// 表格选择事件
+// Table selection event
 const handlePendingSelectionChange = (rows: MaintenanceRecord[]) => {
   selectedPendingRows.value = rows
 }
 
-// 显示分配技工弹窗
+// Show assign technician dialog
 const showAssignDialog = () => {
   if (!selectedPendingRows.value.length) {
-    ElMessage.warning('请选择要分配的维修报单')
+    ElMessage.warning('Please select maintenance reports to assign')
     return
   }
   dialogVisible.value = true
 }
 
-// 分配成功回调
+// Assign success callback
 const handleAssignSuccess = () => {
   dialogVisible.value = false
   selectedPendingRows.value = []
   getPendingData()
-  ElMessage.success('分配成功')
+  ElMessage.success('Assigned successfully')
 }
 </script>
 

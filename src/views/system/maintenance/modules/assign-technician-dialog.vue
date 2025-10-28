@@ -1,26 +1,26 @@
 <template>
   <el-dialog
     v-model="visible"
-    title="分配维修任务"
+    title="Assign Maintenance Task"
     width="600px"
     :close-on-click-modal="false"
     :before-close="handleClose"
   >
     <div class="dialog-content">
       <div class="selected-records">
-        <h4>已选择的维修报单：</h4>
+        <h4>Selected Maintenance Reports:</h4>
         <ul>
           <li v-for="record in maintenanceRecords" :key="record.id">
-            设备：{{ record.deviceName }} - 报单ID：{{ record.id }}
+            Device: {{ record.deviceName }} - Report ID: {{ record.id }}
           </li>
         </ul>
       </div>
 
-      <el-form ref="formRef" :model="formData" :rules="rules" label-width="80px">
-        <el-form-item label="选择技工" prop="mechanicId">
+      <el-form ref="formRef" :model="formData" :rules="rules" label-width="120px">
+        <el-form-item label="Select Technician" prop="mechanicId">
           <el-select
             v-model="formData.mechanicId"
-            placeholder="请选择技工"
+            placeholder="Please select technician"
             style="width: 100%"
             :loading="loading"
           >
@@ -32,7 +32,7 @@
             >
               <span>{{ tech.username }}</span>
               <span class="tech-info">
-                (电话: {{ tech.phone }})
+                (Phone: {{ tech.phone }})
               </span>
             </el-option>
           </el-select>
@@ -42,8 +42,8 @@
 
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" :loading="submitting" @click="handleSubmit">确 定</el-button>
+        <el-button @click="handleClose">Cancel</el-button>
+        <el-button type="primary" :loading="submitting" @click="handleSubmit">Confirm</el-button>
       </span>
     </template>
   </el-dialog>
@@ -88,17 +88,17 @@ const formData = ref({
 })
 
 const rules: FormRules = {
-  mechanicId: [{ required: true, message: '请选择技工', trigger: 'change' }]
+  mechanicId: [{ required: true, message: 'Please select technician', trigger: 'change' }]
 }
 
-// 技工列表
+// Technician list
 const loading = ref(false)
 const technicianList = ref<any[]>([])
 
-// 提交状态
+// Submit status
 const submitting = ref(false)
 
-// 控制弹窗显示
+// Control dialog visibility
 const visible = ref(props.modelValue)
 
 watch(() => props.modelValue, (val) => {
@@ -115,7 +115,7 @@ watch(() => visible.value, (val) => {
   }
 })
 
-// 获取技工列表
+// Fetch technician list
 const fetchTechnicianList = async () => {
   try {
     loading.value = true
@@ -123,17 +123,17 @@ const fetchTechnicianList = async () => {
       pageNumber: 1,
       pageSize: 100
     })
-    // 过滤出技工角色的用户
+    // Filter users with technician role
     technicianList.value = response.records.filter((user: any) => user.userRole === 2)
   } catch (error) {
-    console.error('获取技工列表失败：', error)
-    ElMessage.error('获取技工列表失败')
+    console.error('Failed to get technician list:', error)
+    ElMessage.error('Failed to get technician list')
   } finally {
     loading.value = false
   }
 }
 
-// 提交分配
+// Submit assignment
 const handleSubmit = async () => {
   if (!formRef.value) return
   
@@ -143,7 +143,7 @@ const handleSubmit = async () => {
     submitting.value = true
     const mechanicId = formData.value.mechanicId
     
-    // 遍历所选报单进行分配
+    // Assign tasks to selected reports
     for (const record of props.maintenanceRecords) {
       await assignMaintenanceTask({
         userMaintenanceRecordId: record.id,
@@ -151,11 +151,11 @@ const handleSubmit = async () => {
       })
     }
     
-    ElMessage.success('分配成功')
+    ElMessage.success('Assigned successfully')
     emit('success')
   } catch (error) {
-    console.error('分配失败：', error)
-    ElMessage.error('分配失败')
+    console.error('Assignment failed:', error)
+    ElMessage.error('Assignment failed')
   } finally {
     submitting.value = false
   }
