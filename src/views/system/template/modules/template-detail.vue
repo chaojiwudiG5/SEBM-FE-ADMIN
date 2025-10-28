@@ -273,14 +273,14 @@
   })
   const testResult = ref('')
 
-  // 通知节点相关
+  // Notification node related
   const getNotificationNodeText = (node: number) => {
     const nodeMap = {
-      1: '租借成功',
-      3: '到期提醒',
-      4: '归还成功'
+      1: 'Borrow Success',
+      3: 'Due Reminder',
+      4: 'Return Success'
     }
-    return nodeMap[node as keyof typeof nodeMap] || '未知节点'
+    return nodeMap[node as keyof typeof nodeMap] || 'Unknown Node'
   }
 
   const getNotificationNodeType = (node: number) => {
@@ -292,14 +292,14 @@
     return typeMap[node as keyof typeof typeMap] || 'info'
   }
 
-  // 通知方式相关
+  // Notification method related
   const getNotificationMethodText = (method: number) => {
     const methodMap = {
-      1: '邮件',
-      2: '短信',
-      3: '站内信'
+      1: 'Email',
+      2: 'SMS',
+      3: 'In-app'
     }
-    return methodMap[method as keyof typeof methodMap] || '未知方式'
+    return methodMap[method as keyof typeof methodMap] || 'Unknown Method'
   }
 
   const getNotificationMethodType = (method: number) => {
@@ -311,14 +311,14 @@
     return typeMap[method as keyof typeof typeMap] || 'info'
   }
 
-  // 通知角色相关
+  // Notification role related
   const getNotificationRoleText = (role: number) => {
     const roleMap = {
-      0: '管理员',
-      1: '借用人',
-      2: '技术人员'
+      0: 'Admin',
+      1: 'Borrower',
+      2: 'Technician'
     }
-    return roleMap[role as keyof typeof roleMap] || '未知角色'
+    return roleMap[role as keyof typeof roleMap] || 'Unknown Role'
   }
 
   const getNotificationRoleType = (role: number) => {
@@ -330,14 +330,14 @@
     return typeMap[role as keyof typeof typeMap] || 'info'
   }
 
-  // 通知类型相关
+  // Notification type related
   const getNotificationTypeText = (type: number) => {
     const typeMap = {
-      [-1]: '提前通知',
-      0: '即时通知',
-      1: '延迟通知'
+      [-1]: 'Advance Notice',
+      0: 'Instant Notice',
+      1: 'Delayed Notice'
     }
-    return typeMap[type as keyof typeof typeMap] || '未知类型'
+    return typeMap[type as keyof typeof typeMap] || 'Unknown Type'
   }
 
   const getNotificationTypeType = (type: number) => {
@@ -349,10 +349,10 @@
     return typeMap[type as keyof typeof typeMap] || 'info'
   }
 
-  // 时间格式化
+  // Time formatting
   const formatTime = (time: string) => {
-    if (!time) return '未设置'
-    return new Date(time).toLocaleString('zh-CN')
+    if (!time) return 'Not Set'
+    return new Date(time).toLocaleString('en-US')
   }
 
   // 刷新统计

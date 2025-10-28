@@ -22,7 +22,7 @@ import { ref, onMounted } from 'vue'
 import DeviceTable from '@/components/audit/DeviceTable.vue'
 import { fetchAuditDevices } from '@/services/audit'
 
-const devices = ref([])
+const devices = ref<any[]>([])
 const loading = ref(false)
 
 onMounted(async () => {

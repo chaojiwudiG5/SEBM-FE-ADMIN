@@ -1,6 +1,6 @@
-// 系统级别枚举
+// System level enums
 
-// 菜单类型
+// Menu type
 export enum MenuTypeEnum {
   LEFT = 'left',
   TOP = 'top',

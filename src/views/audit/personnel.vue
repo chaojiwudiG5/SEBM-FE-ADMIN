@@ -23,7 +23,7 @@ import PersonnelTable from '@/components/audit/PersonnelTable.vue'
 import { fetchAuditDevices } from '@/services/audit'
 
 // derive personnel summary from devices mock
-const personnel = ref([])
+const personnel = ref<any[]>([])
 const loading = ref(false)
 
 onMounted(async () => {

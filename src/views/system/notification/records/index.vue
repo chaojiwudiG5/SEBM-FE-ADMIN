@@ -141,9 +141,9 @@
   // 获取通知方式文本
   const getNotificationMethodText = (method?: number): string => {
     const methodMap: Record<number, string> = {
-      1: '邮件',
-      2: '短信',
-      3: '站内信'
+      1: 'Email',
+      2: 'SMS',
+      3: 'In-app'
     }
     return methodMap[method as number] || '-'
   }
