@@ -24,6 +24,12 @@ export enum RoutesAlias {
   User = '/system/user', // 账户
   Message = '/system/message', // 消息通知
   Device = '/system/device', // 设备管理
+  DeviceAudit = '/system/device/audit', // 设备审计页面 (legacy)
+  Audit = '/audit', // 审计总览
+  AuditBorrow = '/audit/borrow',
+  AuditMaintenance = '/audit/maintenance',
+  AuditPersonnel = '/audit/personnel',
+  AuditApiTest = '/audit/api-test', // 审计 API 测试
   Template = '/system/template', // 模版管理
   NotificationRecords = '/system/notification/records', // 通知记录查询
   UserCenter = '/system/user-center', // 用户中心

@@ -15,7 +15,7 @@
       <ArtTableHeader v-model:columns="columnChecks" :loading="loading" @refresh="refreshData" layout="">
         <template #left>
           <ElSpace wrap>
-            <ElButton @click="showDialog('add')" v-ripple>新增设备</ElButton>
+            <ElButton @click="showDialog('add')" v-ripple>Add Device</ElButton>
           </ElSpace>
         </template>
       </ArtTableHeader>
@@ -73,10 +73,10 @@
 
   // 设备状态配置
   const DEVICE_STATUS_CONFIG = {
-    0: { type: 'success' as const, text: '可用' },
-    1: { type: 'warning' as const, text: '借出' },
-    2: { type: 'danger' as const, text: '维修' },
-    3: { type: 'info' as const, text: '预留' }
+    0: { type: 'success' as const, text: 'Available' },
+    1: { type: 'warning' as const, text: 'Borrowed' },
+    2: { type: 'danger' as const, text: 'Maintenance' },
+    3: { type: 'info' as const, text: 'Reserved' }
   } as const
 
   /**
@@ -86,7 +86,7 @@
     return (
       DEVICE_STATUS_CONFIG[status] || {
         type: 'info' as const,
-        text: '未知'
+        text: 'Unknown'
       }
     )
   }
@@ -144,10 +144,10 @@
       // 排除 apiParams 中的属性
       excludeParams: [],
       columnsFactory: () => [
-        { type: 'index', width: 60, label: '序号' }, // 序号
+        { type: 'index', width: 60, label: 'No.' }, // 序号
         {
           prop: 'deviceName',
-          label: '设备信息',
+          label: 'Device Info',
           width: 280,
           formatter: (row) => {
             const deviceRow = row as DeviceListItem
@@ -231,7 +231,7 @@
                 text: true,
                 onClick: () => updateDeviceStatus(deviceRow, 1),
                 style: { marginLeft: '8px' }
-              }, { default: () => '借出' }))
+              }, { default: () => 'Borrow' }))
             } else if (deviceRow.status === 1) {
               // 借出状态：可以归还
               buttons.push(h('el-button', {
@@ -240,7 +240,7 @@
                 text: true,
                 onClick: () => updateDeviceStatus(deviceRow, 0),
                 style: { marginLeft: '8px' }
-              }, { default: () => '归还' }))
+              }, { default: () => 'Return' }))
             } else if (deviceRow.status === 2) {
               // 维护状态：可以标记为可用
               buttons.push(h('el-button', {
@@ -249,7 +249,7 @@
                 text: true,
                 onClick: () => updateDeviceStatus(deviceRow, 0),
                 style: { marginLeft: '8px' }
-              }, { default: () => '修复完成' }))
+              }, { default: () => 'Fixed' }))
             } else if (deviceRow.status === 3) {
               // 预约状态：可以取消预约
               buttons.push(h('el-button', {

@@ -2,8 +2,8 @@
   <div class="card art-custom-card">
     <div class="card-header">
       <div class="title">
-        <h4 class="box-title">代办事项</h4>
-        <p class="subtitle">待处理<span class="text-danger">3</span></p>
+        <h4 class="box-title">Todo List</h4>
+        <p class="subtitle">Pending <span class="text-danger">3</span></p>
       </div>
     </div>
 
@@ -22,33 +22,33 @@
 
   const list = reactive([
     {
-      username: '查看今天工作内容',
-      date: '上午 09:30',
+      username: 'Review today\'s tasks',
+      date: '09:30 AM',
       complate: true
     },
     {
-      username: '回复邮件',
-      date: '上午 10:30',
+      username: 'Reply to emails',
+      date: '10:30 AM',
       complate: true
     },
     {
-      username: '工作汇报整理',
-      date: '上午 11:00',
+      username: 'Organize work report',
+      date: '11:00 AM',
       complate: true
     },
     {
-      username: '产品需求会议',
-      date: '下午 02:00',
+      username: 'Product requirements meeting',
+      date: '02:00 PM',
       complate: false
     },
     {
-      username: '整理会议内容',
-      date: '下午 03:30',
+      username: 'Summarize meeting notes',
+      date: '03:30 PM',
       complate: false
     },
     {
-      username: '明天工作计划',
-      date: '下午 06:30',
+      username: 'Plan tomorrow\'s tasks',
+      date: '06:30 PM',
       complate: false
     }
   ])

@@ -1,0 +1,551 @@
+openapi: 3.0.3
+info:
+  title: Audit API
+  version: 1.0.0
+  description: |
+    审计模块后端 API 规范。
+    
+    包含设备借用记录、维护统计、借用统计、人员统计、导出与申请等接口。
+servers:
+  - url: /api
+    description: API 根路径（反向代理或网关前缀）
+security:
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 4001
+        message:
+          type: string
+          example: 参数错误
+        details:
+          nullable: true
+          type: object
+
+    PagedResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 123
+        page:
+          type: integer
+          example: 1
+        size:
+          type: integer
+          example: 20
+        items:
+          type: array
+          items:
+            type: object
+
+    MaintenanceRecord:
+      type: object
+      properties:
+        id:
+          type: string
+        deviceId:
+          type: string
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+          nullable: true
+        durationMinutes:
+          type: number
+        reason:
+          type: string
+        technician:
+          type: string
+
+    AuditDevice:
+      type: object
+      properties:
+        id:
+          type: string
+        deviceId:
+          type: string
+        deviceName:
+          type: string
+        deviceType:
+          type: string
+        department:
+          type: string
+        user:
+          type: string
+        borrowTime:
+          type: string
+          format: date-time
+        expectedReturn:
+          type: string
+          format: date-time
+          nullable: true
+        returnTime:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+          enum: [available, borrowed, maintenance, reserved]
+        isOverdue:
+          type: boolean
+        overdueDays:
+          type: integer
+        maintenanceRecords:
+          type: array
+          items:
+            $ref: '#/components/schemas/MaintenanceRecord'
+
+    MaintenanceStatsItem:
+      type: object
+      properties:
+        deviceType:
+          type: string
+        avgMaintenanceMinutes:
+          type: number
+        maintenanceCount:
+          type: integer
+
+    BorrowStatsItem:
+      type: object
+      properties:
+        department:
+          type: string
+        borrowCount:
+          type: integer
+        overdueCount:
+          type: integer
+        overdueRate:
+          type: number
+
+    PersonnelTopItem:
+      type: object
+      properties:
+        user:
+          type: string
+        department:
+          type: string
+        borrowCount:
+          type: integer
+        overdueCount:
+          type: integer
+        lastBorrow:
+          type: string
+          format: date-time
+
+paths:
+  /audit/overview:
+    get:
+      summary: 审计总览（聚合）
+      description: 返回仪表盘使用的关键汇总指标
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  totalDevices:
+                    type: integer
+                  currentlyBorrowed:
+                    type: integer
+                  currentlyInMaintenance:
+                    type: integer
+                  totalBorrowInPeriod:
+                    type: integer
+                  totalMaintenanceInPeriod:
+                    type: integer
+                  topBorrowDepartments:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BorrowStatsItem'
+                  topBorrowUsers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PersonnelTopItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /audit/devices:
+    get:
+      summary: 获取设备借用/审计记录（分页）
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: deviceType
+          in: query
+          schema:
+            type: string
+        - name: department
+          in: query
+          schema:
+            type: string
+        - name: user
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: start
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: end
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: overdueOnly
+          in: query
+          schema:
+            type: boolean
+        - name: sort
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 分页返回借用记录
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedResponse'
+              examples:
+                example-1:
+                  value:
+                    total: 2
+                    page: 1
+                    size: 20
+                    items:
+                      - id: d-001
+                        deviceId: dev-001
+                        deviceName: 投影仪 A
+                        deviceType: 投影仪
+                        department: 市场部
+                        user: 张三
+                        borrowTime: 2025-10-01T09:00:00Z
+                        expectedReturn: 2025-10-08T09:00:00Z
+                        returnTime: 2025-10-02T15:30:00Z
+                        status: available
+                        isOverdue: false
+                        overdueDays: 0
+                      - id: d-002
+                        deviceId: dev-002
+                        deviceName: 笔记本 B
+                        deviceType: 笔记本
+                        department: 研发部
+                        user: 李四
+                        borrowTime: 2025-09-25T10:00:00Z
+                        expectedReturn: 2025-10-02T10:00:00Z
+                        returnTime: null
+                        status: borrowed
+                        isOverdue: true
+                        overdueDays: 26
+        '400':
+          description: 参数错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /audit/devices/{id}:
+    get:
+      summary: 获取单个设备的借用与维护详细
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 设备详细
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditDevice'
+        '404':
+          description: 未找到
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /audit/borrow-requests:
+    post:
+      summary: 提交借用申请
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                deviceId:
+                  type: string
+                deviceType:
+                  type: string
+                user:
+                  type: string
+                department:
+                  type: string
+                expectedReturn:
+                  type: string
+                  format: date-time
+                reason:
+                  type: string
+              required: [user, expectedReturn]
+      responses:
+        '200':
+          description: 提交成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  requestId:
+                    type: string
+        '400':
+          $ref: '#/components/schemas/ErrorResponse'
+
+  /audit/devices/export:
+    get:
+      summary: 导出借用记录
+      parameters:
+        - name: format
+          in: query
+          schema:
+            type: string
+            enum: [csv, xlsx]
+            default: csv
+      responses:
+        '200':
+          description: 文件流（CSV 或 XLSX）
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+  /audit/maintenance:
+    get:
+      summary: 维护记录（分页）
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: deviceId
+          in: query
+          schema:
+            type: string
+        - name: deviceType
+          in: query
+          schema:
+            type: string
+        - name: start
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: end
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: 分页返回维护记录
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedResponse'
+
+  /audit/maintenance/stats:
+    get:
+      summary: 获取维护统计（按设备类型）
+      parameters:
+        - name: start
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: end
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: groupBy
+          in: query
+          schema:
+            type: string
+            default: deviceType
+      responses:
+        '200':
+          description: 统计数组
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MaintenanceStatsItem'
+
+  /audit/borrow/stats:
+    get:
+      summary: 借用统计（按部门/设备类型/时间）
+      parameters:
+        - name: start
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: end
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: groupBy
+          in: query
+          schema:
+            type: string
+            enum: [department, deviceType, day, month]
+        - name: top
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: 借用统计数组
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BorrowStatsItem'
+
+  /audit/personnel/top:
+    get:
+      summary: 人员统计（Top N）
+      parameters:
+        - name: start
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: end
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: top
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: 返回 Top N 人员借用统计
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PersonnelTopItem'
+
+  /audit/export-job:
+    post:
+      summary: 异步导出任务（可选）
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: object
+                format:
+                  type: string
+                  enum: [csv, xlsx]
+                  default: csv
+      responses:
+        '202':
+          description: 任务已创建
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobId:
+                    type: string
+                  status:
+                    type: string
+
+  /audit/export-job/{id}/status:
+    get:
+      summary: 查询导出任务状态
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 任务状态
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobId:
+                    type: string
+                  status:
+                    type: string
+                  downloadUrl:
+                    type: string
+
+components:
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+tags:
+  - name: audit
+    description: 审计相关接口

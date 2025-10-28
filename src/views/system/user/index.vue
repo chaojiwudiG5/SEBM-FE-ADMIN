@@ -12,7 +12,7 @@
       <ArtTableHeader v-model:columns="columnChecks" :loading="loading" @refresh="refreshData" layout="">
         <template #left>
           <ElSpace wrap>
-            <ElButton @click="showDialog('add')" v-ripple>新增用户</ElButton>
+            <ElButton @click="showDialog('add')" v-ripple>Add User</ElButton>
           </ElSpace>
         </template>
       </ArtTableHeader>
@@ -80,8 +80,8 @@
 
   // 用户状态配置
   const USER_STATUS_CONFIG = {
-    '0': { type: 'success' as const, text: '正常' },
-    '1': { type: 'danger' as const, text: '封禁' }
+    '0': { type: 'success' as const, text: 'Normal' },
+    '1': { type: 'danger' as const, text: 'Banned' }
   } as const
 
   /**
@@ -91,7 +91,7 @@
     return (
       USER_STATUS_CONFIG[status as keyof typeof USER_STATUS_CONFIG] || {
         type: 'info' as const,
-        text: '未知'
+        text: 'Unknown'
       }
     )
   }
@@ -102,22 +102,22 @@
   const transformUserData = (userData: any): UserListItem => {
     // 角色映射
     const roleMap = {
-      0: '普通用户',
-      1: '管理员', 
-      2: '技工'
+      0: 'User',
+      1: 'Admin', 
+      2: 'Technician'
     }
 
     // 性别映射
     const genderMap = {
-      0: '未知',
-      1: '男',
-      2: '女'
+      0: 'Unknown',
+      1: 'Male',
+      2: 'Female'
     }
 
     // 状态映射
     const statusMap = {
-      0: '正常',
-      1: '封禁'
+      0: 'Normal',
+      1: 'Banned'
     }
 
     return {
@@ -213,48 +213,48 @@
         size: 'size'
       },
       columnsFactory: () => [
-        { type: 'index', width: 60, label: '序号' }, // 序号
+        { type: 'index', width: 60, label: 'No.' },
         {
           prop: 'username',
-          label: '用户名',
+          label: 'Username',
           width: 120,
           formatter: (row) => (row as UserListItem).username || '-'
         },
         {
           prop: 'email',
-          label: '邮箱',
+          label: 'Email',
           width: 180,
           formatter: (row) => (row as UserListItem).email || '-'
         },
         {
           prop: 'phone',
-          label: '手机号',
+          label: 'Phone',
           width: 130,
           formatter: (row) => (row as UserListItem).phone || '-'
         },
         { 
           prop: 'gender', 
-          label: '性别', 
+          label: 'Gender', 
           width: 80,
           formatter: (row) => {
             const userRow = row as UserListItem
-            const genderMap = { 0: '未知', 1: '男', 2: '女' }
-            return genderMap[userRow.gender as keyof typeof genderMap] || '未知'
+            const genderMap = { 0: 'Unknown', 1: 'Male', 2: 'Female' }
+            return genderMap[userRow.gender as keyof typeof genderMap] || 'Unknown'
           }
         },
         { 
           prop: 'userRole', 
-          label: '角色',
+          label: 'Role',
           width: 100,
           formatter: (row) => {
             const userRow = row as UserListItem
-            const roleMap = { 0: '普通用户', 1: '管理员', 2: '技工' }
-            return roleMap[userRow.userRole as keyof typeof roleMap] || '普通用户'
+            const roleMap = { 0: 'User', 1: 'Admin', 2: 'Technician' }
+            return roleMap[userRow.userRole as keyof typeof roleMap] || 'User'
           }
         },
         {
           prop: 'userStatus',
-          label: '状态',
+          label: 'Status',
           width: 80,
           formatter: (row) => {
             const userRow = row as UserListItem
@@ -264,19 +264,19 @@
         },
         { 
           prop: 'age', 
-          label: '年龄',
+          label: 'Age',
           width: 80,
           formatter: (row) => (row as UserListItem).age || '-'
         },
         { 
           prop: 'level', 
-          label: '等级',
+          label: 'Level',
           width: 80,
           formatter: (row) => (row as UserListItem).level || '-'
         },
         { 
           prop: 'overdueTimes', 
-          label: '逾期次数',
+          label: 'Overdue Count',
           width: 100,
           formatter: (row) => {
             const userRow = row as UserListItem
@@ -290,45 +290,45 @@
         },
         { 
           prop: 'borrowedDeviceCount', 
-          label: '已借设备',
+          label: 'Borrowed Devices',
           width: 100,
           formatter: (row) => (row as UserListItem).borrowedDeviceCount || 0
         },
         { 
           prop: 'maxBorrowedDeviceCount', 
-          label: '最大可借',
+          label: 'Max Borrow',
           width: 100,
           formatter: (row) => (row as UserListItem).maxBorrowedDeviceCount || 0
         },
         { 
           prop: 'maxOverdueTimes', 
-          label: '最大逾期',
+          label: 'Max Overdue',
           width: 100,
           formatter: (row) => (row as UserListItem).maxOverdueTimes || 0
         },
         {
           prop: 'createTime',
-          label: '创建时间',
+          label: 'Create Time',
           width: 160,
           sortable: true,
           formatter: (row) => {
             const time = (row as UserListItem).createTime
-            return time ? new Date(time).toLocaleString('zh-CN') : '-'
+            return time ? new Date(time).toLocaleString('en-US') : '-'
           }
         },
         {
           prop: 'updateTime',
-          label: '更新时间',
+          label: 'Update Time',
           width: 160,
           sortable: true,
           formatter: (row) => {
             const time = (row as UserListItem).updateTime
-            return time ? new Date(time).toLocaleString('zh-CN') : '-'
+            return time ? new Date(time).toLocaleString('en-US') : '-'
           }
         },
         {
           prop: 'operation',
-          label: '操作',
+          label: 'Action',
           width: 180,
           fixed: 'right',
           formatter: (row) => {

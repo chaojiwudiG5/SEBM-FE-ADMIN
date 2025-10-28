@@ -154,11 +154,11 @@
       // 模拟注册请求
       setTimeout(() => {
         loading.value = false
-        ElMessage.success('注册成功')
+        ElMessage.success('Registration successful')
         toLogin()
       }, 1000)
     } catch (error) {
-      console.log('验证失败', error)
+      console.log('Validation failed', error)
     }
   }
 

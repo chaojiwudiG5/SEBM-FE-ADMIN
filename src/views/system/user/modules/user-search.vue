@@ -58,78 +58,78 @@
   // 表单配置
   const formItems = computed(() => [
     {
-      label: '用户名',
+      label: 'Username',
       key: 'userName',
       type: 'input',
-      placeholder: '请输入用户名',
+      placeholder: 'Please enter username',
       clearable: true
     },
     {
-      label: '手机号',
+      label: 'Phone',
       key: 'userPhone',
       type: 'input',
-      props: { placeholder: '请输入手机号', maxlength: '11' }
+      props: { placeholder: 'Please enter phone number', maxlength: '11' }
     },
     {
-      label: '邮箱',
+      label: 'Email',
       key: 'userEmail',
       type: 'input',
-      props: { placeholder: '请输入邮箱' }
+      props: { placeholder: 'Please enter email' }
     },
     {
-      label: '角色',
+      label: 'Role',
       key: 'userRole',
       type: 'select',
       props: {
-        placeholder: '请选择角色',
+        placeholder: 'Please select role',
         options: [
-          { label: '普通用户', value: '0' },
-          { label: '管理员', value: '1' },
-          { label: '技工', value: '2' }
+          { label: 'User', value: '0' },
+          { label: 'Admin', value: '1' },
+          { label: 'Technician', value: '2' }
         ]
       }
     },
     {
-      label: '状态',
+      label: 'Status',
       key: 'status',
       type: 'select',
       props: {
-        placeholder: '请选择状态',
+        placeholder: 'Please select status',
         options: [
-          { label: '正常', value: '0' },
-          { label: '封禁', value: '1' }
+          { label: 'Normal', value: '0' },
+          { label: 'Banned', value: '1' }
         ]
       }
     },
     {
-      label: '性别',
+      label: 'Gender',
       key: 'userGender',
       type: 'radiogroup',
       props: {
         options: [
-          { label: '男', value: '1' },
-          { label: '女', value: '2' }
+          { label: 'Male', value: '1' },
+          { label: 'Female', value: '2' }
         ]
       }
     },
     {
-      label: '年龄范围',
+      label: 'Age Range',
       key: 'ageRange',
       type: 'input',
-      props: { placeholder: '例: 18-30' }
+      props: { placeholder: 'e.g: 18-30' }
     },
     {
-      label: '等级',
+      label: 'Level',
       key: 'level',
       type: 'select',
       props: {
-        placeholder: '请选择等级',
+        placeholder: 'Please select level',
         options: [
-          { label: '1级', value: '1' },
-          { label: '2级', value: '2' },
-          { label: '3级', value: '3' },
-          { label: '4级', value: '4' },
-          { label: '5级', value: '5' }
+          { label: 'Level 1', value: '1' },
+          { label: 'Level 2', value: '2' },
+          { label: 'Level 3', value: '3' },
+          { label: 'Level 4', value: '4' },
+          { label: 'Level 5', value: '5' }
         ]
       }
     }

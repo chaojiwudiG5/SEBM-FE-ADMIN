@@ -11,7 +11,7 @@
         <template #header>
           <div class="card-header">
             <ElIcon><User /></ElIcon>
-            <span>基本信息</span>
+            <span>Basic Information</span>
           </div>
         </template>
         
@@ -32,14 +32,14 @@
           
           <ElCol :span="16">
             <ElDescriptions :column="2" border>
-              <ElDescriptionsItem label="用户ID">{{ userData.id }}</ElDescriptionsItem>
-              <ElDescriptionsItem label="用户名">{{ userData.username }}</ElDescriptionsItem>
-              <ElDescriptionsItem label="邮箱">{{ userData.email }}</ElDescriptionsItem>
-              <ElDescriptionsItem label="手机号">{{ userData.phone }}</ElDescriptionsItem>
-              <ElDescriptionsItem label="性别">{{ getGenderText(userData.gender || 0) }}</ElDescriptionsItem>
-              <ElDescriptionsItem label="年龄">{{ userData.age || '未设置' }}</ElDescriptionsItem>
-              <ElDescriptionsItem label="等级">{{ userData.level || '未设置' }}</ElDescriptionsItem>
-              <ElDescriptionsItem label="状态">
+              <ElDescriptionsItem label="User ID">{{ userData.id }}</ElDescriptionsItem>
+              <ElDescriptionsItem label="Username">{{ userData.username }}</ElDescriptionsItem>
+              <ElDescriptionsItem label="Email">{{ userData.email }}</ElDescriptionsItem>
+              <ElDescriptionsItem label="Phone">{{ userData.phone }}</ElDescriptionsItem>
+              <ElDescriptionsItem label="Gender">{{ getGenderText(userData.gender || 0) }}</ElDescriptionsItem>
+              <ElDescriptionsItem label="Age">{{ userData.age || 'Not Set' }}</ElDescriptionsItem>
+              <ElDescriptionsItem label="Level">{{ userData.level || 'Not Set' }}</ElDescriptionsItem>
+              <ElDescriptionsItem label="Status">
                 <ElTag :type="getStatusType(userData.userStatus || 0)">
                   {{ getStatusText(userData.userStatus || 0) }}
                 </ElTag>
@@ -53,7 +53,7 @@
         <template #header>
           <div class="card-header">
             <ElIcon><Monitor /></ElIcon>
-            <span>设备借用信息</span>
+            <span>Device Borrowing Information</span>
           </div>
         </template>
         
@@ -61,13 +61,13 @@
           <ElCol :span="6">
             <div class="stat-item">
               <div class="stat-value">{{ userData.borrowedDeviceCount || 0 }}</div>
-              <div class="stat-label">已借设备数</div>
+              <div class="stat-label">Borrowed Devices</div>
             </div>
           </ElCol>
           <ElCol :span="6">
             <div class="stat-item">
               <div class="stat-value">{{ userData.maxBorrowedDeviceCount || 0 }}</div>
-              <div class="stat-label">最大可借数</div>
+              <div class="stat-label">Max Borrow Limit</div>
             </div>
           </ElCol>
           <ElCol :span="6">
@@ -75,7 +75,7 @@
               <div class="stat-value" :class="{ 'danger': isOverdueLimit }">
                 {{ userData.overdueTimes || 0 }}
               </div>
-              <div class="stat-label">逾期次数</div>
+              <div class="stat-label">Overdue Count</div>
             </div>
           </ElCol>
           <ElCol :span="6">

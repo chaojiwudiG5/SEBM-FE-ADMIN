@@ -2,42 +2,42 @@
   <div class="device-search">
     <ElCard shadow="never">
       <ElForm ref="formRef" :model="formData" inline>
-        <ElFormItem label="设备名称">
+        <ElFormItem label="Device Name">
           <ElInput
             v-model="formData.deviceName"
-            placeholder="请输入设备名称"
+            placeholder="Please enter device name"
             clearable
             style="width: 200px"
           />
         </ElFormItem>
 
-        <ElFormItem label="设备类型">
+        <ElFormItem label="Device Type">
           <ElInput
             v-model="formData.deviceType"
-            placeholder="请输入设备类型"
+            placeholder="Please enter device type"
             clearable
             style="width: 150px"
           />
         </ElFormItem>
 
-        <ElFormItem label="设备状态">
+        <ElFormItem label="Device Status">
           <ElSelect
             v-model="formData.status"
-            placeholder="请选择状态"
+            placeholder="Please select status"
             clearable
             style="width: 120px"
           >
-            <ElOption label="可用" :value="0" />
-            <ElOption label="借出" :value="1" />
-            <ElOption label="维修" :value="2" />
-            <ElOption label="预留" :value="3" />
+            <ElOption label="Available" :value="0" />
+            <ElOption label="Borrowed" :value="1" />
+            <ElOption label="Maintenance" :value="2" />
+            <ElOption label="Reserved" :value="3" />
           </ElSelect>
         </ElFormItem>
 
-        <ElFormItem label="设备位置">
+        <ElFormItem label="Device Location">
           <ElInput
             v-model="formData.location"
-            placeholder="请输入位置"
+            placeholder="Please enter location"
             clearable
             style="width: 200px"
           />
@@ -46,11 +46,11 @@
         <ElFormItem>
           <ElButton type="primary" @click="handleSearch" v-ripple>
             <ElIcon><Search /></ElIcon>
-            查询
+            Search
           </ElButton>
           <ElButton @click="handleReset" v-ripple>
             <ElIcon><Refresh /></ElIcon>
-            重置
+            Reset
           </ElButton>
         </ElFormItem>
       </ElForm>

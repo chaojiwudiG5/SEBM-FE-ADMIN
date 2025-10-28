@@ -80,6 +80,80 @@ export const asyncRoutes: AppRouteRecord[] = [
           roles: ['R_ADMIN']
         }
       }
+      ,
+      {
+        path: 'audit',
+        name: 'DeviceAudit',
+        component: RoutesAlias.DeviceAudit,
+        meta: {
+          title: 'Device Audit',
+          keepAlive: true,
+          roles: ['R_ADMIN']
+        }
+      }
+    ]
+  },
+  // Audit Center - Top-level routes (Device Borrowing / Maintenance / Personnel)
+  {
+    path: '/audit',
+    name: 'Audit',
+    component: RoutesAlias.Layout,
+    meta: {
+      title: 'Audit',
+      icon: '&#xe7b9;',
+      roles: ['R_ADMIN']
+    },
+    children: [
+      {
+        path: '',
+        name: 'AuditIndex',
+        component: RoutesAlias.Audit,
+        meta: {
+          title: 'Audit Overview',
+          keepAlive: true,
+          roles: ['R_ADMIN']
+        }
+      },
+      {
+        path: 'borrow',
+        name: 'AuditBorrow',
+        component: RoutesAlias.AuditBorrow,
+        meta: {
+          title: 'Borrowing Audit',
+          keepAlive: true,
+          roles: ['R_ADMIN']
+        }
+      },
+      {
+        path: 'maintenance',
+        name: 'AuditMaintenance',
+        component: RoutesAlias.AuditMaintenance,
+        meta: {
+          title: 'Maintenance Audit',
+          keepAlive: true,
+          roles: ['R_ADMIN']
+        }
+      },
+      {
+        path: 'personnel',
+        name: 'AuditPersonnel',
+        component: RoutesAlias.AuditPersonnel,
+        meta: {
+          title: 'Personnel Audit',
+          keepAlive: true,
+          roles: ['R_ADMIN']
+        }
+      },
+      {
+        path: 'api-test',
+        name: 'AuditApiTest',
+        component: RoutesAlias.AuditApiTest,
+        meta: {
+          title: 'API Test',
+          keepAlive: false,
+          roles: ['R_ADMIN']
+        }
+      }
     ]
   },
   {

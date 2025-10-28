@@ -1,16 +1,16 @@
-<!-- 模版搜索 -->
+<!-- Template Search -->
 <template>
   <ElCard shadow="never" class="search-card">
     <template #header>
       <div class="search-header">
-        <span class="search-title">搜索条件</span>
+        <span class="search-title">Search Criteria</span>
         <ElButton 
           size="small" 
           text 
           @click="toggleAdvancedSearch"
           class="toggle-btn"
         >
-          {{ showAdvancedSearch ? '收起' : '展开' }}
+          {{ showAdvancedSearch ? 'Collapse' : 'Expand' }}
           <ElIcon>
             <ArrowDown v-if="!showAdvancedSearch" />
             <ArrowUp v-else />
@@ -26,21 +26,21 @@
       inline
       class="search-form"
     >
-      <!-- 基础搜索条件 -->
-      <ElFormItem label="模版标题" prop="templateTitle">
+      <!-- Basic Search Criteria -->
+      <ElFormItem label="Template Title" prop="templateTitle">
         <ElInput
           v-model="modelValue.templateTitle"
-          placeholder="请输入模版标题"
+          placeholder="Please enter template title"
           clearable
           style="width: 200px"
           @keyup.enter="$emit('search')"
         />
       </ElFormItem>
 
-      <ElFormItem label="通知节点" prop="notificationNode">
+      <ElFormItem label="Notification Node" prop="notificationNode">
         <ElSelect
           v-model="modelValue.notificationNode"
-          placeholder="请选择通知节点"
+          placeholder="Please select notification node"
           clearable
           style="width: 160px"
         >
@@ -53,10 +53,10 @@
         </ElSelect>
       </ElFormItem>
 
-      <ElFormItem label="通知方式" prop="notificationMethod">
+      <ElFormItem label="Notification Method" prop="notificationMethod">
         <ElSelect
           v-model="modelValue.notificationMethod"
-          placeholder="请选择通知方式"
+          placeholder="Please select notification method"
           clearable
           style="width: 160px"
         >
@@ -69,20 +69,20 @@
         </ElSelect>
       </ElFormItem>
 
-      <ElFormItem label="通知事件" prop="notificationEvent">
+      <ElFormItem label="Notification Event" prop="notificationEvent">
         <ElInput
           v-model="modelValue.notificationEvent"
-          placeholder="请输入通知事件"
+          placeholder="Please enter notification event"
           clearable
           style="width: 160px"
           @keyup.enter="$emit('search')"
         />
       </ElFormItem>
 
-      <ElFormItem label="通知类型" prop="notificationType">
+      <ElFormItem label="Notification Type" prop="notificationType">
         <ElSelect
           v-model="modelValue.notificationType"
-          placeholder="请选择通知类型"
+          placeholder="Please select notification type"
           clearable
           style="width: 160px"
         >
@@ -95,12 +95,12 @@
         </ElSelect>
       </ElFormItem>
 
-      <!-- 高级搜索条件 -->
+      <!-- Advanced Search Criteria -->
       <template v-if="showAdvancedSearch">
-        <ElFormItem label="通知角色" prop="notificationRole">
+        <ElFormItem label="Notification Role" prop="notificationRole">
           <ElSelect
             v-model="modelValue.notificationRole"
-            placeholder="请选择通知角色"
+            placeholder="Please select notification role"
             clearable
             style="width: 160px"
           >
@@ -113,33 +113,33 @@
           </ElSelect>
         </ElFormItem>
 
-        <ElFormItem label="创建时间" prop="createTimeRange">
+        <ElFormItem label="Create Time" prop="createTimeRange">
           <ElDatePicker
             v-model="modelValue.createTimeRange"
             type="datetimerange"
-            range-separator="至"
-            start-placeholder="开始时间"
-            end-placeholder="结束时间"
+            range-separator="to"
+            start-placeholder="Start Time"
+            end-placeholder="End Time"
             style="width: 300px"
             format="YYYY-MM-DD HH:mm:ss"
             value-format="YYYY-MM-DD HH:mm:ss"
           />
         </ElFormItem>
 
-        <ElFormItem label="模版描述" prop="templateDesc">
+        <ElFormItem label="Template Description" prop="templateDesc">
           <ElInput
             v-model="modelValue.templateDesc"
-            placeholder="请输入模版描述关键词"
+            placeholder="Please enter template description keywords"
             clearable
             style="width: 200px"
             @keyup.enter="$emit('search')"
           />
         </ElFormItem>
 
-        <ElFormItem label="时间偏移" prop="relateTimeOffsetRange">
+        <ElFormItem label="Time Offset" prop="relateTimeOffsetRange">
           <ElInputNumber
             v-model="modelValue.relateTimeOffsetMin"
-            placeholder="最小值"
+            placeholder="Min"
             :min="0"
             :max="86400"
             style="width: 100px"
@@ -147,30 +147,30 @@
           <span style="margin: 0 8px;">-</span>
           <ElInputNumber
             v-model="modelValue.relateTimeOffsetMax"
-            placeholder="最大值"
+            placeholder="Max"
             :min="0"
             :max="86400"
             style="width: 100px"
           />
-          <span style="margin-left: 4px; color: var(--el-text-color-secondary);">秒</span>
+          <span style="margin-left: 4px; color: var(--el-text-color-secondary);">seconds</span>
         </ElFormItem>
       </template>
 
       <ElFormItem>
         <ElSpace>
           <ElButton type="primary" @click="$emit('search')" v-ripple>
-            搜索
+            Search
           </ElButton>
           <ElButton @click="handleReset" v-ripple>
-            重置
+            Reset
           </ElButton>
         </ElSpace>
       </ElFormItem>
     </ElForm>
 
-    <!-- 搜索历史 -->
+    <!-- Search History -->
     <div v-if="searchHistory.length > 0" class="search-history">
-      <div class="history-title">搜索历史</div>
+      <div class="history-title">Search History</div>
       <div class="history-tags">
         <ElTag
           v-for="(item, index) in searchHistory"
@@ -226,35 +226,35 @@
   const formRef = ref<FormInstance>()
   const showAdvancedSearch = ref(false)
 
-  // 搜索历史
+  // Search history
   const searchHistory = ref<SearchHistoryItem[]>([])
 
-  // 通知节点选项
+  // Notification node options
   const notificationNodeOptions = [
-    { label: '租借成功', value: 1 },
-    { label: '到期提醒', value: 3 },
-    { label: '归还成功', value: 4 }
+    { label: 'Borrow Success', value: 1 },
+    { label: 'Due Reminder', value: 3 },
+    { label: 'Return Success', value: 4 }
   ]
 
-  // 通知方式选项
+  // Notification method options
   const notificationMethodOptions = [
-    { label: '邮件', value: 1 },
-    { label: '短信', value: 2 },
-    { label: '站内信', value: 3 }
+    { label: 'Email', value: 1 },
+    { label: 'SMS', value: 2 },
+    { label: 'In-app', value: 3 }
   ]
 
-  // 通知角色选项
+  // Notification role options
   const notificationRoleOptions = [
-    { label: '管理员', value: 0 },
-    { label: '借用人', value: 1 },
-    { label: '技术人员', value: 2 }
+    { label: 'Admin', value: 0 },
+    { label: 'Borrower', value: 1 },
+    { label: 'Technician', value: 2 }
   ]
 
-  // 通知类型选项（与后端枚举对齐）
+  // Notification type options
   const notificationTypeOptions = [
-    { label: '提前通知', value: -1 },
-    { label: '即时通知', value: 0 },
-    { label: '延迟通知', value: 1 }
+    { label: 'Advance Notice', value: -1 },
+    { label: 'Instant Notice', value: 0 },
+    { label: 'Delayed Notice', value: 1 }
   ]
 
   /**

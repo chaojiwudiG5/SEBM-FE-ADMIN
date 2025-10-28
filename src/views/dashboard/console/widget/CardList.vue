@@ -5,7 +5,7 @@
         <span class="des subtitle">{{ item.des }}</span>
         <ArtCountTo class="number box-title" :target="item.num" :duration="1300" />
         <div class="change-box">
-          <span class="change-text">较上周</span>
+          <span class="change-text">vs last week</span>
           <span
             class="change"
             :class="[item.change.indexOf('+') === -1 ? 'text-danger' : 'text-success']"
@@ -24,7 +24,7 @@
 
   const dataList = reactive([
     {
-      des: '总访问次数',
+      des: 'Total Visits',
       icon: '&#xe721;',
       startVal: 0,
       duration: 1000,
@@ -32,7 +32,7 @@
       change: '+20%'
     },
     {
-      des: '在线访客数',
+      des: 'Online Visitors',
       icon: '&#xe724;',
       startVal: 0,
       duration: 1000,
@@ -40,7 +40,7 @@
       change: '+10%'
     },
     {
-      des: '点击量',
+      des: 'Page Views',
       icon: '&#xe7aa;',
       startVal: 0,
       duration: 1000,
@@ -48,7 +48,7 @@
       change: '-12%'
     },
     {
-      des: '新用户',
+      des: 'New Users',
       icon: '&#xe82a;',
       startVal: 0,
       duration: 1000,

@@ -17,7 +17,7 @@
               <template #icon>
                 <i class="iconfont-sys">&#xe6a0;</i>
               </template>
-              新增模版
+              Add Template
             </ElButton>
             
             
@@ -26,12 +26,12 @@
         <template #right>
           <ElSpace>
             <ElText type="info" size="small">
-              已选择 {{ selectedRows.length }} 项
+              Selected {{ selectedRows.length }} items
               <span v-if="selectedRows.length === 1" style="color: var(--el-color-success);">
-                （可预览）
+                (Can preview)
               </span>
               <span v-else-if="selectedRows.length > 1" style="color: var(--el-color-warning);">
-                （仅支持单个预览）
+                (Only one can be previewed)
               </span>
             </ElText>
             <ElButton 
@@ -39,7 +39,7 @@
               :disabled="selectedRows.length === 0"
               @click="clearSelection"
             >
-              清空选择
+              Clear Selection
             </ElButton>
           </ElSpace>
         </template>
@@ -59,20 +59,20 @@
           <div class="table-action">
             <ArtButtonTable type="view" @click="() => showDetail(row)" />
             <ArtButtonTable type="edit" @click="() => showDialog('edit', row)" />
-            <ElButton size="small" type="success" @click="() => handleCopy(row)">复制</ElButton>
-            <ElButton size="small" type="info" @click="() => handlePreview(row)">预览</ElButton>
+            <ElButton size="small" type="success" @click="() => handleCopy(row)">Copy</ElButton>
+            <ElButton size="small" type="info" @click="() => handlePreview(row)">Preview</ElButton>
             <ElButton
               v-if="row.status === '1'"
               size="small"
               type="danger"
               @click="() => handleDisable([row])"
-            >禁用</ElButton>
+            >Disable</ElButton>
             <ElButton
               v-else
               size="small"
               type="success"
               @click="() => handleEnable([row])"
-            >启用</ElButton>
+            >Enable</ElButton>
           </div>
         </template>
       </ArtTable>
@@ -145,34 +145,34 @@
 
   // 通知节点配置
   const NOTIFICATION_NODE_CONFIG = {
-    0: { type: 'info' as const, text: '未知节点' },
-    1: { type: 'success' as const, text: '租借成功' },
-    2: { type: 'info' as const, text: '未知节点' },
-    3: { type: 'warning' as const, text: '到期提醒' },
-    4: { type: 'success' as const, text: '归还成功' }
+    0: { type: 'info' as const, text: 'Unknown Node' },
+    1: { type: 'success' as const, text: 'Borrow Success' },
+    2: { type: 'info' as const, text: 'Unknown Node' },
+    3: { type: 'warning' as const, text: 'Due Reminder' },
+    4: { type: 'success' as const, text: 'Return Success' }
   } as const
 
   // 通知方式配置
   const NOTIFICATION_METHOD_CONFIG = {
-    0: { type: 'info' as const, text: '未知方式' },
-    1: { type: 'primary' as const, text: '邮件' },
-    2: { type: 'success' as const, text: '短信' },
-    3: { type: 'warning' as const, text: '站内信' }
+    0: { type: 'info' as const, text: 'Unknown Method' },
+    1: { type: 'primary' as const, text: 'Email' },
+    2: { type: 'success' as const, text: 'SMS' },
+    3: { type: 'warning' as const, text: 'In-app' }
   } as const
 
   // 通知角色配置
   const NOTIFICATION_ROLE_CONFIG = {
-    0: { type: 'primary' as const, text: '管理员' },
-    1: { type: 'success' as const, text: '借用人' },
-    2: { type: 'warning' as const, text: '技术人员' },
-    3: { type: 'info' as const, text: '未知角色' }
+    0: { type: 'primary' as const, text: 'Admin' },
+    1: { type: 'success' as const, text: 'Borrower' },
+    2: { type: 'warning' as const, text: 'Technician' },
+    3: { type: 'info' as const, text: 'Unknown Role' }
   } as const
 
   // 通知类型配置
   const NOTIFICATION_TYPE_CONFIG = {
-    [-1]: { type: 'warning' as const, text: '提前通知' },
-    0: { type: 'primary' as const, text: '即时通知' },
-    1: { type: 'success' as const, text: '延迟通知' }
+    [-1]: { type: 'warning' as const, text: 'Advance Notice' },
+    0: { type: 'primary' as const, text: 'Instant Notice' },
+    1: { type: 'success' as const, text: 'Delayed Notice' }
   } as const
 
 
@@ -183,7 +183,7 @@
     return (
       NOTIFICATION_NODE_CONFIG[node as keyof typeof NOTIFICATION_NODE_CONFIG] || {
         type: 'info' as const,
-        text: '未知'
+        text: 'Unknown'
       }
     )
   }
@@ -195,7 +195,7 @@
     return (
       NOTIFICATION_METHOD_CONFIG[method as keyof typeof NOTIFICATION_METHOD_CONFIG] || {
         type: 'info' as const,
-        text: '未知'
+        text: 'Unknown'
       }
     )
   }
@@ -207,7 +207,7 @@
     return (
       NOTIFICATION_ROLE_CONFIG[role as keyof typeof NOTIFICATION_ROLE_CONFIG] || {
         type: 'info' as const,
-        text: '未知'
+        text: 'Unknown'
       }
     )
   }
@@ -220,7 +220,7 @@
     return (
       NOTIFICATION_TYPE_CONFIG[type as keyof typeof NOTIFICATION_TYPE_CONFIG] || {
         type: 'info' as const,
-        text: '未知'
+        text: 'Unknown'
       }
     )
   }
@@ -260,14 +260,14 @@
       { type: 'selection', width: 60, fixed: 'left' },
       {
         prop: 'templateTitle',
-        label: '模版标题',
+        label: 'Template Title',
         minWidth: 180,
         showOverflowTooltip: true,
         search: true
       },
       {
         prop: 'notificationNode',
-        label: '通知节点',
+        label: 'Notification Node',
         width: 120,
         search: true,
         formatter: (data: TemplateListItem) => {
@@ -275,12 +275,12 @@
           const config = getNotificationNodeConfig(data.notificationNode)
           console.log('通知节点配置:', config)
           // 直接返回文本进行测试
-          return config.text || '未知'
+          return config.text || 'Unknown'
         }
       },
       {
         prop: 'notificationMethod',
-        label: '通知方式',
+        label: 'Notification Method',
         width: 150,
         search: true,
         formatter: (data: TemplateListItem) => {
@@ -288,32 +288,32 @@
           if (!data.notificationMethod || data.notificationMethod.length === 0) return '-'
           return data.notificationMethod.map(method => {
             const config = getNotificationMethodConfig(method)
-            return config.text || '未知'
+            return config.text || 'Unknown'
           }).join(', ')
         }
       },
       {
         prop: 'notificationRole',
-        label: '通知角色',
+        label: 'Notification Role',
         width: 120,
         formatter: (data: TemplateListItem) => {
           console.log('通知角色数据:', data.notificationRole)
           if (!data.notificationRole) return '-'
           const config = getNotificationRoleConfig(data.notificationRole)
           console.log('通知角色配置:', config)
-          return config.text || '未知'
+          return config.text || 'Unknown'
         }
       },
       {
         prop: 'notificationEvent',
-        label: '通知事件',
+        label: 'Notification Event',
         width: 120,
         search: true,
         showOverflowTooltip: true
       },
       {
         prop: 'notificationType',
-        label: '通知类型',
+        label: 'Notification Type',
         width: 120,
         search: true,
         formatter: (data: TemplateListItem) => {
@@ -321,21 +321,21 @@
           if (!data.notificationType) return '-'
           const config = getNotificationTypeConfig(data.notificationType)
           console.log('通知类型配置:', config)
-          return config.text || '未知'
+          return config.text || 'Unknown'
         }
       },
       {
         prop: 'status',
-        label: '状态',
+        label: 'Status',
         width: 100,
         formatter: (row: TemplateListItem) => {
           const isEnabled = row.status === '1'
-          return h(ElTag, { type: isEnabled ? 'success' : 'info' }, () => (isEnabled ? '启用' : '禁用'))
+          return h(ElTag, { type: isEnabled ? 'success' : 'info' }, () => (isEnabled ? 'Enabled' : 'Disabled'))
         }
       },
       {
         prop: 'relateTimeOffset',
-        label: '时间偏移(秒)',
+        label: 'Time Offset (sec)',
         width: 120,
         formatter: (data: TemplateListItem) => {
           return data.relateTimeOffset || '-'
@@ -343,7 +343,7 @@
       },
       {
         prop: 'templateDesc',
-        label: '模版描述',
+        label: 'Template Description',
         minWidth: 200,
         showOverflowTooltip: true,
         formatter: (data: TemplateListItem) => {
@@ -352,7 +352,7 @@
       },
       {
         prop: 'createTime',
-        label: '创建时间',
+        label: 'Create Time',
         width: 180,
         formatter: (data: TemplateListItem) => {
           return data.createTime ? new Date(data.createTime).toLocaleString() : '-'
@@ -360,7 +360,7 @@
       },
       {
         prop: 'operation',
-        label: '操作',
+        label: 'Action',
         width: 360,
         fixed: 'right',
         useSlot: true
@@ -406,10 +406,10 @@
    * 处理启用
    */
   const handleEnable = async (templateList: TemplateListItem[]) => {
-    const templateTitles = templateList.map((item) => item.templateTitle).join('、')
+    const templateTitles = templateList.map((item) => item.templateTitle).join(', ')
 
     try {
-      await ElMessageBox.confirm(`确认启用模版：${templateTitles}？`, '提示', {
+      await ElMessageBox.confirm(`Are you sure to enable template: ${templateTitles}?`, 'Confirm', {
         type: 'info'
       })
 
@@ -419,7 +419,7 @@
         template.status = '1'
       }
 
-      ElMessage.success('启用成功')
+      ElMessage.success('Enabled successfully')
     } catch (error) {
       // 用户取消启用
     }
@@ -429,10 +429,10 @@
    * 处理禁用
    */
   const handleDisable = async (templateList: TemplateListItem[]) => {
-    const templateTitles = templateList.map((item) => item.templateTitle).join('、')
+    const templateTitles = templateList.map((item) => item.templateTitle).join(', ')
 
     try {
-      await ElMessageBox.confirm(`确认禁用模版：${templateTitles}？`, '提示', {
+      await ElMessageBox.confirm(`Are you sure to disable template: ${templateTitles}?`, 'Confirm', {
         type: 'warning'
       })
 
@@ -442,7 +442,7 @@
         template.status = '2'
       }
 
-      ElMessage.success('禁用成功')
+      ElMessage.success('Disabled successfully')
     } catch (error) {
       // 用户取消禁用
     }
@@ -502,7 +502,7 @@
   const handleCopy = (templateData: TemplateListItem) => {
     const copyData = {
       ...templateData,
-      templateTitle: `${templateData.templateTitle} - 副本`,
+      templateTitle: `${templateData.templateTitle} - Copy`,
       id: undefined
     }
     showDialog('add', copyData as any)
@@ -537,17 +537,17 @@
    */
   const handleBatchCopy = () => {
     if (selectedRows.value.length === 0) {
-      ElMessage.warning('请先选择要复制的模版')
+      ElMessage.warning('Please select templates to copy')
       return
     }
 
     ElMessageBox.confirm(
-      `确认复制选中的 ${selectedRows.value.length} 个模版吗？`,
-      '批量复制确认',
+      `Are you sure to copy the selected ${selectedRows.value.length} templates?`,
+      'Batch Copy Confirmation',
       {
         type: 'info',
-        confirmButtonText: '确认复制',
-        cancelButtonText: '取消'
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel'
       }
     ).then(async () => {
       try {
@@ -556,17 +556,17 @@
         for (const template of selectedRows.value) {
           const copyData = {
             ...template,
-            templateTitle: `${template.templateTitle} - 副本`,
+            templateTitle: `${template.templateTitle} - Copy`,
             id: undefined
           }
           await fetchAddTemplate(copyData as any)
         }
         
-        ElMessage.success(`成功复制 ${selectedRows.value.length} 个模版`)
+        ElMessage.success(`Successfully copied ${selectedRows.value.length} templates`)
         clearSelection()
         refreshData()
       } catch (error) {
-        ElMessage.error('批量复制失败')
+        ElMessage.error('Batch copy failed')
         console.error('批量复制失败:', error)
       }
     }).catch(() => {
@@ -579,18 +579,18 @@
    */
   const handleBatchDisable = () => {
     if (selectedRows.value.length === 0) {
-      ElMessage.warning('请先选择要禁用的模版')
+      ElMessage.warning('Please select templates to disable')
       return
     }
 
-    const templateTitles = selectedRows.value.map(item => item.templateTitle).join('、')
+    const templateTitles = selectedRows.value.map(item => item.templateTitle).join(', ')
     ElMessageBox.confirm(
-      `确认禁用选中的 ${selectedRows.value.length} 个模版：${templateTitles}？`,
-      '批量禁用确认',
+      `Are you sure to disable the selected ${selectedRows.value.length} templates: ${templateTitles}?`,
+      'Batch Disable Confirmation',
       {
         type: 'warning',
-        confirmButtonText: '确认禁用',
-        cancelButtonText: '取消'
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel'
       }
     ).then(async () => {
       try {
@@ -598,11 +598,11 @@
         for (const template of selectedRows.value) {
           await fetchDisableTemplate(template.id)
         }
-        ElMessage.success(`成功禁用 ${selectedRows.value.length} 个模版`)
+        ElMessage.success(`Successfully disabled ${selectedRows.value.length} templates`)
         clearSelection()
         refreshData()
       } catch (error) {
-        ElMessage.error('批量禁用失败')
+        ElMessage.error('Batch disable failed')
         console.error('批量禁用失败:', error)
       }
     }).catch(() => {
@@ -615,12 +615,12 @@
    */
   const handleSinglePreview = () => {
     if (selectedRows.value.length === 0) {
-      ElMessage.warning('请先选择一个模版')
+      ElMessage.warning('Please select a template')
       return
     }
 
     if (selectedRows.value.length > 1) {
-      ElMessage.warning('预览功能只支持单个模版，请只选择一个模版')
+      ElMessage.warning('Preview only supports one template, please select only one')
       return
     }
 

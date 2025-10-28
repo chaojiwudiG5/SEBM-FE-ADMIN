@@ -2,8 +2,8 @@
   <div class="card art-custom-card">
     <div class="card-header">
       <div class="title">
-        <h4 class="box-title">动态</h4>
-        <p class="subtitle">新增<span class="text-success">+6</span></p>
+        <h4 class="box-title">Activity</h4>
+        <p class="subtitle">New <span class="text-success">+6</span></p>
       </div>
     </div>
 
@@ -22,34 +22,34 @@
 
   const list = reactive([
     {
-      username: '中小鱼',
-      type: '关注了',
-      target: '誶誶淰'
+      username: 'John',
+      type: 'followed',
+      target: 'Alice'
     },
     {
-      username: '何小荷',
-      type: '发表文章',
-      target: 'Vue3 + Typescript + Vite 项目实战笔记'
+      username: 'Sarah',
+      type: 'published',
+      target: 'Vue3 + TypeScript + Vite Project Guide'
     },
     {
-      username: '誶誶淰',
-      type: '提出问题',
-      target: '主题可以配置吗'
+      username: 'Mike',
+      type: 'asked',
+      target: 'Can the theme be configured?'
     },
     {
-      username: '发呆草',
-      type: '兑换了物品',
-      target: '《奇特的一生》'
+      username: 'Emma',
+      type: 'redeemed',
+      target: 'The 7 Habits of Highly Effective People'
     },
     {
-      username: '甜筒',
-      type: '关闭了问题',
-      target: '发呆草'
+      username: 'David',
+      type: 'closed issue',
+      target: 'Emma'
     },
     {
-      username: '冷月呆呆',
-      type: '兑换了物品',
-      target: '《高效人士的七个习惯》'
+      username: 'Lisa',
+      type: 'redeemed',
+      target: 'Deep Work'
     }
   ])
 </script>

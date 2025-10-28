@@ -1,7 +1,7 @@
 <template>
   <ElDialog
     v-model="dialogVisible"
-    :title="dialogType === 'add' ? '添加用户' : '编辑用户'"
+    :title="dialogType === 'add' ? 'Add User' : 'Edit User'"
     width="50%"
     align-center
   >
@@ -10,38 +10,38 @@
         <!-- 新增用户：只显示4个必填字段 -->
         <template v-if="dialogType === 'add'">
           <ElCol :span="12">
-            <ElFormItem label="用户名" prop="username">
-              <ElInput v-model="formData.username" placeholder="请输入用户名（昵称）" />
+            <ElFormItem label="Username" prop="username">
+              <ElInput v-model="formData.username" placeholder="Please enter username (nickname)" />
             </ElFormItem>
           </ElCol>
           <ElCol :span="12">
-            <ElFormItem label="手机号" prop="phone">
-              <ElInput v-model="formData.phone" placeholder="请输入手机号（唯一标识）" />
+            <ElFormItem label="Phone" prop="phone">
+              <ElInput v-model="formData.phone" placeholder="Please enter phone number (unique)" />
             </ElFormItem>
           </ElCol>
           <ElCol :span="12">
-            <ElFormItem label="密码" prop="password">
+            <ElFormItem label="Password" prop="password">
               <ElInput 
                 v-model="formData.password" 
                 type="password" 
-                placeholder="请输入密码（最少6位）" 
+                placeholder="Please enter password (at least 6 characters)" 
                 show-password
               />
             </ElFormItem>
           </ElCol>
           <ElCol :span="12">
-            <ElFormItem label="确认密码" prop="checkPassword">
+            <ElFormItem label="Confirm Password" prop="checkPassword">
               <ElInput 
                 v-model="formData.checkPassword" 
                 type="password" 
-                placeholder="请再次输入密码" 
+                placeholder="Please enter password again" 
                 show-password
               />
             </ElFormItem>
           </ElCol>
           <ElCol :span="24">
             <ElAlert
-              title="提示：注册成功后，其他用户信息（邮箱、性别、角色等）将使用系统默认值，可在用户列表中编辑修改。"
+              title="Tip: After successful registration, other user information (email, gender, role, etc.) will use system defaults and can be edited in the user list."
               type="info"
               :closable="false"
               show-icon
@@ -102,17 +102,17 @@
           <ElCol :span="12">
             <ElFormItem label="角色" prop="userRole">
               <ElSelect v-model="formData.userRole" placeholder="请选择角色">
-                <ElOption label="普通用户" :value="0" />
-                <ElOption label="管理员" :value="1" />
-                <ElOption label="技工" :value="2" />
+              <ElOption label="User" :value="0" />
+              <ElOption label="Admin" :value="1" />
+              <ElOption label="Technician" :value="2" />
               </ElSelect>
             </ElFormItem>
           </ElCol>
           <ElCol :span="12">
             <ElFormItem label="用户状态" prop="userStatus">
               <ElSelect v-model="formData.userStatus" placeholder="请选择状态">
-                <ElOption label="正常" :value="0" />
-                <ElOption label="封禁" :value="1" />
+                <ElOption label="Normal" :value="0" />
+                <ElOption label="Banned" :value="1" />
               </ElSelect>
             </ElFormItem>
           </ElCol>
@@ -120,8 +120,8 @@
             <ElFormItem label="激活状态" prop="isActive">
               <ElSwitch 
                 v-model="formData.isActive" 
-                active-text="已激活" 
-                inactive-text="未激活"
+                active-text="Activated" 
+                inactive-text="Inactive"
               />
             </ElFormItem>
           </ElCol>

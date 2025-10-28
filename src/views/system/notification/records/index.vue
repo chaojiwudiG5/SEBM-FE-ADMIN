@@ -3,41 +3,41 @@
     <ElCard shadow="never" class="records-card">
       <template #header>
         <div class="header">
-          <span class="title">记录查询</span>
+          <span class="title">Record Query</span>
         </div>
       </template>
 
       <ElForm :inline="true" :model="search" class="records-search">
-        <ElFormItem label="用户ID">
-          <ElInput v-model="search.userId" placeholder="可选：输入用户ID" clearable />
+        <ElFormItem label="User ID">
+          <ElInput v-model="search.userId" placeholder="Optional: Enter User ID" clearable />
         </ElFormItem>
         
-        <ElFormItem label="时间范围">
+        <ElFormItem label="Time Range">
           <ElDatePicker
             v-model="search.timeRange"
             type="datetimerange"
-            start-placeholder="开始时间"
-            end-placeholder="结束时间"
+            start-placeholder="Start Time"
+            end-placeholder="End Time"
             format="YYYY-MM-DD HH:mm:ss"
             value-format="YYYY-MM-DD HH:mm:ss"
           />
         </ElFormItem>
         <ElFormItem>
-          <ElButton type="primary" @click="fetchData" v-ripple>搜索</ElButton>
-          <ElButton @click="reset">重置</ElButton>
+          <ElButton type="primary" @click="fetchData" v-ripple>Search</ElButton>
+          <ElButton @click="reset">Reset</ElButton>
         </ElFormItem>
       </ElForm>
 
       <div class="records-table">
         <ElTable :data="list" v-loading="loading" border>
-          <ElTableColumn prop="userId" label="用户ID" width="140" />
-          <ElTableColumn prop="content" label="内容" min-width="200" show-overflow-tooltip />
-          <ElTableColumn label="通知方式" width="120">
+          <ElTableColumn prop="userId" label="User ID" width="140" />
+          <ElTableColumn prop="content" label="Content" min-width="200" show-overflow-tooltip />
+          <ElTableColumn label="Notification Method" width="120">
             <template #default="{ row }">
               <span>{{ getNotificationMethodText(row.notificationMethod) }}</span>
             </template>
           </ElTableColumn>
-          <ElTableColumn prop="sendTime" label="发送时间" width="180" />
+          <ElTableColumn prop="sendTime" label="Send Time" width="180" />
         </ElTable>
 
         <div class="table-pagination">
@@ -65,7 +65,7 @@
     userId?: string | number
     content: string
     sendTime: string
-    notificationMethod?: number  // 1-邮件, 2-短信, 3-站内信
+    notificationMethod?: number  // 1-Email, 2-SMS, 3-In-app
   }
 
   const loading = ref(false)
@@ -114,7 +114,7 @@
       console.log('[通知记录] 解析结果:', { 记录数: records.length, 总数: total })
     } catch (error) {
       console.error('[通知记录] 查询失败:', error)
-      ElMessage.error('查询通知记录失败')
+      ElMessage.error('Failed to query notification records')
     } finally {
       loading.value = false
     }

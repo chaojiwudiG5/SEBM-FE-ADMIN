@@ -11,7 +11,7 @@
           <h3 class="title">{{ $t('forgetPassword.title') }}</h3>
           <p class="sub-title">{{ $t('forgetPassword.subTitle') }}</p>
           <div class="input-wrap">
-            <span class="input-label" v-if="showInputLabel">账号</span>
+            <span class="input-label" v-if="showInputLabel">Account</span>
             <ElInput :placeholder="$t('forgetPassword.placeholder')" v-model.trim="username" />
           </div>
 

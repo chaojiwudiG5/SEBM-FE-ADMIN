@@ -1,4 +1,4 @@
-<!-- 模版弹窗 -->
+<!-- Template Dialog -->
 <template>
   <ElDialog
     :model-value="visible"
@@ -17,10 +17,10 @@
     >
       <ElRow :gutter="24">
         <ElCol :span="12">
-          <ElFormItem label="模版标题" prop="templateTitle">
+          <ElFormItem label="Template Title" prop="templateTitle">
             <ElInput
               v-model="formData.templateTitle"
-              placeholder="请输入模版标题"
+              placeholder="Please enter template title"
               :disabled="type === 'view'"
               maxlength="100"
               show-word-limit
@@ -28,10 +28,10 @@
           </ElFormItem>
         </ElCol>
         <ElCol :span="12">
-          <ElFormItem label="通知节点" prop="notificationNode">
+          <ElFormItem label="Notification Node" prop="notificationNode">
             <ElSelect
               v-model="formData.notificationNode"
-              placeholder="请选择通知节点"
+              placeholder="Please select notification node"
               :disabled="type === 'view'"
               style="width: 100%"
             >
@@ -48,10 +48,10 @@
 
       <ElRow :gutter="24">
         <ElCol :span="12">
-          <ElFormItem label="通知方式" prop="notificationMethod">
+          <ElFormItem label="Notification Method" prop="notificationMethod">
             <ElSelect
               v-model="formData.notificationMethod"
-              placeholder="请选择通知方式"
+              placeholder="Please select notification method"
               :disabled="type === 'view'"
               style="width: 100%"
               multiple
@@ -66,10 +66,10 @@
           </ElFormItem>
         </ElCol>
         <ElCol :span="12">
-          <ElFormItem label="通知角色" prop="notificationRole">
+          <ElFormItem label="Notification Role" prop="notificationRole">
             <ElSelect
               v-model="formData.notificationRole"
-              placeholder="请选择通知角色"
+              placeholder="Please select notification role"
               :disabled="type === 'view'"
               style="width: 100%"
             >
@@ -86,10 +86,10 @@
 
       <ElRow :gutter="24">
         <ElCol :span="12">
-          <ElFormItem label="通知事件" prop="notificationEvent">
+          <ElFormItem label="Notification Event" prop="notificationEvent">
             <ElInput
               v-model="formData.notificationEvent"
-              placeholder="请输入通知事件"
+              placeholder="Please enter notification event"
               :disabled="type === 'view'"
               maxlength="100"
               show-word-limit
@@ -97,10 +97,10 @@
           </ElFormItem>
         </ElCol>
         <ElCol v-if="showTimeOffset" :span="12">
-          <ElFormItem label="时间偏移(秒)" prop="relateTimeOffset">
+          <ElFormItem label="Time Offset (sec)" prop="relateTimeOffset">
             <ElInputNumber
               v-model="formData.relateTimeOffset"
-              placeholder="请输入时间偏移"
+              placeholder="Please enter time offset"
               :disabled="type === 'view'"
               style="width: 100%"
               :min="0"
@@ -113,10 +113,10 @@
 
       <ElRow :gutter="24">
         <ElCol :span="12">
-          <ElFormItem label="通知类型" prop="notificationType">
+          <ElFormItem label="Notification Type" prop="notificationType">
             <ElSelect
               v-model="formData.notificationType"
-              placeholder="请选择通知类型"
+              placeholder="Please select notification type"
               :disabled="type === 'view'"
               style="width: 100%"
             >
@@ -131,11 +131,11 @@
         </ElCol>
       </ElRow>
 
-      <ElFormItem label="模版描述" prop="templateDesc">
+      <ElFormItem label="Template Description" prop="templateDesc">
         <ElInput
           v-model="formData.templateDesc"
           type="textarea"
-          placeholder="请输入模版描述"
+          placeholder="Please enter template description"
           :disabled="type === 'view'"
           :rows="3"
           maxlength="500"
@@ -143,7 +143,7 @@
         />
       </ElFormItem>
 
-      <ElFormItem label="模版内容" prop="content">
+      <ElFormItem label="Template Content" prop="content">
         <div class="content-editor">
           <div class="editor-toolbar">
             <ElSpace>

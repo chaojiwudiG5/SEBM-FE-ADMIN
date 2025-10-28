@@ -1,27 +1,27 @@
 <template>
   <ElDialog
     v-model="dialogVisible"
-    :title="dialogType === 'add' ? '添加设备' : '编辑设备'"
+    :title="dialogType === 'add' ? 'Add Device' : 'Edit Device'"
     width="40%"
     align-center
   >
     <ElForm ref="formRef" :model="formData" :rules="rules" label-width="100px">
       <ElRow :gutter="20">
         <ElCol :span="12">
-          <ElFormItem label="设备名称" prop="deviceName">
+          <ElFormItem label="Device Name" prop="deviceName">
             <ElInput 
               v-model="formData.deviceName" 
-              placeholder="请输入设备名称"
+              placeholder="Please enter device name"
               maxlength="50"
               show-word-limit
             />
           </ElFormItem>
         </ElCol>
         <ElCol :span="12">
-          <ElFormItem label="设备类型" prop="deviceType">
+          <ElFormItem label="Device Type" prop="deviceType">
             <ElInput 
               v-model="formData.deviceType" 
-              placeholder="请输入设备类型"
+              placeholder="Please enter device type"
               maxlength="20"
               show-word-limit
             />
@@ -31,20 +31,20 @@
 
       <ElRow :gutter="20">
         <ElCol :span="12">
-          <ElFormItem label="设备状态" prop="status">
-            <ElSelect v-model="formData.status" placeholder="请选择状态" style="width: 100%">
-              <ElOption label="可用" :value="0" />
-              <ElOption label="借出" :value="1" />
-              <ElOption label="维修" :value="2" />
-              <ElOption label="预留" :value="3" />
+          <ElFormItem label="Device Status" prop="status">
+            <ElSelect v-model="formData.status" placeholder="Please select status" style="width: 100%">
+              <ElOption label="Available" :value="0" />
+              <ElOption label="Borrowed" :value="1" />
+              <ElOption label="Maintenance" :value="2" />
+              <ElOption label="Reserved" :value="3" />
             </ElSelect>
           </ElFormItem>
         </ElCol>
         <ElCol :span="12">
-          <ElFormItem label="设备位置" prop="location">
+          <ElFormItem label="Device Location" prop="location">
             <ElInput 
               v-model="formData.location" 
-              placeholder="请输入设备位置"
+              placeholder="Please enter device location"
               maxlength="100"
               show-word-limit
             />
@@ -52,7 +52,7 @@
         </ElCol>
       </ElRow>
 
-      <ElFormItem label="设备图片" prop="image">
+      <ElFormItem label="Device Image" prop="image">
         <div class="image-upload">
           <ElUpload
             class="avatar-uploader"

@@ -219,7 +219,26 @@ async function request<T = any>(config: ExtendedAxiosRequestConfig): Promise<T> 
       showSuccess(res.data.msg)
     }
 
-    return res.data.data as T
+    // 兼容两种响应格式：
+    // 1. 标准格式：{ code: 200, msg: "success", data: {...} }
+    // 2. 直接返回数据：{ total: 12, items: [...] }
+    const responseData = res.data as any
+    
+    // 如果有 data 字段，返回 data
+    if ('data' in responseData) {
+      console.log('📦 [HTTP工具] 提取 response.data.data:', responseData.data)
+      return responseData.data as T
+    }
+    
+    // 如果没有 data 字段，但有 items/total 等字段，说明直接返回了数据
+    if ('items' in responseData || 'total' in responseData || Array.isArray(responseData)) {
+      console.log('📦 [HTTP工具] 直接返回 response.data (兼容模式):', responseData)
+      return responseData as T
+    }
+    
+    // 默认返回 data 字段（保持向后兼容）
+    console.log('📦 [HTTP工具] 默认提取 response.data.data:', responseData.data)
+    return responseData.data as T
   } catch (error) {
     if (error instanceof HttpError && error.code !== ApiStatus.unauthorized) {
       const showMsg = config.showErrorMessage !== false

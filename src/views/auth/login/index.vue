@@ -167,7 +167,7 @@
 
       // 验证token
       if (!token) {
-        throw new Error('登录失败 - 未收到token')
+        throw new Error('Login failed - No token received')
       }
 
       // 存储token（使用同一个token作为refreshToken）
@@ -197,7 +197,7 @@
         // console.log(error.code)
       } else {
         // 处理非 HttpError
-        ElMessage.error('登录失败，请稍后重试')
+        ElMessage.error('Login failed, please try again later')
         console.error('[Login] Unexpected error:', error)
       }
     } finally {

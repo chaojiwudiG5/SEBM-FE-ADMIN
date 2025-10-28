@@ -9,9 +9,9 @@
       :xAxisData="['1', '2', '3', '4', '5', '6', '7', '8', '9']"
     />
     <div class="text">
-      <h3 class="box-title">用户概述</h3>
-      <p class="subtitle">比上周 <span class="text-success">+23%</span></p>
-      <p class="subtitle">我们为您创建了多个选项，可将它们组合在一起并定制为像素完美的页面</p>
+      <h3 class="box-title">User Overview</h3>
+      <p class="subtitle">vs last week <span class="text-success">+23%</span></p>
+      <p class="subtitle">We've created multiple options for you to combine together and customize into pixel perfect pages</p>
     </div>
     <div class="list">
       <div v-for="(item, index) in list" :key="index">
@@ -24,10 +24,10 @@
 
 <script setup lang="ts">
   const list = [
-    { name: '总用户量', num: '32k' },
-    { name: '总访问量', num: '128k' },
-    { name: '日访问量', num: '1.2k' },
-    { name: '周同比', num: '+5%' }
+    { name: 'Total Users', num: '32k' },
+    { name: 'Total Visits', num: '128k' },
+    { name: 'Daily Visits', num: '1.2k' },
+    { name: 'Weekly Growth', num: '+5%' }
   ]
 </script>
 

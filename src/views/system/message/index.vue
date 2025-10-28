@@ -4,9 +4,9 @@
     <ElCard class="art-table-card" shadow="never">
       <!-- 标签页：已读/未读 -->
       <ElTabs v-model="activeTab" @tab-change="handleTabChange">
-        <ElTabPane label="未读消息" name="unread">
+        <ElTabPane label="Unread Messages" name="unread">
           <template #label>
-            <span>未读消息 <ElBadge v-if="unreadCount > 0" :value="unreadCount" class="tab-badge" /></span>
+            <span>Unread Messages <ElBadge v-if="unreadCount > 0" :value="unreadCount" class="tab-badge" /></span>
           </template>
           <!-- 批量操作按钮 -->
           <div class="table-header-actions" style="margin-bottom: 16px;">
@@ -15,20 +15,20 @@
               :disabled="selectedUnreadIds.length === 0"
               @click="handleBatchMarkAsRead"
             >
-              标记已读 ({{ selectedUnreadIds.length }})
+              Mark as Read ({{ selectedUnreadIds.length }})
             </ElButton>
             <ElButton 
               type="success" 
               @click="handleMarkAllAsRead"
             >
-              全部标记已读
+              Mark All as Read
             </ElButton>
             <ElButton 
               type="danger" 
               :disabled="selectedUnreadIds.length === 0"
               @click="handleBatchDelete('unread')"
             >
-              批量删除 ({{ selectedUnreadIds.length }})
+              Batch Delete ({{ selectedUnreadIds.length }})
             </ElButton>
           </div>
           <ArtTable
@@ -42,7 +42,7 @@
           >
           </ArtTable>
         </ElTabPane>
-        <ElTabPane label="已读消息" name="read">
+        <ElTabPane label="Read Messages" name="read">
           <!-- 批量操作按钮 -->
           <div class="table-header-actions" style="margin-bottom: 16px;">
             <ElButton 
@@ -50,7 +50,7 @@
               :disabled="selectedReadIds.length === 0"
               @click="handleBatchDelete('read')"
             >
-              批量删除 ({{ selectedReadIds.length }})
+              Batch Delete ({{ selectedReadIds.length }})
             </ElButton>
           </div>
           <ArtTable
@@ -138,27 +138,27 @@
     },
     {
       prop: 'title',
-      label: '消息标题',
+      label: 'Title',
       width: 150,
       showOverflowTooltip: true
     },
     {
       prop: 'content',
-      label: '消息内容',
+      label: 'Content',
       minWidth: 250,
       showOverflowTooltip: true
     },
     {
       prop: 'sendTime',
-      label: '发送时间',
+      label: 'Send Time',
       width: 180,
       formatter: (row: MessageListItem) => {
-        return new Date(row.sendTime).toLocaleString('zh-CN')
+        return new Date(row.sendTime).toLocaleString('en-US')
       }
     },
     {
       prop: 'action',
-      label: '操作',
+      label: 'Action',
       width: 180,
       fixed: 'right',
       render: (row: MessageListItem) => {
@@ -171,7 +171,7 @@
               size: 'small',
               onClick: () => handleMarkSingleAsRead(row.id)
             },
-            () => '标记已读'
+            () => 'Mark as Read'
           ),
           h(
             resolveComponent('ElButton'),
@@ -181,7 +181,7 @@
               size: 'small',
               onClick: () => handleDeleteSingle(row.id, 'unread')
             },
-            () => '删除'
+            () => 'Delete'
           )
         ])
       }
@@ -196,27 +196,27 @@
     },
     {
       prop: 'title',
-      label: '消息标题',
+      label: 'Title',
       width: 150,
       showOverflowTooltip: true
     },
     {
       prop: 'content',
-      label: '消息内容',
+      label: 'Content',
       minWidth: 250,
       showOverflowTooltip: true
     },
     {
       prop: 'sendTime',
-      label: '发送时间',
+      label: 'Send Time',
       width: 180,
       formatter: (row: MessageListItem) => {
-        return new Date(row.sendTime).toLocaleString('zh-CN')
+        return new Date(row.sendTime).toLocaleString('en-US')
       }
     },
     {
       prop: 'action',
-      label: '操作',
+      label: 'Action',
       width: 100,
       fixed: 'right',
       render: (row: MessageListItem) => {
@@ -228,7 +228,7 @@
             size: 'small',
             onClick: () => handleDeleteSingle(row.id, 'read')
           },
-          () => '删除'
+          () => 'Delete'
         )
       }
     }
@@ -291,7 +291,7 @@
       console.log('✅ 未读消息:', unreadMessages.value.length, '条，总数:', total)
     } catch (error) {
       console.error('❌ 获取未读消息失败:', error)
-      ElMessage.error('获取未读消息失败')
+      ElMessage.error('Failed to fetch unread messages')
     } finally {
       loading.value = false
     }
@@ -335,7 +335,7 @@
       console.log('✅ 已读消息:', readMessages.value.length, '条，总数:', total)
     } catch (error) {
       console.error('❌ 获取已读消息失败:', error)
-      ElMessage.error('获取已读消息失败')
+      ElMessage.error('Failed to fetch read messages')
     } finally {
       loading.value = false
     }
@@ -408,22 +408,22 @@
    */
   const handleMarkSingleAsRead = async (id: number) => {
     try {
-      await ElMessageBox.confirm('确定要将该消息标记为已读吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      await ElMessageBox.confirm('Are you sure to mark this message as read?', 'Confirm', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
         type: 'info'
       })
 
       loading.value = true
       await batchMarkAsRead({ ids: [id] })
-      ElMessage.success('标记成功')
+      ElMessage.success('Marked successfully')
       
       // 刷新列表
       await fetchUnreadMessages()
     } catch (error: any) {
       if (error !== 'cancel') {
         console.error('❌ 标记已读失败:', error)
-        ElMessage.error('标记失败')
+        ElMessage.error('Failed to mark as read')
       }
     } finally {
       loading.value = false
@@ -435,24 +435,24 @@
    */
   const handleBatchMarkAsRead = async () => {
     if (selectedUnreadIds.value.length === 0) {
-      ElMessage.warning('请先选择要标记的消息')
+      ElMessage.warning('Please select messages to mark')
       return
     }
 
     try {
       await ElMessageBox.confirm(
-        `确定要将选中的 ${selectedUnreadIds.value.length} 条消息标记为已读吗？`,
-        '提示',
+        `Are you sure to mark the selected ${selectedUnreadIds.value.length} messages as read?`,
+        'Confirm',
         {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
           type: 'info'
         }
       )
 
       loading.value = true
       await batchMarkAsRead({ ids: selectedUnreadIds.value })
-      ElMessage.success('标记成功')
+      ElMessage.success('Marked successfully')
       
       // 清空选择并刷新列表
       selectedUnreadIds.value = []
@@ -461,7 +461,7 @@
     } catch (error: any) {
       if (error !== 'cancel') {
         console.error('❌ 批量标记已读失败:', error)
-        ElMessage.error('标记失败')
+        ElMessage.error('Failed to mark as read')
       }
     } finally {
       loading.value = false
@@ -474,11 +474,11 @@
   const handleMarkAllAsRead = async () => {
     try {
       await ElMessageBox.confirm(
-        '确定要将所有未读消息标记为已读吗？',
-        '提示',
+        'Are you sure to mark all unread messages as read?',
+        'Confirm',
         {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
           type: 'warning'
         }
       )
@@ -489,13 +489,13 @@
       
       if (!userId) {
         console.error('❌ [Message] 无法获取用户ID')
-        ElMessage.error('无法获取用户信息')
+        ElMessage.error('Failed to get user information')
         return
       }
 
       await markAllAsRead(userId)
       console.log('✅ [Message] 全部标记已读成功')
-      ElMessage.success('全部标记成功')
+      ElMessage.success('All messages marked as read')
       
       // 清空选择并刷新列表
       selectedUnreadIds.value = []
@@ -505,7 +505,7 @@
     } catch (error: any) {
       if (error !== 'cancel') {
         console.error('❌ 标记全部已读失败:', error)
-        ElMessage.error('标记失败')
+        ElMessage.error('Failed to mark as read')
       }
     } finally {
       loading.value = false
@@ -517,15 +517,15 @@
    */
   const handleDeleteSingle = async (id: number, type: 'unread' | 'read') => {
     try {
-      await ElMessageBox.confirm('确定要删除该消息吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
+      await ElMessageBox.confirm('Are you sure to delete this message?', 'Confirm', {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
         type: 'warning'
       })
 
       loading.value = true
       await deleteMessage({ id })
-      ElMessage.success('删除成功')
+      ElMessage.success('Deleted successfully')
       
       // 刷新对应列表
       if (type === 'unread') {
@@ -536,7 +536,7 @@
     } catch (error: any) {
       if (error !== 'cancel') {
         console.error('❌ 删除消息失败:', error)
-        ElMessage.error('删除失败')
+        ElMessage.error('Failed to delete')
       }
     } finally {
       loading.value = false
@@ -550,24 +550,24 @@
     const selectedIds = type === 'unread' ? selectedUnreadIds.value : selectedReadIds.value
     
     if (selectedIds.length === 0) {
-      ElMessage.warning('请先选择要删除的消息')
+      ElMessage.warning('Please select messages to delete')
       return
     }
 
     try {
       await ElMessageBox.confirm(
-        `确定要删除选中的 ${selectedIds.length} 条消息吗？`,
-        '提示',
+        `Are you sure to delete the selected ${selectedIds.length} messages?`,
+        'Confirm',
         {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancel',
           type: 'warning'
         }
       )
 
       loading.value = true
       await batchDeleteMessages({ ids: selectedIds })
-      ElMessage.success('删除成功')
+      ElMessage.success('Deleted successfully')
       
       // 清空选择并刷新列表
       if (type === 'unread') {
