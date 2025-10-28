@@ -1,12 +1,12 @@
-// 表单枚举
+// Form enums
 
-// 页面类型
+// Page mode
 export enum PageModeEnum {
-  Add, // 新增
-  Edit // 编辑
+  Add, // Add
+  Edit // Edit
 }
 
-// 表格大小
+// Table size
 export enum TableSizeEnum {
   DEFAULT = 'default',
   SMALL = 'small',

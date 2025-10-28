@@ -178,7 +178,7 @@
         },
         {
           prop: 'status',
-          label: '状态',
+          label: 'Status',
           width: 100,
           formatter: (row) => {
             const deviceRow = row as DeviceListItem
@@ -188,29 +188,29 @@
         },
         { 
           prop: 'location', 
-          label: '设备位置',
+          label: 'Location',
           width: 150,
           formatter: (row) => (row as DeviceListItem).location || '-'
         },
         { 
           prop: 'description', 
-          label: '描述', 
+          label: 'Description', 
           width: 200,
           formatter: (row) => (row as DeviceListItem).description || '-'
         },
         {
           prop: 'createTime',
-          label: '创建时间',
+          label: 'Create Time',
           sortable: true,
           width: 160,
           formatter: (row) => {
             const time = (row as DeviceListItem).createTime
-            return time ? new Date(time).toLocaleString('zh-CN') : '-'
+            return time ? new Date(time).toLocaleString('en-US') : '-'
           }
         },
         {
           prop: 'operation',
-          label: '操作',
+          label: 'Action',
           width: 280,
           fixed: 'right', // 固定列
           formatter: (row) => {

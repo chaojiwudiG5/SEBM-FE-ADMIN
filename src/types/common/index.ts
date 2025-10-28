@@ -1,36 +1,36 @@
 /**
- * 通用类型定义
+ * Common type definitions
  */
 
-// 状态类型
-export type Status = 0 | 1 // 0: 禁用, 1: 启用
+// Status type
+export type Status = 0 | 1 // 0: Disabled, 1: Enabled
 
-// 性别类型
+// Gender type
 export type Gender = 'male' | 'female' | 'unknown'
 
-// 排序方向
+// Sort direction
 export type SortOrder = 'ascending' | 'descending'
 
-// 操作类型
+// Action type
 export type ActionType = 'create' | 'update' | 'delete' | 'view'
 
-// 可选的记录类型
+// Recordable type
 export type Recordable<T = any> = Record<string, T>
 
-// 键值对类型
+// Key-value pair type
 export type KeyValue<T = any> = {
   key: string
   value: T
   label?: string
 }
 
-// 时间范围类型
+// Time range type
 export interface TimeRange {
   startTime: string
   endTime: string
 }
 
-// 文件类型
+// File type
 export interface FileInfo {
   name: string
   url: string
@@ -39,26 +39,26 @@ export interface FileInfo {
   lastModified?: number
 }
 
-// 坐标类型
+// Position type
 export interface Position {
   x: number
   y: number
 }
 
-// 尺寸类型
+// Size type
 export interface Size {
   width: number
   height: number
 }
 
-// 响应式断点类型
+// Responsive breakpoint type
 export type Breakpoint = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 
-// 主题类型
+// Theme type
 export type ThemeMode = 'light' | 'dark' | 'auto'
 
-// 语言类型
+// Language type
 export type Language = 'zh-CN' | 'en-US'
 
-// 环境类型
+// Environment type
 export type Environment = 'development' | 'production' | 'test'

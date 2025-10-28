@@ -15,9 +15,9 @@ const messages = {
   [LanguageEnum.ZH]: zhMessages
 }
 
-// 语言选项
+// Language options
 export const languageOptions = [
-  { value: LanguageEnum.ZH, label: '简体中文' },
+  { value: LanguageEnum.ZH, label: 'Simplified Chinese' },
   { value: LanguageEnum.EN, label: 'English' }
 ]
 
